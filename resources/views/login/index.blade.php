@@ -8,13 +8,17 @@
 </head>
 
 <body>
-    <form action="{{ route('login.sign-in') }}" method="post">
+    <form action="/login" method="POST">
         @csrf
         <label for="">Usuario</label>
-        <input type="text" name="nickname">
+        <input type="text" name="username">
         <label for="">Contraseña</label>
         <input type="password" name="password">
         <input type="submit" value="Iniciar Sesion">
+
+        @error('username')
+            <div>{{ $message }}</div>
+        @enderror
     </form>
 </body>
 
