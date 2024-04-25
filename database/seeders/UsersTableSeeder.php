@@ -25,14 +25,14 @@ class UsersTableSeeder extends Seeder
             'updated_at' => now(),
         ]);
 
-        DB::table('users')->insert([
-            'name' => 'Usuario2',
-            'username' => 'usuario2',
-            'password' => Hash::make('contraseña'),
-            'role' => 'registrador',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        // DB::table('users')->insert([
+        //     'name' => 'Usuario2',
+        //     'username' => 'usuario2',
+        //     'password' => Hash::make('contraseña'),
+        //     'role' => 'registrador',
+        //     'created_at' => now(),
+        //     'updated_at' => now(),
+        // ]);
     }
 }
 

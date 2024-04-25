@@ -9,6 +9,7 @@
 </head>
 
 <body>
+    @include('includes._register_button')
     <a href="{{ route('logout') }}">logout</a>
     <h1>consultar cedula</h1>
     <form method="POST" action="">
@@ -17,6 +18,21 @@
         <input type="number" name="cedula" id="cedula">
         <input type="submit" value="consultar">
     </form>
+
+    @if (session('success'))
+        <div id="success-message" class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
+
+
+    <script>
+        setTimeout(function() {
+            document.getElementById('success-message').style.display = 'none';
+        }, 5000);
+    </script>
+
+
 </body>
 
 </html>

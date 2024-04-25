@@ -27,6 +27,8 @@
 </head>
 
 <body>
+    @include('includes._register_button')
+
     <h2>Tabla de Visitantes</h2>
 
     <table>

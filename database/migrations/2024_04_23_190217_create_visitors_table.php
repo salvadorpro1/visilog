@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nombre');
             $table->string('apellido');
-            $table->string('cedula')->unique();
+            $table->string('cedula');
             $table->string('filial');
             $table->string('gerencia');
             $table->text('razon_visita');

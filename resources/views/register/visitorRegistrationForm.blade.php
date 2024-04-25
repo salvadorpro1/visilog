@@ -9,15 +9,17 @@
 </head>
 
 <body>
+    @include('includes._register_button')
+
     @if ($showAll)
-        <form method="POST" action="">
+        <form method="POST" action="{{ route('guardar_RegistroVisitor') }}">
             @csrf
             <label for="">Cedula</label>
-            <input readonly value="{{ $cedula }}" type="number">
+            <input name="cedula" readonly value="{{ $cedula }}" type="number">
             <label for="">Nombre</label>
-            <input type="text">
+            <input name="nombre" type="text">
             <label for="">Apellido</label>
-            <input type="text">
+            <input name="apellido" type="text">
             <label for="">Filial</label>
             <select name="Subsidiary">
                 <option value="value1">Vencemos</option>
@@ -31,17 +33,23 @@
                 <option value="value3">Value 3</option>
             </select>
             <label for="">razon de la visita</label>
-            <textarea name="" id="" cols="30" rows="10"></textarea>
+            <textarea name="razon_visita" cols="30" rows="10"></textarea>
+            <input type="submit" value="Enviar">
+            @if (session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+            @endif
         </form>
     @else
-        <form method="POST" action="">
+        <form method="POST" action="{{ route('guardar_RegistroVisitor') }}">
             @csrf
             <label for="">Cedula</label>
-            <input readonly value="{{ $visitor->cedula }}" type="number">
+            <input name="cedula" readonly value="{{ $visitor->cedula }}" type="number">
             <label for="">Nombre</label>
-            <input readonly value="{{ $visitor->nombre }}" type="text">
+            <input name="nombre" readonly value="{{ $visitor->nombre }}" type="text">
             <label for="">Apellido</label>
-            <input readonly value="{{ $visitor->apellido }}" type="text">
+            <input name="apellido" readonly value="{{ $visitor->apellido }}" type="text">
             <label for="">Filial</label>
             <select name="Subsidiary">
                 <option value="value1">Vencemos</option>
@@ -55,7 +63,9 @@
                 <option value="value3">Value 3</option>
             </select>
             <label for="">razon de la visita</label>
-            <textarea name="" id="" cols="30" rows="10"></textarea>
+            <textarea name="razon_visita" cols="30" rows="10"></textarea>
+            <input type="submit" value="Enviar">
+
         </form>
     @endif
 

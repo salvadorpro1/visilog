@@ -19,8 +19,11 @@ use App\Http\Controllers\VisitorController;
 Route::get('/', [AuthenticateUserController::class, "showLoginForm"])->name('show_LoginForm');
 Route::post('/login', [AuthenticateUserController::class, "login"]);
 Route::get('/logout', [AuthenticateUserController::class, 'logout'])->name('logout');
+route::get('/crear-registrador', [AuthenticateUserController::class, 'showRegister'])->name('showRegister');
+route::post('/crear-registrador', [AuthenticateUserController::class, 'saveRegistrar'])->name('saveRegistrar');
+
+
 
 Route::get('/consulta-y-registro', [VisitorController::class, 'showConsulForm'])->middleware('auth')->name('show_ConsulForm');
 Route::post('/consulta-y-registro', [VisitorController::class, 'consulDate']);
-
-
+Route::post('/guardar-registro', [VisitorController::class, 'saveVisitor'])->name('guardar_RegistroVisitor');
