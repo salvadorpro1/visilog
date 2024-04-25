@@ -22,11 +22,13 @@ class VisitorController extends Controller
         if (!$visitor) {
             return view('register.registrationForm', [
                 'showAll' => true,
+                'cedula' => $cedula
             ]);
         }
 
         return view('register.registrationForm', [
-            'showAll' => false
+            'showAll' => false,
+            'visitor' => $visitor
         ]);
     }
 }

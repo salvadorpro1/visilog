@@ -24,4 +24,3 @@ Route::get('/consulta-y-registro', [VisitorController::class, 'showConsulForm'])
 Route::post('/consulta-y-registro', [VisitorController::class, 'consulDate']);
 
 
-// Route::get('/formulario-de-registro', [VisitorController::class, 'showRegistrationForm'])->middleware('auth')->name('show_RegistrationForm');

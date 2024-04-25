@@ -12,6 +12,8 @@
     @if ($showAll)
         <form method="POST" action="">
             @csrf
+            <label for="">Cedula</label>
+            <input readonly value="{{ $cedula }}" type="number">
             <label for="">Nombre</label>
             <input type="text">
             <label for="">Apellido</label>
@@ -34,6 +36,12 @@
     @else
         <form method="POST" action="">
             @csrf
+            <label for="">Cedula</label>
+            <input readonly value="{{ $visitor->cedula }}" type="number">
+            <label for="">Nombre</label>
+            <input readonly value="{{ $visitor->nombre }}" type="text">
+            <label for="">Apellido</label>
+            <input readonly value="{{ $visitor->apellido }}" type="text">
             <label for="">Filial</label>
             <select name="Subsidiary">
                 <option value="value1">Vencemos</option>
