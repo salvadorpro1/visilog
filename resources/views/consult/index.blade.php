@@ -108,6 +108,16 @@
         @endif
     </div>
 
+    @if ($errors->any())
+        <div class="alert">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <script>
         setTimeout(function() {
             document.querySelector('.alert-success').style.display = 'none';
@@ -117,6 +127,7 @@
             document.querySelector('.alert-danger').style.display = 'none';
         }, 5000);
     </script>
+
 </body>
 
 </html>
