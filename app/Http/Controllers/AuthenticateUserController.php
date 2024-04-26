@@ -34,7 +34,11 @@ class AuthenticateUserController extends Controller
 
     public function showRegister()
     {
-        return view('register.registrarRegistrationForm');
+        if (Auth::check() && Auth::user()->role === 'administrador') {
+            return view('register.registrarRegistrationForm');
+        } else {
+            return redirect()->route('show_ConsulForm')->with('error', 'Acceso denegado. Solo los administradores pueden acceder.');
+        }
     }
 
     public function saveRegistrar(Request $request)

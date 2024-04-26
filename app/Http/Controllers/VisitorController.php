@@ -13,6 +13,12 @@ class VisitorController extends Controller
         return view('consult.index');
     }
 
+    public function showRegister()
+    {
+        $registros = Visitor::paginate(10);
+        return view('register.showRegistration', compact('registros'));
+    }
+
     public function consulDate(Request $request)
     {
         $cedula = $request->input('cedula');
@@ -20,13 +26,13 @@ class VisitorController extends Controller
         $visitor = Visitor::where('cedula', $cedula)->first();
 
         if (!$visitor) {
-            return view('register.visitorRegistrationForm.blade', [
+            return view('register.visitorRegistrationForm', [
                 'showAll' => true,
                 'cedula' => $cedula
             ]);
         }
 
-        return view('register.visitorRegistrationForm.blade', [
+        return view('register.visitorRegistrationForm', [
             'showAll' => false,
             'visitor' => $visitor
         ]);

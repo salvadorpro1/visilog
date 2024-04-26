@@ -10,6 +10,9 @@
 
 <body>
     @include('includes._register_button')
+    <a href="{{ url()->previous() }}">Volver</a>
+
+    <a href="{{ route('show_Register_Visitor') }}">Registro de visitantes</a>
 
     @if ($showAll)
         <form method="POST" action="{{ route('guardar_RegistroVisitor') }}">
