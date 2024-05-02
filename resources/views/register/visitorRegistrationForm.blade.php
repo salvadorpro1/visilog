@@ -96,13 +96,13 @@
                 <label for="">Apellido</label>
                 <input name="apellido" type="text">
                 <label for="">Filial</label>
-                <select name="Subsidiary">
+                <select name="filial">
                     <option value="value1">Vencemos</option>
                     <option value="value2">Invecem</option>
                     <option value="value3">FNC</option>
                 </select>
                 <label for="">Gerencia</label>
-                <select name="Management">
+                <select name="gerencia">
                     <option value="value1">Value 1</option>
                     <option value="value2">Value 2</option>
                     <option value="value3">Value 3</option>
@@ -126,13 +126,13 @@
                 <label for="">Apellido</label>
                 <input name="apellido" readonly value="{{ $visitor->apellido }}" type="text">
                 <label for="">Filial</label>
-                <select name="Subsidiary">
+                <select name="filial">
                     <option value="value1">Vencemos</option>
                     <option value="value2">Invecem</option>
                     <option value="value3">FNC</option>
                 </select>
                 <label for="">Gerencia</label>
-                <select name="Management">
+                <select name="gerencia">
                     <option value="value1">Value 1</option>
                     <option value="value2">Value 2</option>
                     <option value="value3">Value 3</option>
@@ -143,6 +143,18 @@
             </form>
         @endif
     </div>
+
+    @if ($errors)
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+
 </body>
 
 </html>

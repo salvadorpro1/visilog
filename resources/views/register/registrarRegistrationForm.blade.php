@@ -71,7 +71,7 @@
 
 <body>
     <div class="container">
-        <a href="{{ url()->previous() }}">Volver</a>
+        <a href="{{ route('show_ConsulForm') }}">Volver</a>
 
         <form action="" method="POST">
             @csrf

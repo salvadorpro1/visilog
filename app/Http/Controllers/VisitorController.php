@@ -22,11 +22,23 @@ class VisitorController extends Controller
 
     public function consulDate(Request $request)
     {
+        $rules = [
+            'cedula' => 'required|digits_between:7,8',
+
+        ];
+
+        $messages = [
+            'cedula.required' => 'La cédula es obligatoria.',
+            'cedula.digits_between' => 'La cédula debe tener entre :min y :max dígitos.',
+        ];
         $cedula = $request->input('cedula');
 
         $visitor = Visitor::where('cedula', $cedula)->first();
+        $validator = Validator::make($request->all(), $rules, $messages);
 
-        if (!$visitor) {
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        } elseif (!$visitor) {
             return view('register.visitorRegistrationForm', [
                 'showAll' => true,
                 'cedula' => $cedula
@@ -77,8 +89,8 @@ class VisitorController extends Controller
         $visitor->cedula = $request->input('cedula');
         $visitor->nombre = $request->input('nombre');
         $visitor->apellido = $request->input('apellido');
-        $visitor->filial = $request->input('Subsidiary');
-        $visitor->gerencia = $request->input('Management');
+        $visitor->filial = $request->input('filial');
+        $visitor->gerencia = $request->input('gerencia');
         $visitor->razon_visita = $request->input('razon_visita');
 
         $visitor->save();
