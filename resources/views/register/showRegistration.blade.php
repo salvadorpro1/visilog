@@ -50,9 +50,11 @@
                 <th>Nombre</th>
                 <th>Apellido</th>
                 <th>Cédula</th>
-                <th>Filial</th>
                 <th>Gerencia</th>
                 <th>Razón de la Visita</th>
+                <th>Fecha</th>
+                <th>Hora</th>
+
             </tr>
         </thead>
         <tbody>
@@ -62,9 +64,11 @@
                     <td>{{ $registro->nombre }}</td>
                     <td>{{ $registro->apellido }}</td>
                     <td>{{ $registro->cedula }}</td>
-                    <td>{{ $registro->filial }}</td>
                     <td>{{ $registro->gerencia }}</td>
                     <td>{{ $registro->razon_visita }}</td>
+                    <td>{{ \Carbon\Carbon::parse($registro->created_at)->format('d/m/Y') }}</td>
+                    <td>{{ \Carbon\Carbon::parse($registro->created_at)->toTimeString() }}</td>
+
                 </tr>
             @endforeach
         </tbody>
