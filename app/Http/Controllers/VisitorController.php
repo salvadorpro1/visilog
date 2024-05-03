@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Str;
+
+
 use App\Models\Visitor;
 use Illuminate\Support\Facades\Validator;
 
@@ -38,6 +41,12 @@ class VisitorController extends Controller
     {
         $registros = Visitor::paginate(10);
         return view('register.showRegistration', compact('registros'));
+    }
+
+    public function showRegisterDetail($cedula)
+    {
+        $persona = Visitor::where('cedula', $cedula)->first();
+        return view('register.showRegistrationDetail', ['persona' => $persona]);
     }
 
     public function consulDate(Request $request)
@@ -123,5 +132,10 @@ class VisitorController extends Controller
         $visitor->save();
 
         return redirect()->route('show_ConsulForm')->with('success', 'Los datos se han enviado correctamente.');
+    }
+
+    public function truncateText($text, $length = 50, $ending = '...')
+    {
+        return Str::limit($text, $length, $ending);
     }
 }

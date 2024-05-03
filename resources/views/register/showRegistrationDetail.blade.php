@@ -1,5 +1,3 @@
-use Illuminate\Support\Str;
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -37,17 +35,6 @@ use Illuminate\Support\Str;
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
-
-        .truncate {
-            white-space: nowrap;
-            /* Evita que el texto se envuelva */
-            overflow: hidden;
-            /* Oculta el texto que se desborda */
-            text-overflow: ellipsis;
-            /* Agrega puntos suspensivos (...) al final del texto truncado */
-            max-width: 200px;
-            /* Ancho máximo del contenedor */
-        }
     </style>
 
 </head>
@@ -66,27 +53,23 @@ use Illuminate\Support\Str;
                 <th>Gerencia</th>
                 <th>Razón de la Visita</th>
                 <th>Fecha</th>
-                {{-- <th>Hora</th> --}}
+                <th>Hora</th>
 
             </tr>
         </thead>
         <tbody>
             <!-- Aquí puedes agregar las filas con los datos de los visitantes -->
-            @foreach ($registros as $registro)
-                <tr>
-                    <td>{{ $registro->nombre }}</td>
-                    <td>{{ $registro->apellido }}</td>
-                    <td><a
-                            href="{{ route('show_Register_Visitor_Detail', $registro->cedula) }}">{{ $registro->cedula }}</a>
-                    </td>
-                    <td>{{ $registro->gerencia }}</td>
-                    <td class="truncate">{{ $registro->razon_visita }}</td>
-                    <td>{{ \Carbon\Carbon::parse($registro->created_at)->format('d/m/Y') }}</td>
-                </tr>
-            @endforeach
+            <tr>
+                <td>{{ $persona->nombre }}</td>
+                <td>{{ $persona->apellido }}</td>
+                <td>{{ $persona->cedula }}</td>
+                <td>{{ $persona->gerencia }}</td>
+                <td>{{ $persona->razon_visita }}</td>
+                <td>{{ \Carbon\Carbon::parse($persona->created_at)->format('d/m/Y') }}</td>
+                <td>{{ \Carbon\Carbon::parse($persona->created_at)->toTimeString() }}</td>
+            </tr>
         </tbody>
     </table>
-    {{ $registros->links() }}
 
 </body>
 
