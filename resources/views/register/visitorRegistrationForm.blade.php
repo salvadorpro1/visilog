@@ -82,7 +82,7 @@
 <body>
     <div class="container">
         @include('includes._register_button')
-        <a href="{{ url()->previous() }}">Volver</a>
+        <a href="{{ route('show_ConsulForm') }}">Volver</a>
 
         <a href="{{ route('show_Register_Visitor') }}">Registro de visitantes</a>
 
@@ -144,15 +144,16 @@
         @endif
     </div>
 
-    @if ($errors)
+    @if ($errors->any())
         <div class="alert alert-danger">
             <ul>
-                @foreach ($errors as $error)
+                @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
                 @endforeach
             </ul>
         </div>
     @endif
+
 
 
 </body>

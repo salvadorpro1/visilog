@@ -24,7 +24,9 @@ route::post('/crear-registrador', [AuthenticateUserController::class, 'saveRegis
 
 
 
-Route::get('/consulta-y-registro', [VisitorController::class, 'showConsulForm'])->middleware('auth')->name('show_ConsulForm');
+Route::get('/consulta', [VisitorController::class, 'showConsulForm'])->middleware('auth')->name('show_ConsulForm');
 Route::get('/registro-de-visitantes', [VisitorController::class, 'showRegister'])->middleware('auth')->name('show_Register_Visitor');
-Route::post('/consulta-y-registro', [VisitorController::class, 'consulDate']);
+Route::get('/registro', [VisitorController::class, 'showRegisterVisitor'])->middleware('auth')->name('show_register');
+
+Route::post('/consulta', [VisitorController::class, 'consulDate']);
 Route::post('/guardar-registro', [VisitorController::class, 'saveVisitor'])->name('guardar_RegistroVisitor');

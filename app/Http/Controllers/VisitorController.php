@@ -14,6 +14,26 @@ class VisitorController extends Controller
         return view('consult.index');
     }
 
+    public function showRegisterVisitor(Request $request)
+    {
+        $cedula = $request->input('cedula');
+        $visitor = Visitor::where('cedula', $cedula)->first(); // Busca al visitante por la cédula
+
+        if ($visitor) {
+            // Si el visitante existe, mostramos solo algunos campos en modo de solo lectura
+            return view('register.visitorRegistrationForm', [
+                'showAll' => false,
+                'visitor' => $visitor,
+            ]);
+        } else {
+            // Si el visitante no existe, mostramos todos los campos en el formulario
+            return view('register.visitorRegistrationForm', [
+                'showAll' => true,
+                'cedula' => $cedula,
+            ]);
+        }
+    }
+
     public function showRegister()
     {
         $registros = Visitor::paginate(10);
@@ -24,13 +44,13 @@ class VisitorController extends Controller
     {
         $rules = [
             'cedula' => 'required|digits_between:7,8',
-
         ];
 
         $messages = [
             'cedula.required' => 'La cédula es obligatoria.',
             'cedula.digits_between' => 'La cédula debe tener entre :min y :max dígitos.',
         ];
+
         $cedula = $request->input('cedula');
 
         $visitor = Visitor::where('cedula', $cedula)->first();
@@ -38,18 +58,25 @@ class VisitorController extends Controller
 
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
-        } elseif (!$visitor) {
-            return view('register.visitorRegistrationForm', [
-                'showAll' => true,
-                'cedula' => $cedula
-            ]);
+        } else {
+            return $this->redirectToVisitorRegistrationForm($visitor, $cedula);
         }
+    }
 
-        return view('register.visitorRegistrationForm', [
-            'showAll' => false,
-            'visitor' => $visitor
+    private function redirectToVisitorRegistrationForm($visitor, $cedula)
+    {
+        // Define la variable $showAll basada en si el visitante existe o no
+        $showAll = !$visitor;
+
+        // Redirige a la vista 'show_register' con los parámetros adecuados
+        return redirect()->route('show_register', [
+            'showAll' => $showAll,
+            'cedula' => $cedula,
+            'visitor' => $visitor // Añade el visitante como parámetro si existe
         ]);
     }
+
+
     public function saveVisitor(Request $request)
     {
         // Define las reglas de validación
