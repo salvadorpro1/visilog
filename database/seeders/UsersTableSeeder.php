@@ -29,7 +29,7 @@ class UsersTableSeeder extends Seeder
         //     'name' => 'Usuario2',
         //     'username' => 'usuario2',
         //     'password' => Hash::make('contraseña'),
-        //     'role' => 'registrador',
+        //     'role' => 'operador',
         //     'created_at' => now(),
         //     'updated_at' => now(),
         // ]);

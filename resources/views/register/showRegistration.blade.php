@@ -1,5 +1,3 @@
-use Illuminate\Support\Str;
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -45,7 +43,7 @@ use Illuminate\Support\Str;
             /* Oculta el texto que se desborda */
             text-overflow: ellipsis;
             /* Agrega puntos suspensivos (...) al final del texto truncado */
-            max-width: 200px;
+            max-width: 250px;
             /* Ancho máximo del contenedor */
         }
     </style>
@@ -53,32 +51,35 @@ use Illuminate\Support\Str;
 </head>
 
 <body>
+    @if (Auth::check())
+        <p>Bienvenido, {{ Auth::user()->username }}</p>
+    @endif
+
     @include('includes._register_button')
-    <a class="button" href="{{ url()->previous() }}">Volver</a>
+    <a class="button" href="{{ route('show_ConsulForm') }}">Volver</a>
     <h2>Tabla de Visitantes</h2>
 
     <table>
         <thead>
             <tr>
+                <th>ID</th>
                 <th>Nombre</th>
                 <th>Apellido</th>
                 <th>Cédula</th>
                 <th>Gerencia</th>
                 <th>Razón de la Visita</th>
                 <th>Fecha</th>
-                {{-- <th>Hora</th> --}}
-
             </tr>
         </thead>
         <tbody>
             <!-- Aquí puedes agregar las filas con los datos de los visitantes -->
             @foreach ($registros as $registro)
                 <tr>
+                    <td><a href="{{ route('show_Register_Visitor_Detail', $registro->id) }}">{{ $registro->id }}</a>
+                    </td>
                     <td>{{ $registro->nombre }}</td>
                     <td>{{ $registro->apellido }}</td>
-                    <td><a
-                            href="{{ route('show_Register_Visitor_Detail', $registro->cedula) }}">{{ $registro->cedula }}</a>
-                    </td>
+                    <td>{{ $registro->cedula }}</td>
                     <td>{{ $registro->gerencia }}</td>
                     <td class="truncate">{{ $registro->razon_visita }}</td>
                     <td>{{ \Carbon\Carbon::parse($registro->created_at)->format('d/m/Y') }}</td>

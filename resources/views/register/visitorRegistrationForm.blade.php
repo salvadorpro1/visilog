@@ -80,6 +80,10 @@
 </head>
 
 <body>
+    @if (Auth::check())
+        <p>Bienvenido, {{ Auth::user()->username }}</p>
+    @endif
+
     <div class="container">
         @include('includes._register_button')
         <a href="{{ route('show_ConsulForm') }}">Volver</a>
@@ -96,17 +100,21 @@
                 <label for="">Apellido</label>
                 <input name="apellido" type="text">
                 <label for="">Filial</label>
-                <select name="filial">
+                <select name="filial" onchange="quitarSeleccionInicial('filial')">
+                    <option value="" selected disabled>Elegir filial</option>
                     <option value="value1">Vencemos</option>
                     <option value="value2">Invecem</option>
                     <option value="value3">FNC</option>
                 </select>
                 <label for="">Gerencia</label>
-                <select name="gerencia">
+                <select name="gerencia" onchange="quitarSeleccionInicial('gerencia')">
+                    <option value="" selected disabled>Elegir gerencia</option>
                     <option value="value1">Value 1</option>
                     <option value="value2">Value 2</option>
                     <option value="value3">Value 3</option>
                 </select>
+
+
                 <label for="">Razón de la visita</label>
                 <textarea name="razon_visita" cols="30" rows="10"></textarea>
                 <input type="submit" value="Enviar">
@@ -126,13 +134,15 @@
                 <label for="">Apellido</label>
                 <input name="apellido" readonly value="{{ $visitor->apellido }}" type="text">
                 <label for="">Filial</label>
-                <select name="filial">
+                <select name="filial" onchange="quitarSeleccionInicial('filial')">
+                    <option value="" selected disabled>Elegir filial</option>
                     <option value="value1">Vencemos</option>
                     <option value="value2">Invecem</option>
                     <option value="value3">FNC</option>
                 </select>
                 <label for="">Gerencia</label>
-                <select name="gerencia">
+                <select name="gerencia" onchange="quitarSeleccionInicial('gerencia')">
+                    <option value="" selected disabled>Elegir gerencia</option>
                     <option value="value1">Value 1</option>
                     <option value="value2">Value 2</option>
                     <option value="value3">Value 3</option>
@@ -155,6 +165,15 @@
     @endif
 
 
+    <script>
+        function quitarSeleccionInicial(nombreSelect) {
+            var selectElement = document.getElementsByName(nombreSelect)[0];
+            var optionElement = selectElement.querySelector("option[selected][disabled]");
+            if (optionElement) {
+                optionElement.remove();
+            }
+        }
+    </script>
 
 </body>
 

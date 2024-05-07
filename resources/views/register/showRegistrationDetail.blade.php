@@ -36,41 +36,47 @@
             transition: background-color 0.3s ease;
         }
     </style>
-
 </head>
 
 <body>
+    @if (Auth::check())
+        <p>Bienvenido, {{ Auth::user()->username }}</p>
+    @endif
     @include('includes._register_button')
     <a class="button" href="{{ url()->previous() }}">Volver</a>
     <h2>Tabla de Visitantes</h2>
-
     <table>
         <thead>
             <tr>
                 <th>Nombre</th>
-                <th>Apellido</th>
-                <th>Cédula</th>
-                <th>Gerencia</th>
-                <th>Razón de la Visita</th>
-                <th>Fecha</th>
-                <th>Hora</th>
-
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Aquí puedes agregar las filas con los datos de los visitantes -->
-            <tr>
                 <td>{{ $persona->nombre }}</td>
+            </tr>
+            <tr>
+                <th>Apellido</th>
                 <td>{{ $persona->apellido }}</td>
+            </tr>
+            <tr>
+                <th>Cédula</th>
                 <td>{{ $persona->cedula }}</td>
+            </tr>
+            <tr>
+                <th>Gerencia</th>
                 <td>{{ $persona->gerencia }}</td>
+            </tr>
+            <tr>
+                <th>Razón de la Visita</th>
                 <td>{{ $persona->razon_visita }}</td>
+            </tr>
+            <tr>
+                <th>Fecha</th>
                 <td>{{ \Carbon\Carbon::parse($persona->created_at)->format('d/m/Y') }}</td>
+            </tr>
+            <tr>
+                <th>Hora</th>
                 <td>{{ \Carbon\Carbon::parse($persona->created_at)->toTimeString() }}</td>
             </tr>
-        </tbody>
+        </thead>
     </table>
-
 </body>
 
 </html>

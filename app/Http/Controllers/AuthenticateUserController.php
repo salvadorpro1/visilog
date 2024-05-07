@@ -47,7 +47,7 @@ class AuthenticateUserController extends Controller
     {
         // Define las reglas de validación
         $rules = [
-            'name' => 'required|regex:/^[a-zA-Z\s]+$/',
+            'name' => 'required|regex:/^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$/',
             'username' => 'required|alpha_num',
             'password' => 'required|min:6',
         ];
@@ -71,7 +71,7 @@ class AuthenticateUserController extends Controller
         User::create([
             'name' => $request->name,
             'username' => $request->username,
-            'role' => 'registrador',
+            'role' => 'operador',
             'password' => bcrypt($request->password),
         ]);
 

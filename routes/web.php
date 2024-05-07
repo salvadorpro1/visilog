@@ -19,8 +19,8 @@ use App\Http\Controllers\VisitorController;
 Route::get('/', [AuthenticateUserController::class, "showLoginForm"])->middleware('auth.redirect')->name('show_LoginForm');
 Route::post('/login', [AuthenticateUserController::class, "login"]);
 Route::get('/logout', [AuthenticateUserController::class, 'logout'])->name('logout');
-route::get('/crear-registrador', [AuthenticateUserController::class, 'showRegister'])->middleware('auth')->name('showRegisterCreate');
-route::post('/crear-registrador', [AuthenticateUserController::class, 'saveRegistrar'])->name('saveRegistrar');
+route::get('/crear-operador', [AuthenticateUserController::class, 'showRegister'])->middleware('auth')->name('showRegisterCreate');
+route::post('/crear-operador', [AuthenticateUserController::class, 'saveRegistrar'])->name('saveRegistrar');
 
 
 

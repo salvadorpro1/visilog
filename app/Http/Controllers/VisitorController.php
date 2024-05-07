@@ -43,9 +43,9 @@ class VisitorController extends Controller
         return view('register.showRegistration', compact('registros'));
     }
 
-    public function showRegisterDetail($cedula)
+    public function showRegisterDetail($id)
     {
-        $persona = Visitor::where('cedula', $cedula)->first();
+        $persona = Visitor::where('id', $id)->first();
         return view('register.showRegistrationDetail', ['persona' => $persona]);
     }
 
@@ -91,8 +91,8 @@ class VisitorController extends Controller
         // Define las reglas de validación
         $rules = [
             'cedula' => 'required|digits_between:7,8',
-            'nombre' => 'required|regex:/^[a-zA-Z\s]+$/',
-            'apellido' => 'required|regex:/^[a-zA-Z\s]+$/',
+            'nombre' => 'required|regex:/^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$/',
+            'apellido' => 'required|regex:/^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$/',
             'filial' => 'required',
             'gerencia' => 'required',
             'razon_visita' => 'required|max:255',
