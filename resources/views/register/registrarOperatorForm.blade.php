@@ -55,26 +55,13 @@
         button[type="submit"]:hover {
             background-color: #45a049;
         }
-
-        a {
-            display: block;
-            margin-bottom: 20px;
-            text-decoration: none;
-            color: #4caf50;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
     </style>
 </head>
 
 <body>
-    @if (Auth::check())
-        <p>Bienvenido, {{ Auth::user()->username }}</p>
-    @endif
-
+    @include('includes._register_button', ['titulo' => 'Crear Operador'])
     <div class="container">
+
         <a href="{{ route('show_ConsulForm') }}">Volver</a>
 
         <form action="" method="POST">

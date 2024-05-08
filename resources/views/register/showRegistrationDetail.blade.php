@@ -26,7 +26,7 @@
         .button {
             display: inline-block;
             padding: 10px 20px;
-            margin-right: 10px;
+            margin: 10px;
             background-color: #007bff;
             color: #fff;
             border: none;
@@ -39,12 +39,9 @@
 </head>
 
 <body>
-    @if (Auth::check())
-        <p>Bienvenido, {{ Auth::user()->username }}</p>
-    @endif
-    @include('includes._register_button')
+    @include('includes._register_button', ['titulo' => 'Detalle De Visitante'])
+
     <a class="button" href="{{ url()->previous() }}">Volver</a>
-    <h2>Tabla de Visitantes</h2>
     <table>
         <thead>
             <tr>

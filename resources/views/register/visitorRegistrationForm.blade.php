@@ -58,17 +58,6 @@
             background-color: #45a049;
         }
 
-        a {
-            display: block;
-            margin-bottom: 10px;
-            text-decoration: none;
-            color: #4caf50;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-
         .alert {
             margin-top: 10px;
             padding: 10px;
@@ -80,15 +69,11 @@
 </head>
 
 <body>
-    @if (Auth::check())
-        <p>Bienvenido, {{ Auth::user()->username }}</p>
-    @endif
+    @include('includes._register_button', ['titulo' => 'Registrar Visitante'])
 
     <div class="container">
-        @include('includes._register_button')
         <a href="{{ route('show_ConsulForm') }}">Volver</a>
 
-        <a href="{{ route('show_Register_Visitor') }}">Registro de visitantes</a>
 
         @if ($showAll)
             <form method="POST" action="{{ route('guardar_RegistroVisitor') }}">

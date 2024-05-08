@@ -84,15 +84,10 @@
 </head>
 
 <body>
-    @if (Auth::check())
-        <p>Bienvenido, {{ Auth::user()->username }}</p>
-    @endif
+    @include('includes._register_button', ['titulo' => 'Consultar Cedula'])
+
 
     <div class="container">
-        <a href="{{ route('show_Register_Visitor') }}" class="button">Registro de Visitantes</a>
-        @include('includes._register_button')
-        <a href="{{ route('logout') }}" class="button">Cerrar sesión</a>
-        <h1>Consultar Cedula</h1>
         <form method="POST" action="">
             @csrf
             <label for="cedula">Cedula</label>
