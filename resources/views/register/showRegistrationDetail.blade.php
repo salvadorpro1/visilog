@@ -39,7 +39,7 @@
 </head>
 
 <body>
-    @include('includes._register_button', ['titulo' => 'Detalle De Visitante'])
+    @include('includes._register_button', ['titulo' => 'Detalle De Visitantes'])
 
     <a class="button" href="{{ url()->previous() }}">Volver</a>
     <table>

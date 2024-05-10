@@ -59,27 +59,24 @@
 </head>
 
 <body>
-    @include('includes._register_button', ['titulo' => 'Crear Operador'])
+    @include('includes._register_button', ['titulo' => 'Cambiar Contraseña'])
     <div class="container">
 
         <a href="{{ route('show_ConsulForm') }}">Volver</a>
 
-        <form action="" method="POST">
+        <form action="cambiar-contraseña" method="POST">
             @csrf
 
-            <label for="name">Nombre:</label>
-            <input type="text" name="name" id="name" required>
+            <label for="current_password">Contraseña Actual:</label>
+            <input type="password" name="current_password" id="current_password" required>
 
-            <label for="username">Nombre de Usuario:</label>
-            <input type="text" name="username" id="username" required>
+            <label for="new_password">Nueva Contraseña:</label>
+            <input type="password" name="new_password" id="new_password" required>
 
-            <label for="password">Contraseña:</label>
-            <input type="password" name="password" id="password" required>
+            <label for="new_password_confirmation">Confirmar Nueva Contraseña:</label>
+            <input type="password" name="new_password_confirmation" id="new_password_confirmation" required>
 
-            <label for="password_confirmation">Confirmar Contraseña:</label>
-            <input type="password" name="password_confirmation" id="password_confirmation" required>
-
-            <button type="submit">Crear Usuario</button>
+            <button type="submit">Cambiar Contraseña</button>
         </form>
         @if ($errors->any())
             <div class="alert alert-danger">

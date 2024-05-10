@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-
 class AuthenticateUserController extends Controller
 {
 
@@ -49,7 +48,7 @@ class AuthenticateUserController extends Controller
         $rules = [
             'name' => 'required|regex:/^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$/',
             'username' => 'required|alpha_num',
-            'password' => 'required|min:6',
+            'password' => 'required|min:6|confirmed', // Agregamos la regla 'confirmed' para validar la confirmación de la contraseña
         ];
 
         // Define los mensajes de error personalizados
@@ -57,6 +56,7 @@ class AuthenticateUserController extends Controller
             'name.regex' => 'El nombre solo puede contener letras y espacios.',
             'username.alpha_num' => 'El nombre de usuario solo puede contener letras y números.',
             'password.min' => 'La contraseña debe tener al menos :min caracteres.',
+            'password.confirmed' => 'La confirmación de la contraseña no coincide.',
         ];
 
         // Valida los datos
@@ -76,5 +76,29 @@ class AuthenticateUserController extends Controller
         ]);
 
         return redirect()->route('show_ConsulForm')->with('success', 'Usuario creado satisfactoriamente.');
+    }
+
+    public function showChangePassword()
+    {
+        return view('changePassword.index');
+    }
+
+    public function changePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required',
+            'new_password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $user = Auth::user();
+
+        if (!Hash::check($request->current_password, $user->password)) {
+            return back()->withErrors(['current_password' => 'La contraseña actual no es correcta']);
+        }
+
+        $user->password = ($request->new_password);
+        $user->save();
+
+        return redirect()->route('show_ConsulForm')->with('success', 'Contraseña cambiada exitosamente');
     }
 }

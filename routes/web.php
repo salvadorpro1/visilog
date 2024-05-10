@@ -21,6 +21,9 @@ Route::post('/login', [AuthenticateUserController::class, "login"]);
 Route::get('/logout', [AuthenticateUserController::class, 'logout'])->name('logout');
 route::get('/crear-operador', [AuthenticateUserController::class, 'showRegister'])->middleware('auth')->name('showRegisterCreate');
 route::post('/crear-operador', [AuthenticateUserController::class, 'saveRegistrar'])->name('saveRegistrar');
+Route::get('/mostrar-cambiar-contraseña', [AuthenticateUserController::class, "showChangePassword"])->middleware('auth')->name('changePassword');
+
+Route::post('/cambiar-contraseña', [AuthenticateUserController::class, 'changePassword']);
 
 
 

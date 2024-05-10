@@ -41,11 +41,15 @@
     .user-menu__item {
         list-style: none;
         cursor: pointer;
+        font-family: Arial, sans-serif;
+
     }
 
     .user-menu__item-link {
         text-decoration: none;
         color: white;
+        font-family: Arial, sans-serif;
+
     }
 
     .user-menu__item:hover {
@@ -108,7 +112,9 @@
                         @endif
                     </div>
                     <ul class="user-menu__submenu">
-                        <li class="user-menu__item">cambiar contraseña</li>
+                        <li class="user-menu__item">
+                            <a href="{{ route('changePassword') }}" class="user-menu__item-link">Cambiar Contraseña</a>
+                        </li>
                         <li class="user-menu__item">
                             <a href="{{ route('logout') }}" class="user-menu__item-link">Cerrar sesión</a>
                         </li>
