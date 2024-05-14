@@ -6,10 +6,10 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Hash;
 
 class AuthenticateUserController extends Controller
 {
-
     public function showLoginForm()
     {
         return view('login.index');
@@ -101,4 +101,5 @@ class AuthenticateUserController extends Controller
 
         return redirect()->route('show_ConsulForm')->with('success', 'Contraseña cambiada exitosamente');
     }
+
 }

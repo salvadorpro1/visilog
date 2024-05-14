@@ -138,4 +138,29 @@ class VisitorController extends Controller
     {
         return Str::limit($text, $length, $ending);
     }
+
+    public function showAccount()
+    {
+        return view('account.index');
+    }
+    
+    
+    public function accountConsul(Request $request)
+    {
+        $rules = [
+            'filial' => 'required',
+            'gerencia' => 'required',
+        ];
+
+        $messages = [
+            'filial.required' => 'La filial es obligatoria.',
+            'gerencia.required' => 'La gerencia es obligatoria.',
+        ];
+
+                $validator = Validator::make($request->all(), $rules, $messages);
+
+                if ($validator->fails()) {
+                    return redirect()->back()->withErrors($validator)->withInput();
+                }
+    }
 }

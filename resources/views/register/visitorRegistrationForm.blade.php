@@ -85,21 +85,17 @@
                 <label for="">Apellido</label>
                 <input name="apellido" type="text">
                 <label for="">Filial</label>
-                <select name="filial" onchange="quitarSeleccionInicial('filial')">
+                <select name="filial"
+                    onchange="quitarSeleccionInicial('filial'), updateGerenciaOptions(this.value, 'gerencia')">
                     <option value="" selected disabled>Elegir filial</option>
-                    <option value="value1">Vencemos</option>
-                    <option value="value2">Invecem</option>
-                    <option value="value3">FNC</option>
+                    <option value="vencemos">Vencemos</option>
+                    <option value="invecem">Invecem</option>
+                    <option value="fnc">FNC</option>
                 </select>
                 <label for="">Gerencia</label>
                 <select name="gerencia" onchange="quitarSeleccionInicial('gerencia')">
                     <option value="" selected disabled>Elegir gerencia</option>
-                    <option value="value1">Value 1</option>
-                    <option value="value2">Value 2</option>
-                    <option value="value3">Value 3</option>
                 </select>
-
-
                 <label for="">Razón de la visita</label>
                 <textarea name="razon_visita" cols="30" rows="10"></textarea>
                 <input type="submit" value="Enviar">
@@ -119,24 +115,24 @@
                 <label for="">Apellido</label>
                 <input name="apellido" readonly value="{{ $visitor->apellido }}" type="text">
                 <label for="">Filial</label>
-                <select name="filial" onchange="quitarSeleccionInicial('filial')">
+                <select name="filial"
+                    onchange="quitarSeleccionInicial('filial'), updateGerenciaOptions(this.value, 'gerencia')">
                     <option value="" selected disabled>Elegir filial</option>
-                    <option value="value1">Vencemos</option>
-                    <option value="value2">Invecem</option>
-                    <option value="value3">FNC</option>
+                    <option value="vencemos">Vencemos</option>
+                    <option value="invecem">Invecem</option>
+                    <option value="fnc">FNC</option>
                 </select>
                 <label for="">Gerencia</label>
                 <select name="gerencia" onchange="quitarSeleccionInicial('gerencia')">
                     <option value="" selected disabled>Elegir gerencia</option>
-                    <option value="value1">Value 1</option>
-                    <option value="value2">Value 2</option>
-                    <option value="value3">Value 3</option>
                 </select>
                 <label for="">Razón de la visita</label>
                 <textarea name="razon_visita" cols="30" rows="10"></textarea>
                 <input type="submit" value="Enviar">
             </form>
         @endif
+
+
     </div>
 
     @if ($errors->any())
@@ -149,6 +145,36 @@
         </div>
     @endif
 
+    <script>
+        function quitarSeleccionInicial(nombreSelect) {
+            var selectElement = document.getElementsByName(nombreSelect)[0];
+            var optionElement = selectElement.querySelector("option[selected][disabled]");
+            if (optionElement) {
+                optionElement.remove();
+            }
+        }
+
+        function updateGerenciaOptions(filialValue, gerenciaName) {
+            var gerenciaSelect = document.getElementsByName(gerenciaName)[0];
+            gerenciaSelect.innerHTML = ''; // Limpiar opciones actuales
+
+            var opciones = [];
+            if (filialValue === 'vencemos') {
+                opciones = ['value1A', 'value2A', 'value3A'];
+            } else if (filialValue === 'invecem') {
+                opciones = ['value1B', 'value2B', 'value3B'];
+            } else {
+                opciones = ['value1C', 'value2C', 'value3C']; // Opciones predeterminadas
+            }
+
+            opciones.forEach(function(opcion) {
+                var option = document.createElement('option');
+                option.value = opcion;
+                option.text = opcion;
+                gerenciaSelect.appendChild(option);
+            });
+        }
+    </script>
 
     <script>
         function quitarSeleccionInicial(nombreSelect) {

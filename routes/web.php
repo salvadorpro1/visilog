@@ -38,3 +38,6 @@ Route::get('/registro', [VisitorController::class, 'showRegisterVisitor'])->midd
 Route::post('/consulta', [VisitorController::class, 'consulDate']);
 
 Route::post('/guardar-registro', [VisitorController::class, 'saveVisitor'])->name('guardar_RegistroVisitor');
+
+Route::get('/reporte', [VisitorController::class, 'showAccount'])->middleware('auth')->name('show_Account');
+Route::post('/reporte', [VisitorController::class, 'accountConsul']);
