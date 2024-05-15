@@ -69,7 +69,11 @@
 </head>
 
 <body>
+    @include('includes._register_button', ['titulo' => 'Crear Operador'])
+
     <div class="container">
+        <a href="{{ route('show_ConsulForm') }}">Volver</a>
+
         <form class="form" method="POST" action="">
             @csrf
             <label class="form__label" for="filial">Filial</label>
@@ -91,6 +95,16 @@
             <input class="form__submit" type="submit" value="Consultar">
 
         </form>
+        @if (isset($visitorCount))
+            <div class="results">
+                <h2>Resultados de la Consulta</h2>
+                <p>Filial: {{ $filial }}</p>
+                <p>Gerencia: {{ $gerencia }}</p>
+                <p>Desde: {{ $diadesde }}</p>
+                <p>Hasta: {{ $diahasta }}</p>
+                <p>Visitantes: {{ $visitorCount }}</p>
+            </div>
+        @endif
     </div>
 
     <script>

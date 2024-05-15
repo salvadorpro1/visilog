@@ -9,7 +9,7 @@ use App\Models\Visitor;
 use Illuminate\Support\Facades\Validator;
 
 use Illuminate\Http\Request;
-
+use Carbon\Carbon;
 class VisitorController extends Controller
 {
     public function showConsulForm()
@@ -147,20 +147,32 @@ class VisitorController extends Controller
     
     public function accountConsul(Request $request)
     {
-        $rules = [
-            'filial' => 'required',
-            'gerencia' => 'required',
-        ];
+        $validated = $request->validate([
+            'filial' => 'required|string',
+            'gerencia' => 'required|string',
+            'diadesde' => 'required|date',
+            'diahasta' => 'required|date|after_or_equal:diadesde',
+        ]);
 
-        $messages = [
-            'filial.required' => 'La filial es obligatoria.',
-            'gerencia.required' => 'La gerencia es obligatoria.',
-        ];
+        // Obtener los datos validados
+        $filial = $validated['filial'];
+        $gerencia = $validated['gerencia'];
+        $diadesde = $validated['diadesde'];
+        $diahasta = $validated['diahasta'];
 
-                $validator = Validator::make($request->all(), $rules, $messages);
+        // Realizar la consulta a la base de datos
+        $visitorCount = Visitor::where('filial', $filial)
+        ->where('gerencia', $gerencia)
+        ->whereBetween('created_at', [ Carbon::parse($diadesde)->startOfDay(), Carbon::parse($diahasta)->endOfDay()])
+        ->count();
 
-                if ($validator->fails()) {
-                    return redirect()->back()->withErrors($validator)->withInput();
-                }
+        // Retornar los resultados a la misma vista
+        return view('account.index', [
+            'visitorCount' => $visitorCount,
+            'filial' => $filial,
+            'gerencia' => $gerencia,
+            'diadesde' => $diadesde,
+            'diahasta' => $diahasta
+        ]);
     }
 }
