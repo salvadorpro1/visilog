@@ -23,7 +23,6 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
-
         /* Estilos para el formulario */
         .form {
             margin: 20px;
@@ -65,11 +64,55 @@
         .form__option--disabled {
             color: #999;
         }
+
+        /* Estilos para la tabla */
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .results-table th,
+        .results-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .results-table th {
+            background-color: #f4f4f4;
+        }
+
+        /* Estilos para la paginación */
+        .pagination {
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .pagination li {
+            list-style: none;
+            margin: 0 5px;
+        }
+
+        .pagination a {
+            text-decoration: none;
+            color: #007bff;
+        }
+
+        .pagination .active a {
+            font-weight: bold;
+            color: #000;
+        }
+
+        .pagination .disabled a {
+            color: #ccc;
+        }
     </style>
 </head>
 
 <body>
-    @include('includes._register_button', ['titulo' => 'Crear Operador'])
+    @include('includes._register_button', ['titulo' => 'Reporte'])
 
     <div class="container">
         <a href="{{ route('show_ConsulForm') }}">Volver</a>
@@ -93,8 +136,8 @@
             <label class="form__label" for="dia">hasta</label>
             <input class="form__input" type="date" name="diahasta" id="diahasta">
             <input class="form__submit" type="submit" value="Consultar">
-
         </form>
+
         @if (isset($visitorCount))
             <div class="results">
                 <h2>Resultados de la Consulta</h2>
@@ -103,6 +146,36 @@
                 <p>Desde: {{ $diadesde }}</p>
                 <p>Hasta: {{ $diahasta }}</p>
                 <p>Visitantes: {{ $visitorCount }}</p>
+
+                @if ($visitors->count() > 0)
+                    <table class="results-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Apellido</th>
+                                <th>Fecha de Creación</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($visitors as $visitor)
+                                <tr>
+                                    <td><a href="{{ route('show_Register_Visitor_Detail', $visitor->id) }}">{{ $visitor->id }}
+                                    </td>
+                                    <td>{{ $visitor->nombre }}</td>
+                                    <td>{{ $visitor->apellido }}</td>
+                                    <td>{{ $visitor->cedula }}</td>
+
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                    <div class="pagination">
+                        {{ $visitors->links() }}
+                    </div>
+                @else
+                    <p>No se encontraron visitantes para los criterios seleccionados.</p>
+                @endif
             </div>
         @endif
     </div>
@@ -135,15 +208,6 @@
                 option.text = opcion;
                 gerenciaSelect.appendChild(option);
             });
-        }
-    </script>
-    <script>
-        function quitarSeleccionInicial(nombreSelect) {
-            var selectElement = document.getElementsByName(nombreSelect)[0];
-            var optionElement = selectElement.querySelector("option[selected][disabled]");
-            if (optionElement) {
-                optionElement.remove();
-            }
         }
     </script>
 </body>

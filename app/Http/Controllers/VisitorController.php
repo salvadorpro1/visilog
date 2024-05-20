@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+
 class VisitorController extends Controller
 {
     public function showConsulForm()
@@ -143,8 +144,8 @@ class VisitorController extends Controller
     {
         return view('account.index');
     }
-    
-    
+
+
     public function accountConsul(Request $request)
     {
         $validated = $request->validate([
@@ -161,13 +162,19 @@ class VisitorController extends Controller
         $diahasta = $validated['diahasta'];
 
         // Realizar la consulta a la base de datos
-        $visitorCount = Visitor::where('filial', $filial)
-        ->where('gerencia', $gerencia)
-        ->whereBetween('created_at', [ Carbon::parse($diadesde)->startOfDay(), Carbon::parse($diahasta)->endOfDay()])
-        ->count();
+        $visitorQuery = Visitor::where('filial', $filial)
+            ->where('gerencia', $gerencia)
+            ->whereBetween('created_at', [Carbon::parse($diadesde)->startOfDay(), Carbon::parse($diahasta)->endOfDay()]);
+
+        // Obtener el conteo total de visitantes
+        $visitorCount = $visitorQuery->count();
+
+        // Obtener los visitantes paginados
+        $visitors = $visitorQuery->paginate(10);
 
         // Retornar los resultados a la misma vista
         return view('account.index', [
+            'visitors' => $visitors,
             'visitorCount' => $visitorCount,
             'filial' => $filial,
             'gerencia' => $gerencia,
