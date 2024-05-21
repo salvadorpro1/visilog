@@ -16,6 +16,7 @@ class VisitorsTableSeeder extends Seeder
         DB::table('visitors')->insert([
             'nombre' => 'Juan',
             'apellido' => 'Pérez',
+            'nacionalidad' => 'V',
             'cedula' => '28012171',
             'filial' => 'Vencemos',
             'gerencia' => 'value1A',
@@ -27,6 +28,7 @@ class VisitorsTableSeeder extends Seeder
         DB::table('visitors')->insert([
             'nombre' => 'María',
             'apellido' => 'González',
+            'nacionalidad' => 'E',
             'cedula' => '13576096',
             'filial' => 'Vencemos',
             'gerencia' => 'value1A',

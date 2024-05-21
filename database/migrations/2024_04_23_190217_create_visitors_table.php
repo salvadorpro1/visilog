@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nombre');
             $table->string('apellido');
+            $table->enum('nacionalidad', ['V', 'E']);
             $table->string('cedula');
             $table->string('filial');
             $table->string('gerencia');

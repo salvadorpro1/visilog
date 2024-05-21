@@ -80,6 +80,14 @@
             background-color: #f8d7da;
             color: #721c24;
         }
+
+        .bloque {
+            display: flex
+        }
+
+        .bloque select {
+            height: 36px;
+        }
     </style>
 </head>
 
@@ -91,7 +99,13 @@
         <form method="POST" action="">
             @csrf
             <label for="cedula">Cedula</label>
-            <input type="number" name="cedula" id="cedula">
+            <div class="bloque">
+                <select name="nacionalidad">
+                    <option value="V">V</option>
+                    <option value="E">E</option>
+                </select>
+                <input type="number" name="cedula" id="cedula">
+            </div>
             <input type="submit" value="Consultar" class="button">
         </form>
 
