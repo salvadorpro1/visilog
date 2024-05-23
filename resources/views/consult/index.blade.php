@@ -98,7 +98,7 @@
     <div class="container">
         <form method="POST" action="">
             @csrf
-            <label for="cedula">Cedula</label>
+            <label for="cedula">Cédula</label>
             <div class="bloque">
                 <select name="nacionalidad">
                     <option value="V">V</option>
@@ -108,6 +108,7 @@
             </div>
             <input type="submit" value="Consultar" class="button">
         </form>
+
 
         @if (session('success'))
             <div class="alert alert-success">

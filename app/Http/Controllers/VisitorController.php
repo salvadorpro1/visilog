@@ -21,18 +21,20 @@ class VisitorController extends Controller
     public function showRegisterVisitor(Request $request)
     {
         $cedula = $request->input('cedula');
-        $visitor = Visitor::where('cedula', $cedula)->first(); // Busca al visitante por la cédula
-
+        $nacionalidad = $request->input('nacionalidad', ''); // Default to empty string if not present
+        $visitor = Visitor::where('cedula', $cedula)->where('nacionalidad', $nacionalidad)->first();
+    
         if ($visitor) {
-            // Si el visitante existe, mostramos solo algunos campos en modo de solo lectura
             return view('register.visitorRegistrationForm', [
                 'showAll' => false,
                 'visitor' => $visitor,
+                'nacionalidad' => $visitor->nacionalidad,
+                'cedula' => $visitor->cedula,
             ]);
         } else {
-            // Si el visitante no existe, mostramos todos los campos en el formulario
             return view('register.visitorRegistrationForm', [
                 'showAll' => true,
+                'nacionalidad' => $nacionalidad,
                 'cedula' => $cedula,
             ]);
         }
@@ -53,38 +55,47 @@ class VisitorController extends Controller
     public function consulDate(Request $request)
     {
         $rules = [
+            'nacionalidad' => 'required',
             'cedula' => 'required|digits_between:7,8',
         ];
-
+    
         $messages = [
+            'nacionalidad.required' => 'La nacionalidad es obligatoria.',
             'cedula.required' => 'La cédula es obligatoria.',
             'cedula.digits_between' => 'La cédula debe tener entre :min y :max dígitos.',
         ];
-
-        $cedula = $request->input('cedula');
-
-        $visitor = Visitor::where('cedula', $cedula)->first();
+    
         $validator = Validator::make($request->all(), $rules, $messages);
-
+    
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
-        } else {
-            return $this->redirectToVisitorRegistrationForm($visitor, $cedula);
         }
+    
+        $nacionalidad = $request->input('nacionalidad');
+        $cedula = $request->input('cedula');
+    
+        // Buscar al visitante con la combinación de nacionalidad y cédula
+        $visitor = Visitor::where('nacionalidad', $nacionalidad)
+                            ->where('cedula', $cedula)
+                            ->first();
+    
+        // Redirigir al formulario de registro del visitante con los datos encontrados o sin ellos
+        return $this->redirectToVisitorRegistrationForm($visitor, $nacionalidad, $cedula);
     }
-
-    private function redirectToVisitorRegistrationForm($visitor, $cedula)
+    
+    private function redirectToVisitorRegistrationForm($visitor, $nacionalidad, $cedula)
     {
-        // Define la variable $showAll basada en si el visitante existe o no
         $showAll = !$visitor;
-
-        // Redirige a la vista 'show_register' con los parámetros adecuados
+    
         return redirect()->route('show_register', [
             'showAll' => $showAll,
+            'nacionalidad' => $nacionalidad,
             'cedula' => $cedula,
-            'visitor' => $visitor // Añade el visitante como parámetro si existe
+            'visitor' => $visitor,
         ]);
     }
+    
+    
 
 
     public function saveVisitor(Request $request)
@@ -123,6 +134,7 @@ class VisitorController extends Controller
 
         // Si la validación es exitosa, guarda los datos del visitante
         $visitor = new Visitor();
+        $visitor->nacionalidad = $request->input('nacionalidad');
         $visitor->cedula = $request->input('cedula');
         $visitor->nombre = $request->input('nombre');
         $visitor->apellido = $request->input('apellido');

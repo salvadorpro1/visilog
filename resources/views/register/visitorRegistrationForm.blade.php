@@ -75,10 +75,16 @@
         <a href="{{ route('show_ConsulForm') }}">Volver</a>
 
 
-        @if ($showAll)
-            <form method="POST" action="{{ route('guardar_RegistroVisitor') }}">
-                @csrf
-                <label for="">Cedula</label>
+        <form method="POST" action="{{ route('guardar_RegistroVisitor') }}">
+            @csrf
+            @if ($showAll)
+                <label for="">Nacionalidad</label>
+                <select name="nacionalidad" disabled>
+                    <option value="V" {{ $nacionalidad == 'V' ? 'selected' : '' }}>V</option>
+                    <option value="E" {{ $nacionalidad == 'E' ? 'selected' : '' }}>E</option>
+                </select>
+                <input type="hidden" name="nacionalidad" value="{{ $nacionalidad }}">
+                <label for="">Cédula</label>
                 <input name="cedula" value="{{ $cedula }}" type="number">
                 <label for="">Nombre</label>
                 <input name="nombre" type="text">
@@ -99,16 +105,13 @@
                 <label for="">Razón de la visita</label>
                 <textarea name="razon_visita" cols="30" rows="10"></textarea>
                 <input type="submit" value="Enviar">
-                @if (session('success'))
-                    <div class="alert">
-                        {{ session('success') }}
-                    </div>
-                @endif
-            </form>
-        @else
-            <form method="POST" action="{{ route('guardar_RegistroVisitor') }}">
-                @csrf
-                <label for="">Cedula</label>
+            @else
+                <label for="">Nacionalidad</label>
+                <select name="nacionalidad" disabled>
+                    <option value="V" {{ $visitor->nacionalidad == 'V' ? 'selected' : '' }}>V</option>
+                    <option value="E" {{ $visitor->nacionalidad == 'E' ? 'selected' : '' }}>E</option>
+                </select>
+                <label for="">Cédula</label>
                 <input name="cedula" readonly value="{{ $visitor->cedula }}" type="number">
                 <label for="">Nombre</label>
                 <input name="nombre" readonly value="{{ $visitor->nombre }}" type="text">
@@ -118,9 +121,9 @@
                 <select name="filial"
                     onchange="quitarSeleccionInicial('filial'), updateGerenciaOptions(this.value, 'gerencia')">
                     <option value="" selected disabled>Elegir filial</option>
-                    <option value="vencemos">Vencemos</option>
-                    <option value="invecem">Invecem</option>
-                    <option value="fnc">FNC</option>
+                    <option value="vencemos" {{ $visitor->filial == 'vencemos' ? 'selected' : '' }}>Vencemos</option>
+                    <option value="invecem" {{ $visitor->filial == 'invecem' ? 'selected' : '' }}>Invecem</option>
+                    <option value="fnc" {{ $visitor->filial == 'fnc' ? 'selected' : '' }}>FNC</option>
                 </select>
                 <label for="">Gerencia</label>
                 <select name="gerencia" onchange="quitarSeleccionInicial('gerencia')">
@@ -129,8 +132,9 @@
                 <label for="">Razón de la visita</label>
                 <textarea name="razon_visita" cols="30" rows="10"></textarea>
                 <input type="submit" value="Enviar">
-            </form>
-        @endif
+            @endif
+        </form>
+
 
 
     </div>
