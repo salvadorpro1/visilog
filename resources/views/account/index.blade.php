@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Reporte</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -138,6 +138,17 @@
             <input class="form__submit" type="submit" value="Consultar">
         </form>
 
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+
         @if (isset($visitorCount))
             <div class="results">
                 <h2>Resultados de la Consulta</h2>
@@ -195,11 +206,11 @@
 
             var opciones = [];
             if (filialValue === 'vencemos') {
-                opciones = ['value1A', 'value2A', 'value3A'];
+                opciones = ['Todo(vencemos)', 'value1A', 'value2A', 'value3A'];
             } else if (filialValue === 'invecem') {
-                opciones = ['value1B', 'value2B', 'value3B'];
-            } else {
-                opciones = ['value1C', 'value2C', 'value3C']; // Opciones predeterminadas
+                opciones = ['Todo(invecem)', 'value1B', 'value2B', 'value3B'];
+            } else if (filialValue === 'fnc') {
+                opciones = ['Todo(FNC)', 'value1C', 'value2C', 'value3C']; // Opciones predeterminadas
             }
 
             opciones.forEach(function(opcion) {
