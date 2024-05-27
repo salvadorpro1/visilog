@@ -62,7 +62,6 @@
     @include('includes._register_button', ['titulo' => 'Crear Operador'])
     <div class="container">
 
-        <a href="{{ route('show_ConsulForm') }}">Volver</a>
 
         <form action="" method="POST">
             @csrf
@@ -80,6 +79,8 @@
             <input type="password" name="password_confirmation" id="password_confirmation" required>
 
             <button type="submit">Crear Usuario</button>
+            <a href="{{ route('show_ConsulForm') }}">Volver</a>
+
         </form>
         @if ($errors->any())
             <div class="alert alert-danger">

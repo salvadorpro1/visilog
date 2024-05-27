@@ -216,6 +216,8 @@ class VisitorController extends Controller
     // Obtener el conteo total de visitantes
     $visitorCount = $visitorQuery->count();
 
+    $fechaMinima = Visitor::orderBy('created_at')->value('created_at');
+
     // Obtener los visitantes paginados
     $visitors = $visitorQuery->paginate(10);
 
@@ -226,7 +228,9 @@ class VisitorController extends Controller
         'filial' => $filial,
         'gerencia' => $gerencia,
         'diadesde' => $diadesde,
-        'diahasta' => $diahasta
+        'diahasta' => $diahasta,
+        'fechaMinima' => $fechaMinima,
+
     ]);
 }
 

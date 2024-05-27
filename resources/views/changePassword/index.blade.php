@@ -62,7 +62,6 @@
     @include('includes._register_button', ['titulo' => 'Cambiar Contraseña'])
     <div class="container">
 
-        <a href="{{ route('show_ConsulForm') }}">Volver</a>
 
         <form action="cambiar-contraseña" method="POST">
             @csrf
@@ -77,6 +76,8 @@
             <input type="password" name="new_password_confirmation" id="new_password_confirmation" required>
 
             <button type="submit">Cambiar Contraseña</button>
+            <a href="{{ route('show_ConsulForm') }}">Volver</a>
+
         </form>
         @if ($errors->any())
             <div class="alert alert-danger">

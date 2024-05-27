@@ -72,7 +72,6 @@
     @include('includes._register_button', ['titulo' => 'Registrar Visitante'])
 
     <div class="container">
-        <a href="{{ route('show_ConsulForm') }}">Volver</a>
 
 
         <form method="POST" action="{{ route('guardar_RegistroVisitor') }}">
@@ -105,6 +104,7 @@
                 <label for="">Razón de la visita</label>
                 <textarea name="razon_visita" cols="30" rows="10"></textarea>
                 <input type="submit" value="Enviar">
+                <a href="{{ route('show_ConsulForm') }}">Volver</a>
             @else
                 <label for="">Nacionalidad</label>
                 <select name="nacionalidad" disabled>
@@ -121,9 +121,9 @@
                 <select name="filial"
                     onchange="quitarSeleccionInicial('filial'), updateGerenciaOptions(this.value, 'gerencia')">
                     <option value="" selected disabled>Elegir filial</option>
-                    <option value="vencemos" {{ $visitor->filial == 'vencemos' ? 'selected' : '' }}>Vencemos</option>
-                    <option value="invecem" {{ $visitor->filial == 'invecem' ? 'selected' : '' }}>Invecem</option>
-                    <option value="fnc" {{ $visitor->filial == 'fnc' ? 'selected' : '' }}>FNC</option>
+                    <option value="vencemos">Vencemos</option>
+                    <option value="invecem">Invecem</option>
+                    <option value="fnc">FNC</option>
                 </select>
                 <label for="">Gerencia</label>
                 <select name="gerencia" onchange="quitarSeleccionInicial('gerencia')">
@@ -132,6 +132,7 @@
                 <label for="">Razón de la visita</label>
                 <textarea name="razon_visita" cols="30" rows="10"></textarea>
                 <input type="submit" value="Enviar">
+                <a href="{{ route('show_ConsulForm') }}">Volver</a>
             @endif
         </form>
 
