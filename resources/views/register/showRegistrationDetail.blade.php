@@ -57,6 +57,10 @@
                 <td>{{ $persona->cedula }}</td>
             </tr>
             <tr>
+                <th>Filial</th>
+                <td>{{ $persona->filial }}</td>
+            </tr>
+            <tr>
                 <th>Gerencia</th>
                 <td>{{ $persona->gerencia }}</td>
             </tr>
