@@ -102,7 +102,7 @@
                     <option value="" selected disabled>Elegir gerencia</option>
                 </select>
                 <label for="">Razón de la visita</label>
-                <textarea name="razon_visita" cols="30" rows="10"></textarea>
+                <textarea name="razon_visita" cols="30" rows="10" maxlength="255"></textarea>
                 <input type="submit" value="Enviar">
                 <a href="{{ route('show_ConsulForm') }}">Volver</a>
             @else
@@ -130,7 +130,7 @@
                     <option value="" selected disabled>Elegir gerencia</option>
                 </select>
                 <label for="">Razón de la visita</label>
-                <textarea name="razon_visita" cols="30" rows="10"></textarea>
+                <textarea name="razon_visita" cols="30" rows="10" maxlength="255"></textarea>
                 <input type="submit" value="Enviar">
                 <a href="{{ route('show_ConsulForm') }}">Volver</a>
             @endif
