@@ -160,63 +160,75 @@ class VisitorController extends Controller
 
 
     public function accountConsul(Request $request)
-    {
-        // Define las reglas de validación
-        $rules = [
-            'filial' => 'required|string',
-            'gerencia' => 'required|string',
-            'diadesde' => 'required|date',
-            'diahasta' => 'required|date|after_or_equal:diadesde',
-        ];
-    
-        // Define los mensajes de error personalizados
-        $messages = [
-            'filial.required' => 'La filial es obligatoria.',
-            'filial.string' => 'La filial debe ser una cadena de texto.',
-            'gerencia.required' => 'La gerencia es obligatoria.',
-            'gerencia.string' => 'La gerencia debe ser una cadena de texto.',
-            'diadesde.required' => 'La fecha de inicio es obligatoria.',
-            'diadesde.date' => 'La fecha de inicio debe ser una fecha válida.',
-            'diahasta.required' => 'La fecha de fin es obligatoria.',
-            'diahasta.date' => 'La fecha de fin debe ser una fecha válida.',
-            'diahasta.after_or_equal' => 'La fecha de fin debe ser una fecha posterior o igual a la fecha de inicio.',
-        ];
-    
-        // Valida los datos
-        $validator = Validator::make($request->all(), $rules, $messages);
-    
-        // Si la validación falla, redirige de vuelta con los errores
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
-    
-        // Obtener los datos validados
-        $validated = $validator->validated();
-        $filial = $validated['filial'];
-        $gerencia = $validated['gerencia'];
-        $diadesde = $validated['diadesde'];
-        $diahasta = $validated['diahasta'];
-    
-        // Realizar la consulta a la base de datos
-        $visitorQuery = Visitor::where('filial', $filial)
-            ->where('gerencia', $gerencia)
-            ->whereBetween('created_at', [Carbon::parse($diadesde)->startOfDay(), Carbon::parse($diahasta)->endOfDay()]);
-    
-        // Obtener el conteo total de visitantes
-        $visitorCount = $visitorQuery->count();
-    
-        // Obtener los visitantes paginados
-        $visitors = $visitorQuery->paginate(10);
-    
-        // Retornar los resultados a la misma vista
-        return view('account.index', [
-            'visitors' => $visitors,
-            'visitorCount' => $visitorCount,
-            'filial' => $filial,
-            'gerencia' => $gerencia,
-            'diadesde' => $diadesde,
-            'diahasta' => $diahasta
-        ]);
+{
+    // Define las reglas de validación
+    $rules = [
+        'filial' => 'required|string',
+        'gerencia' => 'required|string',
+        'diadesde' => 'required|date',
+        'diahasta' => 'required|date|after_or_equal:diadesde',
+    ];
+
+    // Define los mensajes de error personalizados
+    $messages = [
+        'filial.required' => 'La filial es obligatoria.',
+        'filial.string' => 'La filial debe ser una cadena de texto.',
+        'gerencia.required' => 'La gerencia es obligatoria.',
+        'gerencia.string' => 'La gerencia debe ser una cadena de texto.',
+        'diadesde.required' => 'La fecha de inicio es obligatoria.',
+        'diadesde.date' => 'La fecha de inicio debe ser una fecha válida.',
+        'diahasta.required' => 'La fecha de fin es obligatoria.',
+        'diahasta.date' => 'La fecha de fin debe ser una fecha válida.',
+        'diahasta.after_or_equal' => 'La fecha de fin debe ser una fecha posterior o igual a la fecha de inicio.',
+    ];
+
+    // Valida los datos
+    $validator = Validator::make($request->all(), $rules, $messages);
+
+    // Si la validación falla, redirige de vuelta con los errores
+    if ($validator->fails()) {
+        return redirect()->back()->withErrors($validator)->withInput();
     }
+
+    // Obtener los datos validados
+    $validated = $validator->validated();
+    $filial = $validated['filial'];
+    $gerencia = $validated['gerencia'];
+    $diadesde = $validated['diadesde'];
+    $diahasta = $validated['diahasta'];
+
+    // Realizar la consulta a la base de datos
+    $visitorQuery = Visitor::query();
+
+    // Filtrar por filial
+    $visitorQuery->where('filial', $filial);
+
+    // Filtrar por gerencia
+    if (strpos($gerencia, 'Todo') === 0) {
+        // No se filtra por gerencia, incluye todas las gerencias para la filial seleccionada
+    } else {
+        $visitorQuery->where('gerencia', $gerencia);
+    }
+
+    // Filtrar por fechas
+    $visitorQuery->whereBetween('created_at', [Carbon::parse($diadesde)->startOfDay(), Carbon::parse($diahasta)->endOfDay()]);
+
+    // Obtener el conteo total de visitantes
+    $visitorCount = $visitorQuery->count();
+
+    // Obtener los visitantes paginados
+    $visitors = $visitorQuery->paginate(10);
+
+    // Retornar los resultados a la misma vista
+    return view('account.index', [
+        'visitors' => $visitors,
+        'visitorCount' => $visitorCount,
+        'filial' => $filial,
+        'gerencia' => $gerencia,
+        'diadesde' => $diadesde,
+        'diahasta' => $diahasta
+    ]);
+}
+
     
 }

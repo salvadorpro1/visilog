@@ -132,9 +132,11 @@
                 <option value="" selected disabled>Elegir gerencia</option>
             </select>
             <label class="form__label" for="dia">desde</label>
-            <input class="form__input" type="date" name="diadesde" id="diadesde">
+            <input class="form__input" type="date" name="diadesde" id="diadesde" min="2024-05-26"
+                max="{{ date('Y-m-d') }}">
             <label class="form__label" for="dia">hasta</label>
-            <input class="form__input" type="date" name="diahasta" id="diahasta">
+            <input class="form__input" type="date" name="diahasta" id="diahasta" min="2024-05-26"
+                max="{{ date('Y-m-d') }}">
             <input class="form__submit" type="submit" value="Consultar">
         </form>
 
@@ -154,8 +156,8 @@
                 <h2>Resultados de la Consulta</h2>
                 <p>Filial: {{ $filial }}</p>
                 <p>Gerencia: {{ $gerencia }}</p>
-                <p>Desde: {{ $diadesde }}</p>
-                <p>Hasta: {{ $diahasta }}</p>
+                <p>Desde: {{ \Carbon\Carbon::parse($diadesde)->format('d/m/Y') }}</p>
+                <p>Hasta: {{ \Carbon\Carbon::parse($diahasta)->format('d/m/Y') }}</p>
                 <p>Visitantes: {{ $visitorCount }}</p>
 
                 @if ($visitors->count() > 0)
