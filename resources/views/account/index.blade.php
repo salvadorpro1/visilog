@@ -260,21 +260,21 @@
                     <table class="results-table">
                         <thead>
                             <tr>
-                                <th>ID</th>
                                 <th>Nombre</th>
                                 <th>Apellido</th>
+                                <th>nacionalidad</th>
                                 <th>Cedula</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($visitors as $visitor)
                                 <tr>
-                                    <td><a
-                                            href="{{ route('show_Register_Visitor_Detail', $visitor->id) }}">{{ $visitor->id }}</a>
-                                    </td>
                                     <td>{{ $visitor->nombre }}</td>
                                     <td>{{ $visitor->apellido }}</td>
-                                    <td>{{ $visitor->cedula }}</td>
+                                    <td>{{ $visitor->nacionalidad }}</td>
+                                    <td><a
+                                            href="{{ route('show_Register_Visitor_Detail', $visitor->id) }}">{{ $visitor->cedula }}</a>
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>

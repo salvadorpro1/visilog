@@ -57,7 +57,6 @@
     <table>
         <thead>
             <tr>
-                <th>ID</th>
                 <th>Nombre</th>
                 <th>Apellido</th>
                 <th>Cédula</th>
@@ -70,11 +69,11 @@
             <!-- Aquí puedes agregar las filas con los datos de los visitantes -->
             @foreach ($registros as $registro)
                 <tr>
-                    <td><a href="{{ route('show_Register_Visitor_Detail', $registro->id) }}">{{ $registro->id }}</a>
+
                     </td>
                     <td>{{ $registro->nombre }}</td>
                     <td>{{ $registro->apellido }}</td>
-                    <td>{{ $registro->cedula }}</td>
+                    <td><a href="{{ route('show_Register_Visitor_Detail', $registro->id) }}">{{ $registro->cedula }}</a>
                     <td>{{ $registro->gerencia }}</td>
                     <td class="truncate">{{ $registro->razon_visita }}</td>
                     <td>{{ \Carbon\Carbon::parse($registro->created_at)->format('d/m/Y') }}</td>
