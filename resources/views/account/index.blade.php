@@ -210,10 +210,10 @@
             </select>
             <label class="form__label" for="dia">desde</label>
             <input class="form__input" type="date" name="diadesde" id="diadesde"
-                min="{{ $fechaMinima->format('Y-m-d') }}" max="{{ date('Y-m-d') }}">
+                min="{{ \Carbon\Carbon::parse($fechaMinima)->format('Y-m-d') }}" max="{{ date('Y-m-d') }}">
             <label class="form__label" for="dia">hasta</label>
             <input class="form__input" type="date" name="diahasta" id="diahasta"
-                min="{{ $fechaMinima->format('Y-m-d') }}" max="{{ date('Y-m-d') }}">
+                min="{{ \Carbon\Carbon::parse($fechaMinima)->format('Y-m-d') }}" max="{{ date('Y-m-d') }}">
             <input class="form__submit" type="submit" value="Consultar">
             <a href="{{ route('show_ConsulForm') }}">Volver</a>
 
