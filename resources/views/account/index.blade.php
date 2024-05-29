@@ -114,6 +114,7 @@
             flex-wrap: wrap;
             gap: 20px;
             margin-bottom: 20px;
+
         }
 
         .result-card {
@@ -124,7 +125,7 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             flex: 1 1 200px;
             /* flex-grow, flex-shrink, flex-basis */
-            max-width: 200px;
+            width: 100%;
         }
 
         .result-label {
@@ -186,6 +187,28 @@
         .pagination .disabled a {
             color: #ccc;
         }
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .form__container_date {
+            display: flex;
+            justify-content: space-evenly
+        }
+
+        .form__container_date div {
+            width: 100%
+        }
     </style>
 </head>
 
@@ -208,14 +231,21 @@
             <select class="form__select" name="gerencia" id="gerencia" onchange="quitarSeleccionInicial('gerencia')">
                 <option value="" selected disabled>Elegir gerencia</option>
             </select>
-            <label class="form__label" for="dia">desde</label>
-            <input class="form__input" type="date" name="diadesde" id="diadesde"
-                min="{{ \Carbon\Carbon::parse($fechaMinima)->format('Y-m-d') }}" max="{{ date('Y-m-d') }}">
-            <label class="form__label" for="dia">hasta</label>
-            <input class="form__input" type="date" name="diahasta" id="diahasta"
-                min="{{ \Carbon\Carbon::parse($fechaMinima)->format('Y-m-d') }}" max="{{ date('Y-m-d') }}">
+            <div class="form__container_date">
+                <div>
+                    <label class="form__label" for="dia">desde</label>
+                    <input class="form__input" type="date" name="diadesde" id="diadesde"
+                        min="{{ \Carbon\Carbon::parse($fechaMinima)->format('Y-m-d') }}" max="{{ date('Y-m-d') }}">
+                </div>
+                <div>
+                    <label class="form__label" for="dia">hasta</label>
+                    <input class="form__input" type="date" name="diahasta" id="diahasta"
+                        min="{{ \Carbon\Carbon::parse($fechaMinima)->format('Y-m-d') }}" max="{{ date('Y-m-d') }}">
+                </div>
+            </div>
+
             <input class="form__submit" type="submit" value="Consultar">
-            <a href="{{ route('show_ConsulForm') }}">Volver</a>
+            <a class="button" href="{{ route('show_ConsulForm') }}">Volver</a>
 
         </form>
 
@@ -252,7 +282,7 @@
                     </div>
                     <div class="result-card">
                         <span class="result-label">Visitantes:</span>
-                        <span class="result-value">{{ $visitorCount }}</span>
+                        <span class="result-value">{{ 'Hay ' . $visitorCount . ' vistantes totales' }}</span>
                     </div>
                 </div>
 
@@ -264,6 +294,7 @@
                                 <th>Apellido</th>
                                 <th>nacionalidad</th>
                                 <th>Cedula</th>
+                                <th>Fecha</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -271,10 +302,23 @@
                                 <tr>
                                     <td>{{ $visitor->nombre }}</td>
                                     <td>{{ $visitor->apellido }}</td>
-                                    <td>{{ $visitor->nacionalidad }}</td>
+                                    @switch($visitor->nacionalidad)
+                                        @case('V')
+                                            <td>Venezolana</td>
+                                        @break
+
+                                        @case('E')
+                                            <td>Extranjero</td>
+                                        @break
+
+                                        @default
+                                            <td>Dato no valido</td>
+                                    @endswitch
                                     <td><a
                                             href="{{ route('show_Register_Visitor_Detail', $visitor->id) }}">{{ $visitor->cedula }}</a>
                                     </td>
+                                    <td>{{ \Carbon\Carbon::parse($visitor->created_at)->format('d/m/Y') }}</td>
+
                                 </tr>
                             @endforeach
                         </tbody>

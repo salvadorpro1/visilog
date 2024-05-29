@@ -53,6 +53,21 @@
                 <td>{{ $persona->apellido }}</td>
             </tr>
             <tr>
+                <th>Nacionalidad</th>
+                @switch($persona->nacionalidad)
+                    @case('V')
+                        <td>Venezolana</td>
+                    @break
+
+                    @case('E')
+                        <td>Extranjero</td>
+                    @break
+
+                    @default
+                        <td>Dato no valido</td>
+                @endswitch
+            </tr>
+            <tr>
                 <th>Cédula</th>
                 <td>{{ $persona->cedula }}</td>
             </tr>

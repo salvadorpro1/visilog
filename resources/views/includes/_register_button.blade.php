@@ -78,10 +78,12 @@
         justify-content: center;
         align-items: center;
         top: 49px;
+        right: 0px;
         position: absolute;
         background-color: #01313F;
         border-radius: 8px;
         padding: 12px;
+
         box-shadow: 0.5px 0.5px 8px 1px rgb(7, 1, 1);
     }
 

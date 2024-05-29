@@ -46,11 +46,11 @@
         }
 
         input[type="submit"] {
-            background-color: #4caf50;
-            color: white;
             padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
             border: none;
-            border-radius: 4px;
             cursor: pointer;
         }
 
@@ -64,6 +64,19 @@
             background-color: #f2f2f2;
             border-left: 4px solid #4caf50;
             color: #333;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
         }
     </style>
 </head>
@@ -82,7 +95,6 @@
                     <option value="V" {{ $nacionalidad == 'V' ? 'selected' : '' }}>V</option>
                     <option value="E" {{ $nacionalidad == 'E' ? 'selected' : '' }}>E</option>
                 </select>
-                <input type="hidden" name="nacionalidad" value="{{ $nacionalidad }}">
                 <label for="">Cédula</label>
                 <input name="cedula" value="{{ $cedula }}" type="number">
                 <label for="">Nombre</label>
@@ -104,7 +116,7 @@
                 <label for="">Razón de la visita</label>
                 <textarea name="razon_visita" cols="30" rows="10" maxlength="255"></textarea>
                 <input type="submit" value="Enviar">
-                <a href="{{ route('show_ConsulForm') }}">Volver</a>
+                <a class="button" href="{{ route('show_ConsulForm') }}">Volver</a>
             @else
                 <label for="">Nacionalidad</label>
                 <select name="nacionalidad" disabled>
@@ -132,7 +144,7 @@
                 <label for="">Razón de la visita</label>
                 <textarea name="razon_visita" cols="30" rows="10" maxlength="255"></textarea>
                 <input type="submit" value="Enviar">
-                <a href="{{ route('show_ConsulForm') }}">Volver</a>
+                <a class="button" href="{{ route('show_ConsulForm') }}">Volver</a>
             @endif
         </form>
 

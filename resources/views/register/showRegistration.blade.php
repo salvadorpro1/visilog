@@ -59,6 +59,7 @@
             <tr>
                 <th>Nombre</th>
                 <th>Apellido</th>
+                <th>Nacionalidad</th>
                 <th>Cédula</th>
                 <th>Gerencia</th>
                 <th>Razón de la Visita</th>
@@ -73,6 +74,18 @@
                     </td>
                     <td>{{ $registro->nombre }}</td>
                     <td>{{ $registro->apellido }}</td>
+                    @switch($registro->nacionalidad)
+                        @case('V')
+                            <td>Venezolana</td>
+                        @break
+
+                        @case('E')
+                            <td>Extranjero</td>
+                        @break
+
+                        @default
+                            <td>Dato no valido</td>
+                    @endswitch
                     <td><a href="{{ route('show_Register_Visitor_Detail', $registro->id) }}">{{ $registro->cedula }}</a>
                     <td>{{ $registro->gerencia }}</td>
                     <td class="truncate">{{ $registro->razon_visita }}</td>

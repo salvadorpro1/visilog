@@ -44,16 +44,29 @@
         }
 
         button[type="submit"] {
-            background-color: #4caf50;
-            color: white;
             padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
             border: none;
-            border-radius: 4px;
             cursor: pointer;
         }
 
         button[type="submit"]:hover {
             background-color: #45a049;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
         }
     </style>
 </head>
@@ -76,7 +89,7 @@
             <input type="password" name="new_password_confirmation" id="new_password_confirmation" required>
 
             <button type="submit">Cambiar Contraseña</button>
-            <a href="{{ route('show_ConsulForm') }}">Volver</a>
+            <a class="button" href="{{ route('show_ConsulForm') }}">Volver</a>
 
         </form>
         @if ($errors->any())
