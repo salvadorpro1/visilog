@@ -106,6 +106,9 @@
                     <a href="{{ route('show_Account') }}" class="user-menu__item-link">Reporte</a>
                 </li>
                 <li class="user-menu__item">
+                    <a href="{{ route('show_Dashboard') }}" class="user-menu__item-link">Dashboard</a>
+                </li>
+                <li class="user-menu__item">
                     @if ($user && $user->role === 'administrador')
                         <a class="user-menu__item-link" href="{{ route('showRegisterCreate') }}">Crear operador</a>
                     @endif

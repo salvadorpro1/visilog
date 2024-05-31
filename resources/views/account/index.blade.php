@@ -355,52 +355,6 @@
 
         @endif
     </div>
-
-
-    @if (isset($visitorCount))
-
-        <div class="table-container">
-            <table class="results-table results-table--container">
-                <caption class="results-table__title">Numero de visitantes por filial</caption>
-                <thead>
-                    <tr>
-                        <th>Filial</th>
-                        <th>Visitantes</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($visitorCountsByFilial as $filialData)
-                        <tr>
-                            <td>{{ $filialData->filial }}</td>
-                            <td>{{ $filialData->visitor_count }}</td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-
-            <table class="results-table results-table--container">
-                <caption class="results-table__title">Numero de visitantes por gerencia</caption>
-                <thead>
-                    <tr>
-                        <th>Gerencia</th>
-                        <th>Filial</th>
-                        <th>Cantidad de Visitantes</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($visitantesPorGerenciaFilial as $visita)
-                        <tr>
-                            <td>{{ $visita->gerencia }}</td>
-                            <td>{{ $visita->filial }}</td>
-                            <td>{{ $visita->cantidad_visitantes }}</td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-
-        </div>
-    @else
-    @endif
     <script>
         function quitarSeleccionInicial(nombreSelect) {
             var selectElement = document.getElementsByName(nombreSelect)[0];

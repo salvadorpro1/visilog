@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthenticateUserController;
 use App\Http\Controllers\VisitorController;
+use App\Http\Controllers\Dashboard;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -41,3 +43,10 @@ Route::post('/guardar-registro', [VisitorController::class, 'saveVisitor'])->nam
 
 Route::get('/reporte', [VisitorController::class, 'showAccount'])->middleware('auth')->name('show_Account');
 Route::post('/reporte', [VisitorController::class, 'accountConsul']);
+
+use App\Http\Controllers\DashboardController;
+
+Route::get('/dashboard', [Dashboard::class, 'showDashboard'])->middleware('auth')->name('show_Dashboard');
+Route::post('/dashboard', [Dashboard::class, 'dashboard'])->middleware('auth')->name('Dashboard');
+
+
