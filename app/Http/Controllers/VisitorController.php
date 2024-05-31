@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use Illuminate\Support\Facades\DB;
 
 use Illuminate\Support\Str;
 
@@ -225,6 +226,16 @@ class VisitorController extends Controller
         // Obtener los visitantes paginados
         $visitors = $visitorQuery->paginate(10);
     
+        $visitorCountsByFilial = Visitor::select('filial', DB::raw('COUNT(*) as visitor_count'))
+        ->whereBetween('created_at', [Carbon::parse($diadesde)->startOfDay(), Carbon::parse($diahasta)->endOfDay()])
+        ->groupBy('filial')
+        ->get();
+
+        $visitantesPorGerenciaFilial = Visitor::select('gerencia', 'filial', DB::raw('COUNT(*) as cantidad_visitantes'))
+        ->whereBetween('created_at', [Carbon::parse($diadesde)->startOfDay(), Carbon::parse($diahasta)->endOfDay()])
+        ->groupBy('gerencia', 'filial')
+        ->get();
+
         // Retornar los resultados a la misma vista
         return view('account.index', [
             'visitors' => $visitors,
@@ -233,7 +244,10 @@ class VisitorController extends Controller
             'gerencia' => $gerencia,
             'diadesde' => $diadesde,
             'diahasta' => $diahasta,
-            'fechaMinima' => $this->getFechaMinima()
+            'fechaMinima' => $this->getFechaMinima(),
+            'visitorCountsByFilial' => $visitorCountsByFilial,
+            'visitantesPorGerenciaFilial' => $visitantesPorGerenciaFilial,
+
 
         ]);
     }
@@ -241,7 +255,7 @@ class VisitorController extends Controller
     private function getFechaMinima()
     {
         $fechaMinima = Visitor::orderBy('created_at')->value('created_at');
-        return $fechaMinima ? \Carbon\Carbon::parse($fechaMinima)->format('Y-m-d') : \Carbon\Carbon::now()->format('Y-m-d');
+        return $fechaMinima ? Carbon::parse($fechaMinima)->format('Y-m-d') : Carbon::now()->format('Y-m-d');
     }
     
 }

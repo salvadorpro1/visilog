@@ -15,7 +15,7 @@
         }
 
         .container {
-            max-width: 600px;
+            width: 700px;
             margin: 50px auto;
             padding: 20px;
             background-color: #fff;
@@ -203,11 +203,31 @@
 
         .form__container_date {
             display: flex;
-            justify-content: space-evenly
+            justify-content: space-evenly;
         }
 
         .form__container_date div {
-            width: 100%
+            width: 100%;
+        }
+
+        .results-table--container {
+            background: white;
+            width: 48%;
+
+        }
+
+        .dates-container {
+            display: flex;
+            gap: 0 5px;
+        }
+
+        .results-table__title {}
+
+        .table-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0 20px
         }
     </style>
 </head>
@@ -272,13 +292,15 @@
                         <span class="result-label">Gerencia:</span>
                         <span class="result-value">{{ $gerencia }}</span>
                     </div>
-                    <div class="result-card">
-                        <span class="result-label">Desde:</span>
-                        <span class="result-value">{{ \Carbon\Carbon::parse($diadesde)->format('d/m/Y') }}</span>
-                    </div>
-                    <div class="result-card">
-                        <span class="result-label">Hasta:</span>
-                        <span class="result-value">{{ \Carbon\Carbon::parse($diahasta)->format('d/m/Y') }}</span>
+                    <div class="dates-container">
+                        <div class="result-card">
+                            <span class="result-label">Desde:</span>
+                            <span class="result-value">{{ \Carbon\Carbon::parse($diadesde)->format('d/m/Y') }}</span>
+                        </div>
+                        <div class="result-card">
+                            <span class="result-label">Hasta:</span>
+                            <span class="result-value">{{ \Carbon\Carbon::parse($diahasta)->format('d/m/Y') }}</span>
+                        </div>
                     </div>
                     <div class="result-card">
                         <span class="result-label">Visitantes:</span>
@@ -334,6 +356,51 @@
         @endif
     </div>
 
+
+    @if (isset($visitorCount))
+
+        <div class="table-container">
+            <table class="results-table results-table--container">
+                <caption class="results-table__title">Numero de visitantes por filial</caption>
+                <thead>
+                    <tr>
+                        <th>Filial</th>
+                        <th>Visitantes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($visitorCountsByFilial as $filialData)
+                        <tr>
+                            <td>{{ $filialData->filial }}</td>
+                            <td>{{ $filialData->visitor_count }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+
+            <table class="results-table results-table--container">
+                <caption class="results-table__title">Numero de visitantes por gerencia</caption>
+                <thead>
+                    <tr>
+                        <th>Gerencia</th>
+                        <th>Filial</th>
+                        <th>Cantidad de Visitantes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($visitantesPorGerenciaFilial as $visita)
+                        <tr>
+                            <td>{{ $visita->gerencia }}</td>
+                            <td>{{ $visita->filial }}</td>
+                            <td>{{ $visita->cantidad_visitantes }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+
+        </div>
+    @else
+    @endif
     <script>
         function quitarSeleccionInicial(nombreSelect) {
             var selectElement = document.getElementsByName(nombreSelect)[0];
