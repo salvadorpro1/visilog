@@ -12,6 +12,11 @@ class Dashboard extends Controller
 
     public function showDashboard(Request $request)
     {
+        $fechaMinima = Visitor::orderBy('created_at')->value('created_at');
+    
+        if (!$fechaMinima) {
+            $fechaMinima = Carbon::now()->format('Y-m-d');
+        }
         // Definir valores predeterminados para $diadesde y $diahasta
         $diadesde = now()->startOfMonth()->format('Y-m-d');
         $diahasta = now()->endOfMonth()->format('Y-m-d');
@@ -45,6 +50,7 @@ class Dashboard extends Controller
             'visitantesPorFilial' => $visitantesPorFilial,
             'diadesde' => $diadesde,
             'diahasta' => $diahasta,
+            'fechaMinima' => $fechaMinima
         ]);
     }
 
@@ -85,7 +91,15 @@ class Dashboard extends Controller
             'visitantesPorFilial' => $visitantesPorFilial,
             'diadesde' => $diadesde,
             'diahasta' => $diahasta,
+            'fechaMinima' => $this->getFechaMinima(),
+
         ]);
     }
     
+
+    private function getFechaMinima()
+    {
+        $fechaMinima = Visitor::orderBy('created_at')->value('created_at');
+        return $fechaMinima ? Carbon::parse($fechaMinima)->format('Y-m-d') : Carbon::now()->format('Y-m-d');
+    }
     }

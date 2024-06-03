@@ -179,15 +179,15 @@ class VisitorController extends Controller
     public function accountConsul(Request $request)
     {
     // Define las reglas de validación
-    $rules = [
+         $rules = [
         'filial' => 'required|string',
         'gerencia' => 'required|string',
         'diadesde' => 'required|date',
         'diahasta' => 'required|date|after_or_equal:diadesde',
-    ];
+         ];
 
-    // Define los mensajes de error personalizados
-    $messages = [
+        // Define los mensajes de error personalizados
+         $messages = [
         'filial.required' => 'La filial es obligatoria.',
         'filial.string' => 'La filial debe ser una cadena de texto.',
         'gerencia.required' => 'La gerencia es obligatoria.',
@@ -197,7 +197,7 @@ class VisitorController extends Controller
         'diahasta.required' => 'La fecha de fin es obligatoria.',
         'diahasta.date' => 'La fecha de fin debe ser una fecha válida.',
         'diahasta.after_or_equal' => 'La fecha de fin debe ser igual o posterior a la fecha de inicio.',
-    ];
+        ];
     
         // Valida los datos
         $validator = Validator::make($request->all(), $rules, $messages);
