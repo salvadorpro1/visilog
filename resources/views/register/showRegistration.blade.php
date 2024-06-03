@@ -54,6 +54,12 @@
     @include('includes._register_button', ['titulo' => 'Tabla De Visitante'])
 
     <a class="button" href="{{ route('show_ConsulForm') }}">Volver</a>
+    <form action="{{ route('show_Register_Visitor') }}" method="GET">
+        <input type="search" name="search" id="search" placeholder="Buscar por nombre o cédula"
+            value="{{ request('search') }}">
+        <button type="submit">Buscar</button>
+    </form>
+
     <table>
         <thead>
             <tr>

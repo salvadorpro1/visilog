@@ -41,11 +41,21 @@ class VisitorController extends Controller
         }
     }
 
-    public function showRegister()
+    public function showRegister(Request $request)
     {
-        $registros = Visitor::paginate(10);
+        $query = Visitor::query();
+    
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $query->where('nombre', 'like', '%' . $search . '%')
+                  ->orWhere('cedula', 'like', '%' . $search . '%');
+        }
+    
+        $registros = $query->paginate(10);
+    
         return view('register.showRegistration', compact('registros'));
     }
+    
 
     public function showRegisterDetail($id)
     {
