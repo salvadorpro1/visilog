@@ -68,13 +68,41 @@
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
+
+        .alert-danger {
+            color: #a94442;
+            background-color: #f2dede;
+            border-color: #ebccd1;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+
+        .alert-danger ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .alert-danger li {
+            margin: 0;
+        }
     </style>
 </head>
 
 <body>
     @include('includes._register_button', ['titulo' => 'Crear Operador'])
     <div class="container">
-
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
         <form action="" method="POST">
             @csrf
@@ -95,16 +123,10 @@
             <a class="button" href="{{ route('show_ConsulForm') }}">Volver</a>
 
         </form>
-        @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
+
     </div>
+    @include('includes._footer')
+
 </body>
 
 </html>

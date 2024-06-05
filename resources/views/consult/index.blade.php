@@ -8,6 +8,8 @@
     <title>Consultar Cedula</title>
     <style>
         body {
+            height: 100vh;
+            width: 100vw;
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
             margin: 0;
@@ -88,13 +90,53 @@
         .bloque select {
             height: 36px;
         }
+
+        .alert-danger {
+            color: #a94442;
+            background-color: #f2dede;
+            border-color: #ebccd1;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+
+        .alert-danger ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .alert-danger li {
+            margin: 0;
+        }
     </style>
 </head>
 
 <body>
     @include('includes._register_button', ['titulo' => 'Consultar Cedula'])
 
+    @if (session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
+    @if (session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
+    </div>
 
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
     <div class="container">
         <form method="POST" action="">
             @csrf
@@ -109,38 +151,17 @@
             <input type="submit" value="Consultar" class="button">
         </form>
 
+        <script>
+            setTimeout(function() {
+                document.querySelector('.alert-success').style.display = 'none';
+            }, 5000);
 
-        @if (session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
-            </div>
-        @endif
-        @if (session('error'))
-            <div class="alert alert-danger">
-                {{ session('error') }}
-            </div>
-        @endif
+            setTimeout(function() {
+                document.querySelector('.alert-danger').style.display = 'none';
+            }, 5000);
+        </script>
     </div>
-
-    @if ($errors->any())
-        <div class="alert">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
-    <script>
-        setTimeout(function() {
-            document.querySelector('.alert-success').style.display = 'none';
-        }, 5000);
-
-        setTimeout(function() {
-            document.querySelector('.alert-danger').style.display = 'none';
-        }, 5000);
-    </script>
+    @include('includes._footer')
 
 </body>
 

@@ -98,7 +98,6 @@
         .result-card {
             background-color: #f9f9f9;
             border: 1px solid #ddd;
-            border-radius: 8px;
             padding: 15px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             flex: 1 1 200px;
@@ -122,6 +121,34 @@
             font-style: italic;
             color: #777;
         }
+
+        .alert-danger {
+            color: #a94442;
+            background-color: #f2dede;
+            border-color: #ebccd1;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+
+        .alert-danger ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .alert-danger li {
+            margin: 0;
+        }
+
+        .container-card {
+            display: flex;
+            width: 100%;
+            background: white;
+            border: 1px solid black;
+            border-radius: 4px
+        }
     </style>
 </head>
 
@@ -129,24 +156,35 @@
     @include('includes._register_button', ['titulo' => 'Dashboard de Visitantes'])
 
     <div class="container">
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
         <form class="form" action="" method="POST">
             @csrf
+
             <div class="form__container_date">
                 <div>
                     <label class="form__label" for="diadesde">Desde:</label>
-                    <input class="form__input" type="date" id="diadesde" name="diadesde"
-                        min="{{ \Carbon\Carbon::parse($fechaMinima)->format('Y-m-d') }}" max="{{ date('Y-m-d') }}"
-                        required>
+                    <input class="form__input" type="date" id="diadesde" value="{{ old('diadesde') }}"
+                        name="diadesde" min="{{ \Carbon\Carbon::parse($fechaMinima)->format('Y-m-d') }}"
+                        max="{{ date('Y-m-d') }}" required>
                 </div>
                 <div>
                     <label class="form__label" for="diahasta">Hasta:</label>
-                    <input class="form__input" type="date" id="diahasta" name="diahasta"
-                        min="{{ \Carbon\Carbon::parse($fechaMinima)->format('Y-m-d') }}" max="{{ date('Y-m-d') }}"
-                        required>
+                    <input class="form__input" type="date" id="diahasta" value="{{ old('diahasta') }}"
+                        name="diahasta" min="{{ \Carbon\Carbon::parse($fechaMinima)->format('Y-m-d') }}"
+                        max="{{ date('Y-m-d') }}" required>
                 </div>
             </div>
             <input class="form__submit" type="submit" value="Filtrar">
             <a class="button" href="{{ route('show_ConsulForm') }}">Volver</a>
+
         </form>
 
         @if (isset($diadesde) && isset($diahasta) && count($visitantesPorGerenciaFilial) > 0)
@@ -154,17 +192,20 @@
                 <h2>Visitantes por Gerencia y Filial</h2>
                 <div class="result-cards">
                     @foreach ($visitantesPorGerenciaFilial as $visita)
-                        <div class="result-card">
-                            <span class="result-label">Gerencia:</span>
-                            <span class="result-value">{{ $visita->gerencia }}</span>
-                        </div>
-                        <div class="result-card">
-                            <span class="result-label">Filial:</span>
-                            <span class="result-value">{{ $visita->filial }}</span>
-                        </div>
-                        <div class="result-card">
-                            <span class="result-label">Cantidad de Visitantes:</span>
-                            <span class="result-value">{{ $visita->cantidad_visitantes }}</span>
+                        <div class="container-card">
+
+                            <div class="result-card">
+                                <span class="result-label">Gerencia:</span>
+                                <span class="result-value">{{ $visita->gerencia }}</span>
+                            </div>
+                            <div class="result-card">
+                                <span class="result-label">Filial:</span>
+                                <span class="result-value">{{ $visita->filial }}</span>
+                            </div>
+                            <div class="result-card">
+                                <span class="result-label">Cantidad de Visitantes:</span>
+                                <span class="result-value">{{ $visita->cantidad_visitantes }}</span>
+                            </div>
                         </div>
                     @endforeach
                 </div>
@@ -187,23 +228,6 @@
                     </tbody>
                 </table>
 
-                <h2>Visitantes por Gerencia</h2>
-                <table class="results-table">
-                    <thead>
-                        <tr>
-                            <th>Gerencia</th>
-                            <th>Cantidad de Visitantes</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($visitantesPorGerencia as $visita)
-                            <tr>
-                                <td>{{ $visita->gerencia }}</td>
-                                <td>{{ $visita->cantidad_visitantes }}</td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
 
                 <h2>Visitantes por Filial</h2>
                 <table class="results-table">
@@ -222,11 +246,35 @@
                         @endforeach
                     </tbody>
                 </table>
+
+
+
+                <h2>Visitantes por Gerencia</h2>
+                <table class="results-table">
+                    <thead>
+                        <tr>
+                            <th>Gerencia</th>
+                            <th>Cantidad de Visitantes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($visitantesPorGerencia as $visita)
+                            <tr>
+                                <td>{{ $visita->gerencia }}</td>
+                                <td>{{ $visita->cantidad_visitantes }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+
+
             </div>
         @elseif (isset($diadesde) && isset($diahasta) && count($visitantesPorGerenciaFilial) == 0)
             <p class="no-results">No hay datos disponibles para el rango de fechas seleccionado.</p>
         @endif
     </div>
+    @include('includes._footer')
+
 </body>
 
 </html>

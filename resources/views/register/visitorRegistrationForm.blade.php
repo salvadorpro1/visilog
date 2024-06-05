@@ -162,6 +162,9 @@
         </div>
     @endif
 
+
+    @include('includes._footer')
+
     <script>
         function quitarSeleccionInicial(nombreSelect) {
             var selectElement = document.getElementsByName(nombreSelect)[0];

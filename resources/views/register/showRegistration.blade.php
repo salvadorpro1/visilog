@@ -46,6 +46,16 @@
             max-width: 250px;
             /* Ancho máximo del contenedor */
         }
+
+        td a {
+            text-decoration: none;
+            color: #0000EE;
+        }
+
+        td a:hover {
+            text-decoration: underline;
+            color: #0000d1;
+        }
     </style>
 
 </head>
@@ -101,6 +111,7 @@
         </tbody>
     </table>
     {{ $registros->links() }}
+    @include('includes._footer')
 
 </body>
 

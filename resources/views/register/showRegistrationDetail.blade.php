@@ -93,6 +93,8 @@
             </tr>
         </thead>
     </table>
+    @include('includes._footer')
+
 </body>
 
 </html>

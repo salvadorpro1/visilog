@@ -229,6 +229,36 @@
             flex-wrap: wrap;
             gap: 0 20px
         }
+
+        td a {
+            text-decoration: none;
+            color: #0000EE;
+        }
+
+        td a:hover {
+            text-decoration: underline;
+            color: #0000d1;
+        }
+
+        .alert-danger {
+            color: #a94442;
+            background-color: #f2dede;
+            border-color: #ebccd1;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+
+        .alert-danger ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .alert-danger li {
+            margin: 0;
+        }
     </style>
 </head>
 
@@ -236,7 +266,15 @@
     @include('includes._register_button', ['titulo' => 'Reporte'])
 
     <div class="container">
-
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
         <form class="form" method="POST" action="">
             @csrf
             <label class="form__label" for="filial">Filial</label>
@@ -269,15 +307,7 @@
 
         </form>
 
-        @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
+
 
 
         @if (isset($visitorCount))
@@ -355,6 +385,8 @@
 
         @endif
     </div>
+    @include('includes._footer')
+
     <script>
         function quitarSeleccionInicial(nombreSelect) {
             var selectElement = document.getElementsByName(nombreSelect)[0];
