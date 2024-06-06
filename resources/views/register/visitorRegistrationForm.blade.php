@@ -91,7 +91,7 @@
             @csrf
             @if ($showAll)
                 <label for="">Nacionalidad</label>
-                <select name="nacionalidad" disabled>
+                <select name="nacionalidad" readonly>
                     <option value="V" {{ $nacionalidad == 'V' ? 'selected' : '' }}>V</option>
                     <option value="E" {{ $nacionalidad == 'E' ? 'selected' : '' }}>E</option>
                 </select>
@@ -119,7 +119,7 @@
                 <a class="button" href="{{ route('show_ConsulForm') }}">Volver</a>
             @else
                 <label for="">Nacionalidad</label>
-                <select name="nacionalidad" disabled>
+                <select name="nacionalidad" readonly>
                     <option value="V" {{ $visitor->nacionalidad == 'V' ? 'selected' : '' }}>V</option>
                     <option value="E" {{ $visitor->nacionalidad == 'E' ? 'selected' : '' }}>E</option>
                 </select>

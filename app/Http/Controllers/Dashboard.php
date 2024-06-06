@@ -13,16 +13,14 @@ class Dashboard extends Controller
 
     public function showDashboard(Request $request)
     {
-        $fechaMinima = Visitor::orderBy('created_at')->value('created_at');
+        // Obtener la fecha actual
+        $fechaActual = now()->format('Y-m-d');
     
-        if (!$fechaMinima) {
-            $fechaMinima = Carbon::now()->format('Y-m-d');
-        }
         // Definir valores predeterminados para $diadesde y $diahasta
-        $diadesde = now()->startOfMonth()->format('Y-m-d');
-        $diahasta = now()->endOfMonth()->format('Y-m-d');
+        $diadesde = $fechaActual;
+        $diahasta = $fechaActual;
     
-        // Realizar la consulta inicial para mostrar datos por defecto en la vista
+        // Realizar las consultas de la base de datos con las fechas actuales
         $visitantesPorGerenciaFilial = Visitor::select('gerencia', 'filial', DB::raw('COUNT(*) as cantidad_visitantes'))
             ->whereBetween('created_at', [Carbon::parse($diadesde)->startOfDay(), Carbon::parse($diahasta)->endOfDay()])
             ->groupBy('gerencia', 'filial')
@@ -51,7 +49,7 @@ class Dashboard extends Controller
             'visitantesPorFilial' => $visitantesPorFilial,
             'diadesde' => $diadesde,
             'diahasta' => $diahasta,
-            'fechaMinima' => $fechaMinima
+            'fechaMinima' => $this->getFechaMinima(),
         ]);
     }
 

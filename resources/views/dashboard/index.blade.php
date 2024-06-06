@@ -171,43 +171,30 @@
             <div class="form__container_date">
                 <div>
                     <label class="form__label" for="diadesde">Desde:</label>
-                    <input class="form__input" type="date" id="diadesde" value="{{ old('diadesde') }}"
-                        name="diadesde" min="{{ \Carbon\Carbon::parse($fechaMinima)->format('Y-m-d') }}"
-                        max="{{ date('Y-m-d') }}" required>
+                    <input class="form__input" type="date" id="diadesde" value="{{ $diadesde }}" name="diadesde"
+                        min="{{ \Carbon\Carbon::parse($fechaMinima)->format('Y-m-d') }}" max="{{ date('Y-m-d') }}"
+                        required>
                 </div>
                 <div>
                     <label class="form__label" for="diahasta">Hasta:</label>
-                    <input class="form__input" type="date" id="diahasta" value="{{ old('diahasta') }}"
-                        name="diahasta" min="{{ \Carbon\Carbon::parse($fechaMinima)->format('Y-m-d') }}"
-                        max="{{ date('Y-m-d') }}" required>
+                    <input class="form__input" type="date" id="diahasta" value="{{ $diahasta }}" name="diahasta"
+                        min="{{ \Carbon\Carbon::parse($fechaMinima)->format('Y-m-d') }}" max="{{ date('Y-m-d') }}"
+                        required>
                 </div>
             </div>
             <input class="form__submit" type="submit" value="Filtrar">
             <a class="button" href="{{ route('show_ConsulForm') }}">Volver</a>
 
         </form>
-
         @if (isset($diadesde) && isset($diahasta) && count($visitantesPorGerenciaFilial) > 0)
             <div class="results">
-                <h2>Visitantes por Gerencia y Filial</h2>
                 <div class="result-cards">
-                    @foreach ($visitantesPorGerenciaFilial as $visita)
-                        <div class="container-card">
-
-                            <div class="result-card">
-                                <span class="result-label">Gerencia:</span>
-                                <span class="result-value">{{ $visita->gerencia }}</span>
-                            </div>
-                            <div class="result-card">
-                                <span class="result-label">Filial:</span>
-                                <span class="result-value">{{ $visita->filial }}</span>
-                            </div>
-                            <div class="result-card">
-                                <span class="result-label">Cantidad de Visitantes:</span>
-                                <span class="result-value">{{ $visita->cantidad_visitantes }}</span>
-                            </div>
-                        </div>
-                    @endforeach
+                    <div class="result-card">
+                        <p> Desde:{{ $diadesde }}</p>
+                    </div>
+                    <div class="result-card">
+                        <p>Hasta:{{ $diahasta }}</p>
+                    </div>
                 </div>
 
                 <h2>Visitantes Diarios</h2>
@@ -254,13 +241,15 @@
                     <thead>
                         <tr>
                             <th>Gerencia</th>
+                            <th>Filial</th>
                             <th>Cantidad de Visitantes</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($visitantesPorGerencia as $visita)
+                        @foreach ($visitantesPorGerenciaFilial as $visita)
                             <tr>
                                 <td>{{ $visita->gerencia }}</td>
+                                <td>{{ $visita->filial }}</td>
                                 <td>{{ $visita->cantidad_visitantes }}</td>
                             </tr>
                         @endforeach
