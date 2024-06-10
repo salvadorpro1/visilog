@@ -82,10 +82,11 @@
 </head>
 
 <body>
+    @include('includes._cintillo')
     @include('includes._register_button', ['titulo' => 'Registrar Visitante'])
 
     <div class="container">
-
+        <h1>Registrar Visitante</h1>
 
         <form method="POST" action="{{ route('guardar_RegistroVisitor') }}">
             @csrf
@@ -115,8 +116,8 @@
                 </select>
                 <label for="">Razón de la visita</label>
                 <textarea name="razon_visita" cols="30" rows="10" maxlength="255"></textarea>
+                <a class="button" href="{{ route('show_Dashboard') }}">Volver</a>
                 <input type="submit" value="Enviar">
-                <a class="button" href="{{ route('show_ConsulForm') }}">Volver</a>
             @else
                 <label for="">Nacionalidad</label>
                 <select name="nacionalidad" readonly>
@@ -143,8 +144,8 @@
                 </select>
                 <label for="">Razón de la visita</label>
                 <textarea name="razon_visita" cols="30" rows="10" maxlength="255"></textarea>
+                <a class="button" href="{{ route('show_Dashboard') }}">Volver</a>
                 <input type="submit" value="Enviar">
-                <a class="button" href="{{ route('show_ConsulForm') }}">Volver</a>
             @endif
         </form>
 
@@ -163,7 +164,6 @@
     @endif
 
 
-    @include('includes._footer')
 
     <script>
         function quitarSeleccionInicial(nombreSelect) {

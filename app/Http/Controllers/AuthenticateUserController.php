@@ -20,7 +20,7 @@ class AuthenticateUserController extends Controller
         $credentials = $request->only('username', 'password');
 
         if (Auth::attempt($credentials)) {
-            return redirect()->intended(route('show_ConsulForm'));
+            return redirect()->intended(route('show_Dashboard'));
         } else {
             return redirect()->back()->withInput()->withErrors(['username' => 'Credenciales inválidas']);
         }
@@ -38,7 +38,7 @@ class AuthenticateUserController extends Controller
         if (Auth::check() && Auth::user()->role === 'administrador') {
             return view('register.registrarOperatorForm');
         } else {
-            return redirect()->route('show_ConsulForm')->with('error', 'Acceso denegado. Solo los administradores pueden acceder.');
+            return redirect()->route('show_Dashboard')->with('error', 'Acceso denegado. Solo los administradores pueden acceder.');
         }
     }
 
@@ -75,7 +75,7 @@ class AuthenticateUserController extends Controller
             'password' => bcrypt($request->password),
         ]);
 
-        return redirect()->route('show_ConsulForm')->with('success', 'Usuario creado satisfactoriamente.');
+        return redirect()->route('show_Dashboard')->with('success', 'Usuario creado satisfactoriamente.');
     }
 
     public function showChangePassword()
@@ -109,7 +109,7 @@ class AuthenticateUserController extends Controller
         $user->password = Hash::make($request->new_password); // Asegúrate de hashear la nueva contraseña
         $user->save();
     
-        return redirect()->route('show_ConsulForm')->with('success', 'Contraseña cambiada exitosamente');
+        return redirect()->route('show_Dashboard')->with('success', 'Contraseña cambiada exitosamente');
     }
 
 }

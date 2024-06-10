@@ -29,7 +29,8 @@ Route::post('/cambiar-contraseña', [AuthenticateUserController::class, 'changeP
 
 
 
-Route::get('/consulta', [VisitorController::class, 'showConsulForm'])->middleware('auth')->name('show_ConsulForm');
+Route::get('/consulta', [VisitorController::class, 'showConsulForm'])->middleware('auth')->name('show_consult');
+Route::post('/consulta', [VisitorController::class, 'consulDate']);
 
 Route::get('/registro-de-visitantes', [VisitorController::class, 'showRegister'])->middleware('auth')->name('show_Register_Visitor');
 
@@ -37,14 +38,12 @@ Route::get('/registro-de-visitantes/{cedula}', [VisitorController::class, 'showR
 
 Route::get('/registro', [VisitorController::class, 'showRegisterVisitor'])->middleware('auth')->name('show_register');
 
-Route::post('/consulta', [VisitorController::class, 'consulDate']);
 
 Route::post('/guardar-registro', [VisitorController::class, 'saveVisitor'])->name('guardar_RegistroVisitor');
 
 Route::get('/reporte', [VisitorController::class, 'showAccount'])->middleware('auth')->name('show_Account');
 Route::post('/reporte', [VisitorController::class, 'accountConsul']);
 
-use App\Http\Controllers\DashboardController;
 
 Route::get('/dashboard', [Dashboard::class, 'showDashboard'])->middleware('auth')->name('show_Dashboard');
 Route::post('/dashboard', [Dashboard::class, 'dashboard'])->middleware('auth')->name('Dashboard');

@@ -39,8 +39,9 @@
 </head>
 
 <body>
+    @include('includes._cintillo')
     @include('includes._register_button', ['titulo' => 'Detalle De Visitantes'])
-
+    <h1>Detalle De Visitantes</h1>
     <a class="button" href="{{ url()->previous() }}">Volver</a>
     <table>
         <thead>
@@ -93,7 +94,6 @@
             </tr>
         </thead>
     </table>
-    @include('includes._footer')
 
 </body>
 

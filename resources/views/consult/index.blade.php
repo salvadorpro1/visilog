@@ -53,7 +53,7 @@
             display: inline-block;
             padding: 10px 20px;
             margin-right: 10px;
-            background-color: #007bff;
+            background-color: #4CAF50;
             color: #fff;
             border: none;
             border-radius: 5px;
@@ -110,12 +110,23 @@
         .alert-danger li {
             margin: 0;
         }
+
+        .button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
     </style>
 </head>
 
 <body>
+    @include('includes._cintillo')
     @include('includes._register_button', ['titulo' => 'Consultar Cedula'])
     <div>
+
         @if (session('success'))
             <div class="alert alert-success">
                 {{ session('success') }}
@@ -138,6 +149,8 @@
         </div>
     @endif
     <div class="container">
+        <h1>Consultar Cedula</h1>
+
         <form method="POST" action="">
             @csrf
             <label for="cedula">Cédula</label>
@@ -148,7 +161,9 @@
                 </select>
                 <input type="number" name="cedula" id="cedula">
             </div>
+            <a class="button" href="{{ route('show_Dashboard') }}">Volver</a>
             <input type="submit" value="Consultar" class="button">
+
         </form>
 
         <script>
@@ -161,7 +176,6 @@
             }, 5000);
         </script>
     </div>
-    @include('includes._footer')
 
 </body>
 

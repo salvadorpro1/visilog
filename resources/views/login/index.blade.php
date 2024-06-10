@@ -77,7 +77,6 @@
             <div class="error">{{ $message }}</div>
         @enderror
     </form>
-    @include('includes._footer')
 
 </body>
 

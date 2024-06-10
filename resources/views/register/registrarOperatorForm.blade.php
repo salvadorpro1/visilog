@@ -92,8 +92,10 @@
 </head>
 
 <body>
+    @include('includes._cintillo')
     @include('includes._register_button', ['titulo' => 'Crear Operador'])
     <div class="container">
+        <h1>Crear Operador</h1>
         @if ($errors->any())
             <div class="alert alert-danger">
                 <ul>
@@ -119,13 +121,12 @@
             <label for="password_confirmation">Confirmar Contraseña:</label>
             <input type="password" name="password_confirmation" id="password_confirmation" required>
 
-            <button type="submit">Crear Usuario</button>
-            <a class="button" href="{{ route('show_ConsulForm') }}">Volver</a>
+            <a class="button" href="{{ route('show_Dashboard') }}">Volver</a>
+            <button type="submit">Guardar</button>
 
         </form>
 
     </div>
-    @include('includes._footer')
 
 </body>
 

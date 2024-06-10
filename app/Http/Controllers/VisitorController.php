@@ -156,7 +156,7 @@ class VisitorController extends Controller
 
         $visitor->save();
 
-        return redirect()->route('show_ConsulForm')->with('success', 'Los datos se han enviado correctamente.');
+        return redirect()->route('show_Dashboard')->with('success', 'Los datos se han enviado correctamente.');
     }
 
     public function truncateText($text, $length = 50, $ending = '...')

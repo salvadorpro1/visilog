@@ -12,7 +12,7 @@ class RedirectIfAuthenticated
     {
         if (Auth::guard($guard)->check()) {
             // Si el usuario está autenticado, redirige a la ruta '/consulta-y-registro'
-            return redirect('/consulta');
+            return to_route('show_Dashboard');
         }
 
         return $next($request);

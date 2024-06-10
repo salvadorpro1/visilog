@@ -92,8 +92,11 @@
 </head>
 
 <body>
+    @include('includes._cintillo')
+
     @include('includes._register_button', ['titulo' => 'Cambiar Contraseña'])
     <div class="container">
+        <h1>Cambiar Contraseña</h1>
 
         @if ($errors->any())
             <div class="alert alert-danger">
@@ -116,13 +119,12 @@
             <label for="new_password_confirmation">Confirmar Nueva Contraseña:</label>
             <input type="password" name="new_password_confirmation" id="new_password_confirmation" required>
 
+            <a class="button" href="{{ route('show_Dashboard') }}">Volver</a>
             <button type="submit">Cambiar Contraseña</button>
-            <a class="button" href="{{ route('show_ConsulForm') }}">Volver</a>
 
         </form>
 
     </div>
-    @include('includes._footer')
 
 </body>
 

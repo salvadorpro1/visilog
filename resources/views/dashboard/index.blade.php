@@ -47,10 +47,13 @@
             color: white;
             border: none;
             cursor: pointer;
+            margin-top: 14px;
+            height: 42px;
         }
 
         .form__container_date {
             display: flex;
+            align-items: center;
             justify-content: space-evenly;
         }
 
@@ -79,13 +82,16 @@
 
         .results-table th,
         .results-table td {
-            border: 1px solid #ddd;
+            border: 1px solid #9c9c9c;
             padding: 8px;
             text-align: left;
+            border: 1px solid black;
+
         }
 
         .results-table th {
-            background-color: #f4f4f4;
+            background-color: #9c9c9c;
+            border: 1px solid black
         }
 
         .result-cards {
@@ -149,22 +155,61 @@
             border: 1px solid black;
             border-radius: 4px
         }
+
+        h2 {
+            margin: 20px 0;
+            padding: 10px
+        }
+
+        .container-table {
+            background: #9c9c9c;
+            border-radius: 8px;
+
+        }
+
+        th {
+            background: #9c9c9c;
+            border: 1px solid black;
+        }
     </style>
 </head>
 
 <body>
+    @include('includes._cintillo')
     @include('includes._register_button', ['titulo' => 'Dashboard de Visitantes'])
 
+    @if (session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
+    @if (session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
+    </div>
+
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
     <div class="container">
-        @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
+        <h1>Dashboard de Visitantes </h1>
         <form class="form" action="" method="POST">
             @csrf
 
@@ -181,88 +226,90 @@
                         min="{{ \Carbon\Carbon::parse($fechaMinima)->format('Y-m-d') }}" max="{{ date('Y-m-d') }}"
                         required>
                 </div>
+                <input class="form__submit" type="submit" value="Filtrar">
             </div>
-            <input class="form__submit" type="submit" value="Filtrar">
-            <a class="button" href="{{ route('show_ConsulForm') }}">Volver</a>
 
         </form>
-        @if (isset($diadesde) && isset($diahasta) && count($visitantesPorGerenciaFilial) > 0)
-            <div class="results">
-                <div class="result-cards">
-                    <div class="result-card">
-                        <p> Desde:{{ $diadesde }}</p>
-                    </div>
-                    <div class="result-card">
-                        <p>Hasta:{{ $diahasta }}</p>
-                    </div>
+        <div class="results">
+            <div class="result-cards">
+                <div class="result-card">
+                    <p>Desde: {{ \Carbon\Carbon::parse($diadesde)->format('d/m/Y') }}</p>
+                </div>
+                <div class="result-card">
+                    <p>Hasta: {{ \Carbon\Carbon::parse($diahasta)->format('d/m/Y') }}</p>
+                </div>
+            </div>
+
+            @if (isset($diadesde) && isset($diahasta) && count($visitantesPorGerenciaFilial) > 0)
+                <div class="container-table">
+                    <h2>Visitantes Diarios</h2>
+                    <table class="results-table">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Cantidad de Visitantes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($visitantesDiarios as $visita)
+                                <tr>
+                                    <td>{{ $visita->fecha }}</td>
+                                    <td>{{ $visita->cantidad_visitantes }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
 
-                <h2>Visitantes Diarios</h2>
-                <table class="results-table">
-                    <thead>
-                        <tr>
-                            <th>Fecha</th>
-                            <th>Cantidad de Visitantes</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($visitantesDiarios as $visita)
+                <div class="container-table">
+                    <h2>Visitantes por Filial</h2>
+                    <table class="results-table">
+                        <thead>
                             <tr>
-                                <td>{{ $visita->fecha }}</td>
-                                <td>{{ $visita->cantidad_visitantes }}</td>
+                                <th>Filial</th>
+                                <th>Cantidad de Visitantes</th>
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach ($visitantesPorFilial as $visita)
+                                <tr>
+                                    <td>{{ $visita->filial }}</td>
+                                    <td>{{ $visita->cantidad_visitantes }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
 
 
-                <h2>Visitantes por Filial</h2>
-                <table class="results-table">
-                    <thead>
-                        <tr>
-                            <th>Filial</th>
-                            <th>Cantidad de Visitantes</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($visitantesPorFilial as $visita)
+                <div class="container-table">
+                    <h2>Visitantes por Gerencia</h2>
+                    <table class="results-table">
+                        <thead>
                             <tr>
-                                <td>{{ $visita->filial }}</td>
-                                <td>{{ $visita->cantidad_visitantes }}</td>
+                                <th>Gerencia</th>
+                                <th>Filial</th>
+                                <th>Cantidad de Visitantes</th>
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach ($visitantesPorGerenciaFilial as $visita)
+                                <tr>
+                                    <td>{{ $visita->gerencia }}</td>
+                                    <td>{{ $visita->filial }}</td>
+                                    <td>{{ $visita->cantidad_visitantes }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
 
 
-
-                <h2>Visitantes por Gerencia</h2>
-                <table class="results-table">
-                    <thead>
-                        <tr>
-                            <th>Gerencia</th>
-                            <th>Filial</th>
-                            <th>Cantidad de Visitantes</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($visitantesPorGerenciaFilial as $visita)
-                            <tr>
-                                <td>{{ $visita->gerencia }}</td>
-                                <td>{{ $visita->filial }}</td>
-                                <td>{{ $visita->cantidad_visitantes }}</td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-
-
-            </div>
-        @elseif (isset($diadesde) && isset($diahasta) && count($visitantesPorGerenciaFilial) == 0)
-            <p class="no-results">No hay datos disponibles para el rango de fechas seleccionado.</p>
+        </div>
+    @elseif (isset($diadesde) && isset($diahasta) && count($visitantesPorGerenciaFilial) == 0)
+        <p class="no-results">No hay datos disponibles para el rango de fechas seleccionado.</p>
         @endif
     </div>
-    @include('includes._footer')
 
 </body>
 

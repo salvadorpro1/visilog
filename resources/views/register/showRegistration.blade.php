@@ -61,9 +61,11 @@
 </head>
 
 <body>
+    @include('includes._cintillo')
     @include('includes._register_button', ['titulo' => 'Tabla De Visitante'])
 
-    <a class="button" href="{{ route('show_ConsulForm') }}">Volver</a>
+    <h1>Tabla De Visitante</h1>
+    <a class="button" href="{{ route('show_Dashboard') }}">Volver</a>
     <form action="{{ route('show_Register_Visitor') }}" method="GET">
         <input type="search" name="search" id="search" placeholder="Buscar por nombre o cédula"
             value="{{ request('search') }}">
@@ -111,7 +113,6 @@
         </tbody>
     </table>
     {{ $registros->links() }}
-    @include('includes._footer')
 
 </body>
 

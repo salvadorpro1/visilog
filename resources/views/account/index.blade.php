@@ -263,9 +263,11 @@
 </head>
 
 <body>
+    @include('includes._cintillo')
     @include('includes._register_button', ['titulo' => 'Reporte'])
 
     <div class="container">
+        <h1>Reporte </h1>
         @if ($errors->any())
             <div class="alert alert-danger">
                 <ul>
@@ -302,8 +304,8 @@
                 </div>
             </div>
 
+            <a class="button" href="{{ route('show_Dashboard') }}">Volver</a>
             <input class="form__submit" type="submit" value="Consultar">
-            <a class="button" href="{{ route('show_ConsulForm') }}">Volver</a>
 
         </form>
 
@@ -385,7 +387,6 @@
 
         @endif
     </div>
-    @include('includes._footer')
 
     <script>
         function quitarSeleccionInicial(nombreSelect) {

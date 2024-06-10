@@ -90,23 +90,35 @@
     .user-menu__submenu>.user-menu__item {
         margin: 4px 0
     }
+
+    .logo_container {
+        height: 100%;
+    }
+
+    .logo {
+        padding: 5px;
+        height: 100%;
+    }
 </style>
 
 <header>
     <div class="user-menu">
         <section class="user-menu__section">
-            <h1 class="user-menu__title">{{ $titulo }}</h1>
+            <a class="logo_container" href="{{ route('show_Dashboard') }}"><img class="logo"
+                    src="{{ asset('img/logo.png') }}" alt=""></a>
         </section>
         <section class="menu-usuario__section">
             <ul class="user-menu__list">
                 <li class="user-menu__item">
-                    <a href="{{ route('show_Register_Visitor') }}" class="user-menu__item-link">Tabla de visitantes</a>
+                    <a href="{{ route('show_Register_Visitor') }}" class="user-menu__item-link">Tabla de
+                        visitantes</a>
                 </li>
                 <li class="user-menu__item">
                     <a href="{{ route('show_Account') }}" class="user-menu__item-link">Reporte</a>
                 </li>
+
                 <li class="user-menu__item">
-                    <a href="{{ route('show_Dashboard') }}" class="user-menu__item-link">Dashboard</a>
+                    <a href="{{ route('show_consult') }}" class="user-menu__item-link">Registrar visitante</a>
                 </li>
                 <li class="user-menu__item">
                     @if ($user && $user->role === 'administrador')
