@@ -1,11 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('layouts.app')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Dashboard de Visitantes</title>
+@section('title')
+    dashboard
+@endsection
+
+@section('style')
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -172,11 +171,9 @@
             border: 1px solid black;
         }
     </style>
-</head>
+@endsection
 
-<body>
-    @include('includes._cintillo')
-    @include('includes._register_button', ['titulo' => 'Dashboard de Visitantes'])
+@section('content')
 
     @if (session('success'))
         <div class="alert alert-success">
@@ -217,14 +214,12 @@
                 <div>
                     <label class="form__label" for="diadesde">Desde:</label>
                     <input class="form__input" type="date" id="diadesde" value="{{ $diadesde }}" name="diadesde"
-                        min="{{ \Carbon\Carbon::parse($fechaMinima)->format('Y-m-d') }}" max="{{ date('Y-m-d') }}"
-                        required>
+                        min="{{ \Carbon\Carbon::parse($fechaMinima)->format('Y-m-d') }}" max="{{ date('Y-m-d') }}" required>
                 </div>
                 <div>
                     <label class="form__label" for="diahasta">Hasta:</label>
                     <input class="form__input" type="date" id="diahasta" value="{{ $diahasta }}" name="diahasta"
-                        min="{{ \Carbon\Carbon::parse($fechaMinima)->format('Y-m-d') }}" max="{{ date('Y-m-d') }}"
-                        required>
+                        min="{{ \Carbon\Carbon::parse($fechaMinima)->format('Y-m-d') }}" max="{{ date('Y-m-d') }}" required>
                 </div>
                 <input class="form__submit" type="submit" value="Filtrar">
             </div>
@@ -310,7 +305,4 @@
         <p class="no-results">No hay datos disponibles para el rango de fechas seleccionado.</p>
         @endif
     </div>
-
-</body>
-
-</html>
+@endsection

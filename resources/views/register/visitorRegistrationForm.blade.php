@@ -1,11 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('layouts.app')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Registro</title>
+@section('title')
+    Registro
+@endsection
+
+@section('style')
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -79,12 +78,9 @@
             transition: background-color 0.3s ease;
         }
     </style>
-</head>
+@endsection
 
-<body>
-    @include('includes._cintillo')
-    @include('includes._register_button', ['titulo' => 'Registrar Visitante'])
-
+@section('content')
     <h1>Registrar Visitante</h1>
     <div class="container">
 
@@ -205,7 +201,4 @@
             }
         }
     </script>
-
-</body>
-
-</html>
+@endsection

@@ -1,11 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('layouts.app')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Visitantes</title>
+@section('title')
+    Visitantes
+@endsection
+
+@section('style')
     <style>
         table {
             width: 100%;
@@ -57,13 +56,9 @@
             color: #0000d1;
         }
     </style>
+@endsection
 
-</head>
-
-<body>
-    @include('includes._cintillo')
-    @include('includes._register_button', ['titulo' => 'Tabla De Visitante'])
-
+@section('content')
     <h1>Tabla De Visitante</h1>
     <a class="button" href="{{ route('show_Dashboard') }}">Volver</a>
     <form action="{{ route('show_Register_Visitor') }}" method="GET">
@@ -113,7 +108,4 @@
         </tbody>
     </table>
     {{ $registros->links() }}
-
-</body>
-
-</html>
+@endsection

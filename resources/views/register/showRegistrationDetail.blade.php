@@ -1,11 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('layouts.app')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Visitantes</title>
+@section('title')
+    Detalle De Visitantes
+@endsection
+
+@section('style')
     <style>
         table {
             width: 100%;
@@ -36,11 +35,9 @@
             transition: background-color 0.3s ease;
         }
     </style>
-</head>
+@endsection
 
-<body>
-    @include('includes._cintillo')
-    @include('includes._register_button', ['titulo' => 'Detalle De Visitantes'])
+@section('content')
     <h1>Detalle De Visitantes</h1>
     <a class="button" href="{{ url()->previous() }}">Volver</a>
     <table>
@@ -94,7 +91,4 @@
             </tr>
         </thead>
     </table>
-
-</body>
-
-</html>
+@endsection

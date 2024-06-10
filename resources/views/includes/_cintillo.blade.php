@@ -1,22 +1,22 @@
 <style>
-    footer {
+    .cintillo {
         display: flex;
         align-items: flex-end;
         width: 100%;
         object-fit: cover;
     }
 
-    footer div {
+    .cintillo div {
         width: 100%;
     }
 
-    footer img {
+    .cintillo img {
         width: 100%;
     }
 </style>
 
-<footer>
+<div class="cintillo">
     <div>
         <img src="{{ asset('img/cintillo.png') }}" alt="cintillo">
     </div>
-</footer>
+</div>
