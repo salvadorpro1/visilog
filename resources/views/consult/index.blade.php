@@ -148,8 +148,8 @@
             </ul>
         </div>
     @endif
+    <h1>Consultar Cedula</h1>
     <div class="container">
-        <h1>Consultar Cedula</h1>
 
         <form method="POST" action="">
             @csrf

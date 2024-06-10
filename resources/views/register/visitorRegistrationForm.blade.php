@@ -85,8 +85,8 @@
     @include('includes._cintillo')
     @include('includes._register_button', ['titulo' => 'Registrar Visitante'])
 
+    <h1>Registrar Visitante</h1>
     <div class="container">
-        <h1>Registrar Visitante</h1>
 
         <form method="POST" action="{{ route('guardar_RegistroVisitor') }}">
             @csrf

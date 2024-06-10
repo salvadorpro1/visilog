@@ -95,8 +95,8 @@
     @include('includes._cintillo')
 
     @include('includes._register_button', ['titulo' => 'Cambiar Contraseña'])
+    <h1>Cambiar Contraseña</h1>
     <div class="container">
-        <h1>Cambiar Contraseña</h1>
 
         @if ($errors->any())
             <div class="alert alert-danger">

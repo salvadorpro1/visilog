@@ -266,8 +266,8 @@
     @include('includes._cintillo')
     @include('includes._register_button', ['titulo' => 'Reporte'])
 
+    <h1>Reporte </h1>
     <div class="container">
-        <h1>Reporte </h1>
         @if ($errors->any())
             <div class="alert alert-danger">
                 <ul>

@@ -208,8 +208,8 @@
             </ul>
         </div>
     @endif
+    <h1>Dashboard de Visitantes </h1>
     <div class="container">
-        <h1>Dashboard de Visitantes </h1>
         <form class="form" action="" method="POST">
             @csrf
 

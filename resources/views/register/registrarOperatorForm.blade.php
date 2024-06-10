@@ -94,8 +94,8 @@
 <body>
     @include('includes._cintillo')
     @include('includes._register_button', ['titulo' => 'Crear Operador'])
+    <h1>Crear Operador</h1>
     <div class="container">
-        <h1>Crear Operador</h1>
         @if ($errors->any())
             <div class="alert alert-danger">
                 <ul>
