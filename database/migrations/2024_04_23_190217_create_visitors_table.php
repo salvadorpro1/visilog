@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('visitors', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id');
             $table->string('nombre');
             $table->string('apellido');
             $table->enum('nacionalidad', ['V', 'E']);
@@ -21,6 +22,7 @@ return new class extends Migration
             $table->string('gerencia');
             $table->text('razon_visita');
             $table->timestamps();
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 

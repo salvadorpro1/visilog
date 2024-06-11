@@ -5,7 +5,6 @@ use Illuminate\Support\Facades\DB;
 
 use Illuminate\Support\Str;
 
-
 use App\Models\Visitor;
 use Illuminate\Support\Facades\Validator;
 
@@ -174,11 +173,9 @@ class VisitorController extends Controller
         return view('account.index', ['fechaMinima' => $fechaMinima]);
     }
     
-
-
     public function accountConsul(Request $request)
     {
-    // Define las reglas de validación
+        // Define las reglas de validación
          $rules = [
         'filial' => 'required|string',
         'gerencia' => 'required|string',

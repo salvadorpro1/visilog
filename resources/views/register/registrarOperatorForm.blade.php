@@ -68,6 +68,14 @@
             transition: background-color 0.3s ease;
         }
 
+        .button-danger {
+            background-color: #dc3545;
+        }
+
+        .button-danger:hover {
+            background-color: #c82333;
+        }
+
         .alert-danger {
             color: #a94442;
             background-color: #f2dede;
@@ -87,12 +95,100 @@
         .alert-danger li {
             margin: 0;
         }
+
+        .operator-cards-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .operator-card {
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .operator-card p {
+            margin: 5px 0;
+        }
+
+        .operator-card .button {
+            display: inline-block;
+            padding: 8px 15px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .operator-card .button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .modal-header .close {
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .modal-body {
+            padding: 10px 0;
+        }
+
+        .modal-body p {
+            margin: 0 0 20px 0;
+        }
+
+        .modal-body form {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
     </style>
 @endsection
 
+
 @section('content')
-    <h1>Crear Operador</h1>
     <div class="container">
+        <h1>Crear Operador</h1>
+
         @if ($errors->any())
             <div class="alert alert-danger">
                 <ul>
@@ -103,25 +199,87 @@
             </div>
         @endif
 
-        <form action="" method="POST">
+        <form action="" method="POST" class="form">
             @csrf
 
-            <label for="name">Nombre:</label>
-            <input type="text" name="name" id="name" required>
+            <div class="form-group">
+                <label for="name">Nombre:</label>
+                <input type="text" name="name" id="name" required>
+            </div>
 
-            <label for="username">Nombre de Usuario:</label>
-            <input type="text" name="username" id="username" required>
+            <div class="form-group">
+                <label for="username">Nombre de Usuario:</label>
+                <input type="text" name="username" id="username" required>
+            </div>
 
-            <label for="password">Contraseña:</label>
-            <input type="password" name="password" id="password" required>
+            <div class="form-group">
+                <label for="password">Contraseña:</label>
+                <input type="password" name="password" id="password" required>
+            </div>
 
-            <label for="password_confirmation">Confirmar Contraseña:</label>
-            <input type="password" name="password_confirmation" id="password_confirmation" required>
+            <div class="form-group">
+                <label for="password_confirmation">Confirmar Contraseña:</label>
+                <input type="password" name="password_confirmation" id="password_confirmation" required>
+            </div>
 
-            <a class="button" href="{{ route('show_Dashboard') }}">Volver</a>
-            <button type="submit">Guardar</button>
-
+            <div class="form-actions">
+                <a class="button" href="{{ route('show_Dashboard') }}">Volver</a>
+                <button type="submit" class="button">Guardar</button>
+            </div>
         </form>
-
     </div>
+
+    <div class="operator-card-container">
+        <h1>Operadores Activos</h1>
+        <div class="operator-cards-container">
+            @if ($operadores->isEmpty())
+                <p>No hay operadores activos.</p>
+            @else
+                @foreach ($operadores as $operador)
+                    <div class="operator-card">
+                        <p>Nombre: {{ $operador->name }}</p>
+                        <p>Username: {{ $operador->username }}</p>
+                        <button type="button" class="button button-danger"
+                            onclick="confirmDeactivation({{ $operador->id }}, '{{ $operador->name }}')">Desactivar
+                        </button>
+                        <button type="button">
+                            Historial
+                        </button>
+                    </div>
+                @endforeach
+            @endif
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="confirmModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirmar Desactivación</h5>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p id="confirmMessage"></p>
+                <form id="confirmForm" method="POST">
+                    @csrf
+                    <button type="button" class="button" onclick="closeModal()">Cancelar</button>
+                    <button type="submit" class="button button-danger">Desactivar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript para manejar el modal -->
+    <script>
+        function confirmDeactivation(operatorId, operatorName) {
+            const actionUrl = '{{ route('deactivate_Operator', ':id') }}'.replace(':id', operatorId);
+            document.getElementById('confirmForm').action = actionUrl;
+            document.getElementById('confirmMessage').innerText = `¿Seguro desea desactivar al operador ${operatorName}?`;
+            document.getElementById('confirmModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('confirmModal').style.display = 'none';
+        }
+    </script>
 @endsection

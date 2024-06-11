@@ -35,8 +35,10 @@ class AuthenticateUserController extends Controller
 
     public function showRegister()
     {
+        $operadores = User::where('role', 'operador')->where('estatus', 'activado')->get();
+
         if (Auth::check() && Auth::user()->role === 'administrador') {
-            return view('register.registrarOperatorForm');
+            return view('register.registrarOperatorForm', compact('operadores'));
         } else {
             return redirect()->route('show_Dashboard')->with('error', 'Acceso denegado. Solo los administradores pueden acceder.');
         }
@@ -112,4 +114,14 @@ class AuthenticateUserController extends Controller
         return redirect()->route('show_Dashboard')->with('success', 'Contraseña cambiada exitosamente');
     }
 
+    public function deactivateOperator($id)
+    {
+    $operador = User::findOrFail($id);
+    if ($operador->role == 'operador') {
+        $operador->estatus = 'desactivado';
+        $operador->save();
+    }
+
+    return redirect()->route('showRegisterCreate')->with('success', 'Operador desactivado exitosamente.');
+    }
 }

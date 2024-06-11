@@ -14,6 +14,7 @@ class VisitorsTableSeeder extends Seeder
     public function run(): void
     {
         DB::table('visitors')->insert([
+            'user_id' => 2, // Asegúrate de que este ID existe en la tabla users
             'nombre' => 'Juan',
             'apellido' => 'Pérez',
             'nacionalidad' => 'V',
@@ -26,6 +27,7 @@ class VisitorsTableSeeder extends Seeder
         ]);
 
         DB::table('visitors')->insert([
+            'user_id' => 2, // Asegúrate de que este ID existe en la tabla users
             'nombre' => 'María',
             'apellido' => 'González',
             'nacionalidad' => 'E',
