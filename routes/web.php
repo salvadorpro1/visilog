@@ -21,9 +21,10 @@ use App\Http\Controllers\Dashboard;
 Route::get('/', [AuthenticateUserController::class, "showLoginForm"])->middleware('auth.redirect')->name('show_LoginForm');
 Route::post('/login', [AuthenticateUserController::class, "login"]);
 Route::get('/logout', [AuthenticateUserController::class, 'logout'])->name('logout');
-route::get('/crear-operador', [AuthenticateUserController::class, 'showRegister'])->middleware('auth')->name('showRegisterCreate');
-route::post('/crear-operador', [AuthenticateUserController::class, 'saveRegistrar'])->name('saveRegistrar');
-Route::post('/crear-operador/desactivar/{id}', [AuthenticateUserController::class, 'deactivateOperator'])->name('deactivate_Operator');
+route::get('/operador', [AuthenticateUserController::class, 'showRegister'])->middleware('auth')->name('showRegisterCreate');
+route::get('/operador', [AuthenticateUserController::class, 'showRegister'])->middleware('auth')->name('showRegisterCreate');
+route::get('/operador/historial/{id}', [AuthenticateUserController::class, 'showHistory'])->name('history_Operator');
+Route::post('/operador/desactivar/{id}', [AuthenticateUserController::class, 'deactivateOperator'])->name('deactivate_Operator');
 
 Route::get('/mostrar-cambiar-contraseña', [AuthenticateUserController::class, "showChangePassword"])->middleware('auth')->name('changePassword');
 

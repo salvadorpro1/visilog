@@ -184,7 +184,6 @@
     </style>
 @endsection
 
-
 @section('content')
     <div class="container">
         <h1>Crear Operador</h1>
@@ -242,9 +241,7 @@
                         <button type="button" class="button button-danger"
                             onclick="confirmDeactivation({{ $operador->id }}, '{{ $operador->name }}')">Desactivar
                         </button>
-                        <button type="button">
-                            Historial
-                        </button>
+                        <a href="{{ route('history_Operator', $operador->id) }}" class="button">Historial</a>
                     </div>
                 @endforeach
             @endif

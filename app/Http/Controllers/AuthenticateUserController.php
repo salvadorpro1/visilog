@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Visitor; 
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -20,6 +21,13 @@ class AuthenticateUserController extends Controller
         $credentials = $request->only('username', 'password');
 
         if (Auth::attempt($credentials)) {
+            $user = Auth::user();
+
+            if ($user->estatus == 'desactivado') {
+                Auth::logout();
+                return redirect()->back()->withInput()->withErrors(['username' => 'Este usuario está desactivado.']);
+            }
+
             return redirect()->intended(route('show_Dashboard'));
         } else {
             return redirect()->back()->withInput()->withErrors(['username' => 'Credenciales inválidas']);
@@ -116,12 +124,24 @@ class AuthenticateUserController extends Controller
 
     public function deactivateOperator($id)
     {
-    $operador = User::findOrFail($id);
-    if ($operador->role == 'operador') {
+     $operador = User::findOrFail($id);
+      if ($operador->role == 'operador') {
         $operador->estatus = 'desactivado';
         $operador->save();
+      }
+
+        return redirect()->route('showRegisterCreate')->with('success', 'Operador desactivado exitosamente.');
     }
 
-    return redirect()->route('showRegisterCreate')->with('success', 'Operador desactivado exitosamente.');
+    public function showHistory($operador_id)
+    {
+         // Obtener el operador
+         $operador = User::findOrFail($operador_id);
+
+         // Obtener el historial de visitantes registrados por este operador
+         $historial = Visitor::where('user_id', $operador_id)->get();
+ 
+         // Pasar los datos a la vista
+         return view('register.historyOperator', compact('operador', 'historial'));
     }
 }
