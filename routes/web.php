@@ -22,7 +22,7 @@ Route::get('/', [AuthenticateUserController::class, "showLoginForm"])->middlewar
 Route::post('/login', [AuthenticateUserController::class, "login"]);
 Route::get('/logout', [AuthenticateUserController::class, 'logout'])->name('logout');
 route::get('/operador', [AuthenticateUserController::class, 'showRegister'])->middleware('auth')->name('showRegisterCreate');
-route::get('/operador', [AuthenticateUserController::class, 'showRegister'])->middleware('auth')->name('showRegisterCreate');
+route::post('/operador', [AuthenticateUserController::class, 'saveRegistrar'])->middleware('auth')->name('showRegisterCreate');
 route::get('/operador/historial/{id}', [AuthenticateUserController::class, 'showHistory'])->name('history_Operator');
 Route::post('/operador/desactivar/{id}', [AuthenticateUserController::class, 'deactivateOperator'])->name('deactivate_Operator');
 

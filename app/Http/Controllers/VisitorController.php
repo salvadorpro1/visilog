@@ -20,6 +20,7 @@ class VisitorController extends Controller
 
     public function showRegisterVisitor(Request $request)
     {
+
         $cedula = $request->input('cedula');
         $nacionalidad = $request->input('nacionalidad', ''); // Default to empty string if not present
         $visitor = Visitor::where('cedula', $cedula)->where('nacionalidad', $nacionalidad)->first();
@@ -108,6 +109,7 @@ class VisitorController extends Controller
     
     public function saveVisitor(Request $request)
     {
+
         // Define las reglas de validación
         $rules = [
             'nacionalidad' => 'required|in:V,E',
@@ -152,9 +154,9 @@ class VisitorController extends Controller
         $visitor->filial = $request->input('filial');
         $visitor->gerencia = $request->input('gerencia');
         $visitor->razon_visita = $request->input('razon_visita');
+        $visitor->user_id = auth()->id();  // Asigna el ID del usuario autenticado
 
         $visitor->save();
-
         return redirect()->route('show_Dashboard')->with('success', 'Los datos se han enviado correctamente.');
     }
 

@@ -147,6 +147,12 @@
             margin: 0;
         }
 
+        .alert {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
         .container-card {
             display: flex;
             width: 100%;
@@ -169,6 +175,11 @@
         th {
             background: #9c9c9c;
             border: 1px solid black;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
         }
     </style>
 @endsection

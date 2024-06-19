@@ -81,6 +81,7 @@
 @endsection
 
 @section('content')
+
     <h1>Registrar Visitante</h1>
     <div class="container">
 

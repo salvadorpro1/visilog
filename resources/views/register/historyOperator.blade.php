@@ -72,6 +72,27 @@
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
+
+        td a {
+            text-decoration: none;
+            color: #0000EE;
+        }
+
+        td a:hover {
+            text-decoration: underline;
+            color: #0000d1;
+        }
+
+        .truncate {
+            white-space: nowrap;
+            /* Evita que el texto se envuelva */
+            overflow: hidden;
+            /* Oculta el texto que se desborda */
+            text-overflow: ellipsis;
+            /* Agrega puntos suspensivos (...) al final del texto truncado */
+            max-width: 250px;
+            /* Ancho máximo del contenedor */
+        }
     </style>
 @endsection
 
@@ -103,15 +124,22 @@
                                 <td>{{ $visitante->nombre }}</td>
                                 <td>{{ $visitante->apellido }}</td>
                                 <td>{{ $visitante->nacionalidad }}</td>
-                                <td>{{ $visitante->cedula }}</td>
+                                <td><a
+                                        href="{{ route('show_Register_Visitor_Detail', $visitante->id) }}">{{ $visitante->cedula }}</a>
+                                </td>
                                 <td>{{ $visitante->filial }}</td>
                                 <td>{{ $visitante->gerencia }}</td>
-                                <td>{{ $visitante->razon_visita }}</td>
+                                <td class="truncate">{{ $visitante->razon_visita }}</td>
                                 <td>{{ $visitante->created_at->format('d-m-Y') }}</td>
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
+
+                <!-- Agregar paginación -->
+                <div class="pagination">
+                    {{ $historial->links() }}
+                </div>
             @endif
         </div>
     </div>

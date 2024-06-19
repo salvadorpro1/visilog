@@ -43,6 +43,10 @@
     <table>
         <thead>
             <tr>
+                <th>Operador</th>
+                <td>{{ $persona->user->name }}</td>
+            </tr>
+            <tr>
                 <th>Nombre</th>
                 <td>{{ $persona->nombre }}</td>
             </tr>

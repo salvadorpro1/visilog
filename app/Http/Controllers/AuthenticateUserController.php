@@ -57,26 +57,27 @@ class AuthenticateUserController extends Controller
         // Define las reglas de validación
         $rules = [
             'name' => 'required|regex:/^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$/',
-            'username' => 'required|alpha_num',
-            'password' => 'required|min:6|confirmed', // Agregamos la regla 'confirmed' para validar la confirmación de la contraseña
+            'username' => 'required|alpha_num|unique:users,username', // Agregamos la regla 'unique'
+            'password' => 'required|min:6|confirmed',
         ];
-
+    
         // Define los mensajes de error personalizados
         $messages = [
             'name.regex' => 'El nombre solo puede contener letras y espacios.',
             'username.alpha_num' => 'El nombre de usuario solo puede contener letras y números.',
+            'username.unique' => 'El nombre de usuario ya está en uso.', // Mensaje personalizado
             'password.min' => 'La contraseña debe tener al menos :min caracteres.',
             'password.confirmed' => 'La confirmación de la contraseña no coincide.',
         ];
-
+    
         // Valida los datos
         $validator = Validator::make($request->all(), $rules, $messages);
-
+    
         // Si la validación falla, redirige de vuelta con los errores
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
-
+    
         // Si la validación es exitosa, crea el usuario
         User::create([
             'name' => $request->name,
@@ -84,7 +85,7 @@ class AuthenticateUserController extends Controller
             'role' => 'operador',
             'password' => bcrypt($request->password),
         ]);
-
+    
         return redirect()->route('show_Dashboard')->with('success', 'Usuario creado satisfactoriamente.');
     }
 
@@ -135,13 +136,13 @@ class AuthenticateUserController extends Controller
 
     public function showHistory($operador_id)
     {
-         // Obtener el operador
-         $operador = User::findOrFail($operador_id);
-
-         // Obtener el historial de visitantes registrados por este operador
-         $historial = Visitor::where('user_id', $operador_id)->get();
- 
-         // Pasar los datos a la vista
-         return view('register.historyOperator', compact('operador', 'historial'));
+        // Obtener el operador
+        $operador = User::findOrFail($operador_id);
+    
+        // Obtener el historial de visitantes registrados por este operador con paginación
+        $historial = Visitor::where('user_id', $operador_id)->paginate(10);
+    
+        // Pasar los datos a la vista
+        return view('register.historyOperator', compact('operador', 'historial'));
     }
 }

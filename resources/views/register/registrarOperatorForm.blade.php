@@ -14,8 +14,6 @@
         }
 
         .container {
-            max-width: 400px;
-            margin: 50px auto;
             padding: 20px;
             background-color: #fff;
             border-radius: 5px;
@@ -97,10 +95,12 @@
         }
 
         .operator-cards-container {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            display: flex;
+            flex-direction: column;
             gap: 10px;
             margin-top: 20px;
+            height: 360px;
+            overflow: auto;
         }
 
         .operator-card {
@@ -181,73 +181,83 @@
             justify-content: space-between;
             align-items: center;
         }
+
+        .dividir {
+            display: flex;
+            justify-content: center;
+            gap: 0 5%;
+            align-items: center;
+            height: 83.5vh;
+        }
     </style>
 @endsection
 
 @section('content')
-    <div class="container">
-        <h1>Crear Operador</h1>
+    <div class="dividir">
 
-        @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
 
-        <form action="" method="POST" class="form">
-            @csrf
+        <div class="container">
+            <h1>Crear Operador</h1>
 
-            <div class="form-group">
-                <label for="name">Nombre:</label>
-                <input type="text" name="name" id="name" required>
-            </div>
-
-            <div class="form-group">
-                <label for="username">Nombre de Usuario:</label>
-                <input type="text" name="username" id="username" required>
-            </div>
-
-            <div class="form-group">
-                <label for="password">Contraseña:</label>
-                <input type="password" name="password" id="password" required>
-            </div>
-
-            <div class="form-group">
-                <label for="password_confirmation">Confirmar Contraseña:</label>
-                <input type="password" name="password_confirmation" id="password_confirmation" required>
-            </div>
-
-            <div class="form-actions">
-                <a class="button" href="{{ route('show_Dashboard') }}">Volver</a>
-                <button type="submit" class="button">Guardar</button>
-            </div>
-        </form>
-    </div>
-
-    <div class="operator-card-container">
-        <h1>Operadores Activos</h1>
-        <div class="operator-cards-container">
-            @if ($operadores->isEmpty())
-                <p>No hay operadores activos.</p>
-            @else
-                @foreach ($operadores as $operador)
-                    <div class="operator-card">
-                        <p>Nombre: {{ $operador->name }}</p>
-                        <p>Username: {{ $operador->username }}</p>
-                        <button type="button" class="button button-danger"
-                            onclick="confirmDeactivation({{ $operador->id }}, '{{ $operador->name }}')">Desactivar
-                        </button>
-                        <a href="{{ route('history_Operator', $operador->id) }}" class="button">Historial</a>
-                    </div>
-                @endforeach
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
             @endif
+
+            <form action="" method="POST" class="form">
+                @csrf
+
+                <div class="form-group">
+                    <label for="name">Nombre:</label>
+                    <input type="text" name="name" id="name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="username">Nombre de Usuario:</label>
+                    <input type="text" name="username" id="username" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Contraseña:</label>
+                    <input type="password" name="password" id="password" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password_confirmation">Confirmar Contraseña:</label>
+                    <input type="password" name="password_confirmation" id="password_confirmation" required>
+                </div>
+
+                <div class="form-actions">
+                    <a class="button" href="{{ route('show_Dashboard') }}">Volver</a>
+                    <button type="submit" class="button">Guardar</button>
+                </div>
+            </form>
+        </div>
+        <div class="operator-card-container">
+            <h1>Operadores Activos</h1>
+            <div class="operator-cards-container">
+                @if ($operadores->isEmpty())
+                    <p>No hay operadores activos.</p>
+                @else
+                    @foreach ($operadores as $operador)
+                        <div class="operator-card">
+                            <p>Nombre: {{ $operador->name }}</p>
+                            <p>Username: {{ $operador->username }}</p>
+                            <button type="button" class="button button-danger"
+                                onclick="confirmDeactivation({{ $operador->id }}, '{{ $operador->name }}')">Desactivar
+                            </button>
+                            <a href="{{ route('history_Operator', $operador->id) }}" class="button">Historial</a>
+                        </div>
+                    @endforeach
+                @endif
+            </div>
         </div>
     </div>
-
     <!-- Modal -->
     <div class="modal" id="confirmModal">
         <div class="modal-content">
