@@ -126,11 +126,11 @@
                     @endif
                 </li>
                 <div class="user-menu__menu-container">
-                    <div class="user-menu__username">
-                        @if (Auth::check())
+                    @if (Auth::check())
+                        <div class="user-menu__username">
                             <a class="user-menu__item-link">{{ Auth::user()->username }}</a>
-                        @endif
-                    </div>
+                        </div>
+                    @endif
                     <ul class="user-menu__submenu">
                         <li class="user-menu__item">
                             <a href="{{ route('changePassword') }}" class="user-menu__item-link">Cambiar Contraseña</a>

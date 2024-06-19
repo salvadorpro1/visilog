@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Pagination\Paginator; // Añadir esta línea
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -20,6 +21,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        // Configurar el paginador para usar Bootstrap
+        Paginator::useBootstrap();
+
+        // Mantener la configuración existente
         view()->composer('includes._register_button', function ($view) {
             $user = Auth::user();
             $view->with('user', $user);

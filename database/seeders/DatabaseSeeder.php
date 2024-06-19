@@ -1,9 +1,8 @@
 <?php
-
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\Visitor; 
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,7 +12,8 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call(UsersTableSeeder::class);
-
-        $this->call(VisitorsTableSeeder::class);
+        Visitor::factory()->count(40)->create(); // Cambia "Visit" por "Visitor"
     }
+
+    
 }

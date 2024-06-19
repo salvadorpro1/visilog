@@ -97,6 +97,7 @@
 @endsection
 
 @section('content')
+
     <a class="button" href="{{ url()->previous() }}">Volver</a>
 
     <div class="container">
