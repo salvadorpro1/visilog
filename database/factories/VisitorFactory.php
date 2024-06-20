@@ -17,7 +17,7 @@ class VisitorFactory extends Factory
             'apellido' => $this->faker->lastName,
             'nacionalidad' => $this->faker->randomElement(['V', 'E']),
             'cedula' => $this->faker->unique()->numberBetween(10000000, 99999999),
-            'filial' => $this->faker->company,
+            'filial' => $this->faker->randomElement(['Vencemos', 'Invecem', 'ENTIPI', 'Cemento Andino', 'Cemento Cerro Azul', 'FNC']),
             'gerencia' => $this->faker->word,
             'razon_visita' => $this->faker->sentence,
             'created_at' => now(),

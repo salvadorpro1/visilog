@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('apellido');
             $table->enum('nacionalidad', ['V', 'E']);
             $table->string('cedula');
-            $table->string('filial');
+            $table->enum('filial', ['Vencemos', 'Invecem', 'ENTIPI', 'Cemento Andino', 'Cemento Cerro Azul', 'FNC']);
             $table->string('gerencia');
             $table->text('razon_visita');
             $table->timestamps();

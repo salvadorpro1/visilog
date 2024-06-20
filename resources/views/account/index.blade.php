@@ -279,9 +279,12 @@
             <select class="form__select" name="filial" id="filial"
                 onchange="quitarSeleccionInicial('filial'), updateGerenciaOptions(this.value, 'gerencia')">
                 <option value="" selected disabled>Elegir filial</option>
-                <option value="vencemos">Vencemos</option>
-                <option value="invecem">Invecem</option>
-                <option value="fnc">FNC</option>
+                <option value="Vencemos">Vencemos</option>
+                <option value="Invecem">Invecem</option>
+                <option value="ENTIPI">ENTIPI</option>
+                <option value="Cemento Andino">Cemento Andino</option>
+                <option value="Cemento Cerro Azul">Cemento Cerro Azul</option>
+                <option value="FNC">FNC</option>
             </select>
             <label class="form__label" for="gerencia">Gerencia</label>
             <select class="form__select" name="gerencia" id="gerencia" onchange="quitarSeleccionInicial('gerencia')">
@@ -398,13 +401,20 @@
             gerenciaSelect.innerHTML = ''; // Limpiar opciones actuales
 
             var opciones = [];
-            if (filialValue === 'vencemos') {
-                opciones = ['Todo(vencemos)', 'value1A', 'value2A', 'value3A'];
-            } else if (filialValue === 'invecem') {
-                opciones = ['Todo(invecem)', 'value1B', 'value2B', 'value3B'];
-            } else if (filialValue === 'fnc') {
-                opciones = ['Todo(FNC)', 'value1C', 'value2C', 'value3C']; // Opciones predeterminadas
+            if (filialValue === 'Vencemos') {
+                opciones = ['Todo(Vencemos)', 'value1A', 'value2A', 'value3A'];
+            } else if (filialValue === 'Invecem') {
+                opciones = ['Todo(Invecem)', 'value1B', 'value2B', 'value3B'];
+            } else if (filialValue === 'ENTIPI') {
+                opciones = ['Todo(ENTIPI)', 'value1C', 'value2C', 'value3C'];
+            } else if (filialValue === 'Cemento Andino') {
+                opciones = ['Todo(Cemento Andino)', 'value1D', 'value2D', 'value3D'];
+            } else if (filialValue === 'Cemento Cerro Azul') {
+                opciones = ['Todo(Cemento Cerro Azul)', 'value1E', 'value2E', 'value3E'];
+            } else if (filialValue === 'FNC') {
+                opciones = ['Todo(FNC)', 'value1F', 'value2F', 'value3F'];
             }
+
 
             opciones.forEach(function(opcion) {
                 var option = document.createElement('option');

@@ -120,11 +120,11 @@
                 <li class="user-menu__item">
                     <a href="{{ route('show_consult') }}" class="user-menu__item-link">Registrar visitante</a>
                 </li>
-                <li class="user-menu__item">
-                    @if ($user && $user->role === 'administrador')
+                @if ($user && $user->role === 'administrador')
+                    <li class="user-menu__item">
                         <a class="user-menu__item-link" href="{{ route('showRegisterCreate') }}">Crear operador</a>
-                    @endif
-                </li>
+                    </li>
+                @endif
                 <div class="user-menu__menu-container">
                     @if (Auth::check())
                         <div class="user-menu__username">
