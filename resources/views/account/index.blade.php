@@ -260,9 +260,8 @@
         }
     </style>
 @endsection
-
 @section('content')
-    <h1>Reporte </h1>
+    <h1>Reporte</h1>
     <div class="container">
         @if ($errors->any())
             <div class="alert alert-danger">
@@ -273,7 +272,7 @@
                 </ul>
             </div>
         @endif
-        <form class="form" method="POST" action="">
+        <form class="form" method="GET" action="{{ route('show_Account') }}">
             @csrf
             <label class="form__label" for="filial">Filial</label>
             <select class="form__select" name="filial" id="filial"
@@ -292,24 +291,19 @@
             </select>
             <div class="form__container_date">
                 <div>
-                    <label class="form__label" for="dia">desde</label>
+                    <label class="form__label" for="dia">Desde</label>
                     <input class="form__input" type="date" name="diadesde" id="diadesde"
                         min="{{ \Carbon\Carbon::parse($fechaMinima)->format('Y-m-d') }}" max="{{ date('Y-m-d') }}">
                 </div>
                 <div>
-                    <label class="form__label" for="dia">hasta</label>
+                    <label class="form__label" for="dia">Hasta</label>
                     <input class="form__input" type="date" name="diahasta" id="diahasta"
                         min="{{ \Carbon\Carbon::parse($fechaMinima)->format('Y-m-d') }}" max="{{ date('Y-m-d') }}">
                 </div>
             </div>
-
             <a class="button" href="{{ route('show_Dashboard') }}">Volver</a>
             <input class="form__submit" type="submit" value="Consultar">
-
         </form>
-
-
-
 
         @if (isset($visitorCount))
             <div class="results">
@@ -335,55 +329,59 @@
                     </div>
                     <div class="result-card">
                         <span class="result-label">Visitantes:</span>
-                        <span class="result-value">{{ 'Hay ' . $visitorCount . ' vistantes totales' }}</span>
+                        <span class="result-value">{{ 'Hay ' . $visitorCount . ' visitantes totales' }}</span>
                     </div>
                 </div>
 
                 @if ($visitors->count() > 0)
-                    <table class="results-table">
-                        <thead>
-                            <tr>
-                                <th>Nombre</th>
-                                <th>Apellido</th>
-                                <th>nacionalidad</th>
-                                <th>Cedula</th>
-                                <th>Fecha</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($visitors as $visitor)
+                    <form method="GET" action="{{ route('show_Account') }}">
+                        <input type="hidden" name="filial" value="{{ request('filial') }}">
+                        <input type="hidden" name="gerencia" value="{{ request('gerencia') }}">
+                        <input type="hidden" name="diadesde" value="{{ request('diadesde') }}">
+                        <input type="hidden" name="diahasta" value="{{ request('diahasta') }}">
+                        <table class="results-table">
+                            <thead>
                                 <tr>
-                                    <td>{{ $visitor->nombre }}</td>
-                                    <td>{{ $visitor->apellido }}</td>
-                                    @switch($visitor->nacionalidad)
-                                        @case('V')
-                                            <td>Venezolana</td>
-                                        @break
-
-                                        @case('E')
-                                            <td>Extranjero</td>
-                                        @break
-
-                                        @default
-                                            <td>Dato no valido</td>
-                                    @endswitch
-                                    <td><a
-                                            href="{{ route('show_Register_Visitor_Detail', $visitor->id) }}">{{ $visitor->cedula }}</a>
-                                    </td>
-                                    <td>{{ \Carbon\Carbon::parse($visitor->created_at)->format('d/m/Y') }}</td>
-
+                                    <th>Nombre</th>
+                                    <th>Apellido</th>
+                                    <th>Nacionalidad</th>
+                                    <th>Cédula</th>
+                                    <th>Fecha</th>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                    <div class="pagination">
-                        {{ $visitors->links() }}
-                    </div>
+                            </thead>
+                            <tbody>
+                                @foreach ($visitors as $visitor)
+                                    <tr>
+                                        <td>{{ $visitor->nombre }}</td>
+                                        <td>{{ $visitor->apellido }}</td>
+                                        @switch($visitor->nacionalidad)
+                                            @case('V')
+                                                <td>Venezolana</td>
+                                            @break
+
+                                            @case('E')
+                                                <td>Extranjero</td>
+                                            @break
+
+                                            @default
+                                                <td>Dato no válido</td>
+                                        @endswitch
+                                        <td><a
+                                                href="{{ route('show_Register_Visitor_Detail', $visitor->id) }}">{{ $visitor->cedula }}</a>
+                                        </td>
+                                        <td>{{ \Carbon\Carbon::parse($visitor->created_at)->format('d/m/Y') }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                        <div class="pagination">
+                            {{ $visitors->appends(request()->query())->links() }}
+                        </div>
+                    </form>
                 @else
                     <p class="no-results">No se encontraron visitantes para los criterios seleccionados.</p>
                 @endif
             </div>
-
         @endif
     </div>
 
@@ -415,7 +413,6 @@
                 opciones = ['Todo(FNC)', 'value1F', 'value2F', 'value3F'];
             }
 
-
             opciones.forEach(function(opcion) {
                 var option = document.createElement('option');
                 option.value = opcion;
@@ -424,5 +421,4 @@
             });
         }
     </script>
-
 @endsection

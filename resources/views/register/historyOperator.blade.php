@@ -98,7 +98,7 @@
 
 @section('content')
 
-    <a class="button" href="{{ url()->previous() }}">Volver</a>
+    <a class="button" href="{{ route('showRegisterCreate') }}">Volver</a>
 
     <div class="container">
         <h1>Historial de {{ $operador->name }}</h1>
