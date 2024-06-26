@@ -121,10 +121,12 @@
                         <a href="{{ route('show_Account') }}" class="user-menu__item-link">Reporte</a>
                     </li>
                 @endif
+                @if ($user && $user->role === 'operador')
+                    <li class="user-menu__item">
+                        <a href="{{ route('show_consult') }}" class="user-menu__item-link">Registrar visitante</a>
+                    </li>
+                @endif
 
-                <li class="user-menu__item">
-                    <a href="{{ route('show_consult') }}" class="user-menu__item-link">Registrar visitante</a>
-                </li>
                 @if ($user && $user->role === 'administrador')
                     <li class="user-menu__item">
                         <a class="user-menu__item-link" href="{{ route('showRegisterCreate') }}">Crear operador</a>

@@ -71,6 +71,8 @@ class Kernel extends HttpKernel
 
     protected $routeMiddleware = [
         'check.active' => \App\Http\Middleware\CheckActiveStatus::class,
+        'role' => \App\Http\Middleware\CheckRole::class,
+
     ];
     
 }
