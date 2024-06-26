@@ -18,18 +18,28 @@ class AuthenticateUserController extends Controller
 
     public function login(Request $request)
     {
+        // Solo tomamos los campos 'username' y 'password' del request
         $credentials = $request->only('username', 'password');
-
+    
+        // Intentamos autenticar al usuario con las credenciales proporcionadas
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
-
+    
+            // Verificamos si el usuario está desactivado
             if ($user->estatus == 'desactivado') {
+                // Si está desactivado, cerramos la sesión y redirigimos de vuelta con un error
                 Auth::logout();
                 return redirect()->back()->withInput()->withErrors(['username' => 'Este usuario está desactivado.']);
             }
-
-            return redirect()->intended(route('show_Dashboard'));
-        } else {
+    
+            // Verificamos el rol del usuario y redirigimos a la ruta correspondiente
+            if ($user->role == 'administrador') {
+                return redirect()->intended(route('show_Dashboard'));
+            } elseif ($user->role == 'operador') {
+                return redirect()->intended(route('show_consult'));
+            }
+            } else {
+            // Si las credenciales son incorrectas, redirigimos de vuelta con un error
             return redirect()->back()->withInput()->withErrors(['username' => 'Credenciales inválidas']);
         }
     }
