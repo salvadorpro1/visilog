@@ -41,10 +41,10 @@ Route::get('/registro-de-visitantes', [VisitorController::class, 'showRegister']
 
 Route::get('/registro-de-visitantes/{cedula}', [VisitorController::class, 'showRegisterDetail'])->middleware(['auth', 'role:administrador'])->name('show_Register_Visitor_Detail');
 
-Route::get('/registro', [VisitorController::class, 'showRegisterVisitor'])->middleware(['auth', 'role:administrador'])->name('show_register');
+Route::get('/registro', [VisitorController::class, 'showRegisterVisitor'])->middleware(['auth', 'role:operador'])->name('show_register');
 
 
-Route::post('/guardar-registro', [VisitorController::class, 'saveVisitor'])->middleware(['auth', 'role:administrador'])->name('guardar_RegistroVisitor');
+Route::post('/guardar-registro', [VisitorController::class, 'saveVisitor'])->middleware(['auth', 'role:operador'])->name('guardar_RegistroVisitor');
 
 Route::get('/reporte', [VisitorController::class, 'showAccount'])->middleware(['auth', 'role:administrador'])->name('show_Account');
 Route::post('/reporte', [VisitorController::class, 'accountConsul']);

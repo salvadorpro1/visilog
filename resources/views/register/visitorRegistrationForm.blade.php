@@ -113,7 +113,10 @@
                 </select>
                 <label for="">Razón de la visita</label>
                 <textarea name="razon_visita" cols="30" rows="10" maxlength="255"></textarea>
-                <a class="button" href="{{ route('show_Dashboard') }}">Volver</a>
+                <a class="button"
+                    href="{{ Auth::user()->role == 'operador' ? route('show_consult') : route('show_Dashboard') }}">
+                    Volver
+                </a>
                 <input type="submit" value="Enviar">
             @else
                 <label for="">Nacionalidad</label>
@@ -141,7 +144,10 @@
                 </select>
                 <label for="">Razón de la visita</label>
                 <textarea name="razon_visita" cols="30" rows="10" maxlength="255"></textarea>
-                <a class="button" href="{{ route('show_Dashboard') }}">Volver</a>
+                <a class="button"
+                    href="{{ Auth::user()->role == 'operador' ? route('show_consult') : route('show_Dashboard') }}">
+                    Volver
+                </a>
                 <input type="submit" value="Enviar">
             @endif
         </form>

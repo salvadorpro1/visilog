@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
-
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth; 
 
 use App\Models\Visitor;
 use Illuminate\Support\Facades\Validator;
@@ -109,7 +108,6 @@ class VisitorController extends Controller
     
     public function saveVisitor(Request $request)
     {
-
         // Define las reglas de validación
         $rules = [
             'nacionalidad' => 'required|in:V,E',
@@ -157,7 +155,16 @@ class VisitorController extends Controller
         $visitor->user_id = auth()->id();  // Asigna el ID del usuario autenticado
 
         $visitor->save();
-        return redirect()->route('show_Dashboard')->with('success', 'Los datos se han enviado correctamente.');
+
+        $user = Auth::user();
+
+        if ($user->role == 'operador') {
+            return redirect()->route('show_consult')->with('success', 'Los datos se han enviado correctamente.');
+        } elseif ($user->role == 'administrador') {
+            return redirect()->route('show_Dashboard')->with('success', 'Los datos se han enviado correctamente.');
+        } else {
+            return redirect()->route('default_route')->with('success', 'Los datos se han enviado correctamente.');
+        }
     }
 
     public function truncateText($text, $length = 50, $ending = '...')
