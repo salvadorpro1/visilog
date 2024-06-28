@@ -118,11 +118,14 @@
             cursor: pointer;
         }
 
+
         #video,
         #photo {
             width: 100%;
             height: 100%;
         }
+
+
 
         #capture,
         #reset {
@@ -170,16 +173,16 @@
                 </select>
                 <label for="">Razón de la visita</label>
                 <textarea name="razon_visita" cols="30" rows="10" maxlength="255"></textarea>
+                <input type="hidden" id="fotoInput" name="foto">
                 <div class="form_register__container form_register__container--containerimagen">
                     <label class="form_register__label form_register__label--center" for="">Foto</label>
-                    <div class="form_register__imagecontainer" id="imageContainer" onclick="initCamera()">
+                    <div class="form_register__imagecontainer" onclick="initCamera()">
                         <video id="video" autoplay></video>
                         <img id="photo">
                     </div>
-                    <button id="capture" type="button" onclick="takePhoto()">Tomar Foto</button>
-                    <button id="reset" type="button" onclick="resetPhoto()">Reiniciar Foto</button>
+                    <button type="button" id="capture" onclick="takePhoto()">Tomar Foto</button>
+                    <button type="button" id="reset" onclick="resetPhoto()">Reiniciar Foto</button>
                 </div>
-                <input type="file" name="foto" id="fotoInput" style="display:none;">
                 <a class="button"
                     href="{{ Auth::user()->role == 'operador' ? route('show_consult') : route('show_Dashboard') }}">
                     Volver

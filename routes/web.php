@@ -54,3 +54,4 @@ Route::get('/dashboard', [Dashboard::class, 'showDashboard'])->middleware(['auth
 Route::post('/dashboard', [Dashboard::class, 'dashboard'])->middleware('auth')->name('Dashboard');
 
 
+Route::get('/visitor/photo/{filename}', [VisitorController::class, 'getVisitorPhoto'])->name('visitor.photo');

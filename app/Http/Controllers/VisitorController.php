@@ -117,8 +117,9 @@ class VisitorController extends Controller
             'filial' => 'required',
             'gerencia' => 'required',
             'razon_visita' => 'required|max:255',
+            'foto' => 'required', // Validar que la foto está presente
         ];
-
+    
         // Define los mensajes de error personalizados
         $messages = [
             'nacionalidad.required' => 'La nacionalidad es obligatoria.',
@@ -133,17 +134,27 @@ class VisitorController extends Controller
             'gerencia.required' => 'La gerencia es obligatoria.',
             'razon_visita.required' => 'La razón de visita es obligatoria.',
             'razon_visita.max' => 'La razón de visita no puede tener más de :max caracteres.',
+            'foto.required' => 'La foto es obligatoria.',
         ];
-
+    
         // Valida los datos
         $validator = Validator::make($request->all(), $rules, $messages);
-
+    
         // Si la validación falla, redirige de vuelta con los errores
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
-
-        // Si la validación es exitosa, guarda los datos del visitante
+    
+        // Procesar la imagen
+        $dataURL = $request->input('foto');
+        $data = explode(',', $dataURL);
+        $imageData = base64_decode($data[1]);
+        $fileName = 'visitor_' . Str::random(10) . '.png';
+    
+        // Guardar la imagen en el disco local (storage/app/visitors)
+        Storage::disk('local')->put('visitors/' . $fileName, $imageData);
+    
+        // Guardar los datos del visitante
         $visitor = new Visitor();
         $visitor->nacionalidad = $request->input('nacionalidad');
         $visitor->cedula = $request->input('cedula');
@@ -152,12 +163,13 @@ class VisitorController extends Controller
         $visitor->filial = $request->input('filial');
         $visitor->gerencia = $request->input('gerencia');
         $visitor->razon_visita = $request->input('razon_visita');
-        $visitor->user_id = auth()->id();  // Asigna el ID del usuario autenticado
-
+        $visitor->user_id = auth()->id();
+        $visitor->foto = $fileName; // Guardar solo el nombre del archivo
+    
         $visitor->save();
-
+    
         $user = Auth::user();
-
+    
         if ($user->role == 'operador') {
             return redirect()->route('show_consult')->with('success', 'Los datos se han enviado correctamente.');
         } elseif ($user->role == 'administrador') {
@@ -166,6 +178,21 @@ class VisitorController extends Controller
             return redirect()->route('default_route')->with('success', 'Los datos se han enviado correctamente.');
         }
     }
+
+    public function getVisitorPhoto($filename)
+    {
+    // Verifica si el archivo existe en el disco local
+    if (Storage::disk('local')->exists('visitors/' . $filename)) {
+        // Devuelve el archivo como una respuesta
+        $file = Storage::disk('local')->get('visitors/' . $filename);
+        $type = Storage::disk('local')->mimeType('visitors/' . $filename);
+
+        return response($file, 200)->header('Content-Type', $type);
+    } else {
+        abort(404, 'Imagen no encontrada');
+    }
+    }
+    
 
     public function truncateText($text, $length = 50, $ending = '...')
     {
