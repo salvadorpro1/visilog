@@ -77,6 +77,63 @@
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
+
+        .form_register__container {
+            display: flex;
+            width: 100%;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .form_register__container--containerimagen {
+            height: 15rem;
+            position: relative;
+        }
+
+        .form_register__container--affiliate {
+            flex-direction: row;
+        }
+
+        .form_register__label {
+            color: var(--second-color);
+            font-size: 1.4rem;
+            margin: 1rem 0 0 1rem;
+            align-self: flex-start;
+            font-weight: 600;
+        }
+
+        .form_register__label--center {
+            align-self: center;
+            margin: 1rem 0 0 0;
+        }
+
+        .form_register__imagecontainer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid black;
+            height: 100%;
+            width: 30%;
+            cursor: pointer;
+        }
+
+        #video,
+        #photo {
+            width: 100%;
+            height: 100%;
+        }
+
+        #capture,
+        #reset {
+            display: none;
+            margin-top: 10px;
+        }
+
+        #photo {
+            display: none;
+            object-fit: cover
+        }
     </style>
 @endsection
 
@@ -85,7 +142,7 @@
     <h1>Registrar Visitante</h1>
     <div class="container">
 
-        <form method="POST" action="{{ route('guardar_RegistroVisitor') }}">
+        <form method="POST" action="{{ route('guardar_RegistroVisitor') }}" enctype="multipart/form-data">
             @csrf
             @if ($showAll)
                 <label for="">Nacionalidad</label>
@@ -113,6 +170,16 @@
                 </select>
                 <label for="">Razón de la visita</label>
                 <textarea name="razon_visita" cols="30" rows="10" maxlength="255"></textarea>
+                <div class="form_register__container form_register__container--containerimagen">
+                    <label class="form_register__label form_register__label--center" for="">Foto</label>
+                    <div class="form_register__imagecontainer" id="imageContainer" onclick="initCamera()">
+                        <video id="video" autoplay></video>
+                        <img id="photo">
+                    </div>
+                    <button id="capture" type="button" onclick="takePhoto()">Tomar Foto</button>
+                    <button id="reset" type="button" onclick="resetPhoto()">Reiniciar Foto</button>
+                </div>
+                <input type="file" name="foto" id="fotoInput" style="display:none;">
                 <a class="button"
                     href="{{ Auth::user()->role == 'operador' ? route('show_consult') : route('show_Dashboard') }}">
                     Volver
@@ -206,6 +273,60 @@
             if (optionElement) {
                 optionElement.remove();
             }
+        }
+    </script>
+
+    <script>
+        let video = document.getElementById('video');
+        let photo = document.getElementById('photo');
+        let captureButton = document.getElementById('capture');
+        let resetButton = document.getElementById('reset');
+        let photoInput = document.getElementById('fotoInput');
+
+        function initCamera() {
+            navigator.mediaDevices.getUserMedia({
+                    video: true
+                })
+                .then(stream => {
+                    video.srcObject = stream;
+                    video.style.display = 'block';
+                    photo.style.display = 'none';
+                    captureButton.style.display = 'block';
+                    resetButton.style.display = 'none';
+                })
+                .catch(err => {
+                    console.log("Error: " + err);
+                });
+        }
+
+        function takePhoto() {
+            let canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+            let dataURL = canvas.toDataURL('image/png');
+            photo.src = dataURL;
+            photo.style.display = 'block';
+            video.style.display = 'none';
+            captureButton.style.display = 'none';
+            resetButton.style.display = 'block';
+            photoInput.value = dataURL;
+
+            // Detener la corriente de video y cerrar la cámara
+            let stream = video.srcObject;
+            let tracks = stream.getTracks();
+            tracks.forEach(track => track.stop());
+        }
+
+        function resetPhoto() {
+            photo.style.display = 'none';
+            video.style.display = 'block';
+            captureButton.style.display = 'block';
+            resetButton.style.display = 'none';
+            photoInput.value = '';
+
+            // Reiniciar la cámara
+            initCamera();
         }
     </script>
 @endsection

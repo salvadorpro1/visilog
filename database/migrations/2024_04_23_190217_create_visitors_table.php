@@ -21,6 +21,7 @@ return new class extends Migration
             $table->enum('filial', ['Vencemos', 'Invecem', 'ENTIPI', 'Cemento Andino', 'Cemento Cerro Azul', 'FNC']);
             $table->string('gerencia');
             $table->text('razon_visita');
+            $table->string('foto');     
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users');
         });
