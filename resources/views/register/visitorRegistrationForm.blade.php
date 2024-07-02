@@ -214,6 +214,11 @@
                 </select>
                 <label for="">Razón de la visita</label>
                 <textarea name="razon_visita" cols="30" rows="10" maxlength="255"></textarea>
+
+                <label class="form_register__label form_register__label--center" for="">Foto</label>
+                <img src="{{ asset('storage/app/visitors/' . $visitor->foto) }}" alt="Foto del visitante" width="200">
+                <input type="hidden" name="foto" value="{{ $visitor->foto }}">
+
                 <a class="button"
                     href="{{ Auth::user()->role == 'operador' ? route('show_consult') : route('show_Dashboard') }}">
                     Volver

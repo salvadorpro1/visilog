@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth; 
-
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 use App\Models\Visitor;
 use Illuminate\Support\Facades\Validator;
 
@@ -145,14 +146,16 @@ class VisitorController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
     
-        // Procesar la imagen
-        $dataURL = $request->input('foto');
-        $data = explode(',', $dataURL);
-        $imageData = base64_decode($data[1]);
-        $fileName = 'visitor_' . Str::random(10) . '.png';
-    
-        // Guardar la imagen en el disco local (storage/app/visitors)
-        Storage::disk('local')->put('visitors/' . $fileName, $imageData);
+        // Procesar la imagen solo si es nueva
+        $foto = $request->input('foto');
+        if (strpos($foto, 'data:image') === 0) {
+            $data = explode(',', $foto);
+            $imageData = base64_decode($data[1]);
+            $fileName = 'visitor_' . Str::random(10) . '.png';
+            Storage::disk('local')->put('visitors/' . $fileName, $imageData);
+        } else {
+            $fileName = $foto; // Mantener la imagen existente
+        }
     
         // Guardar los datos del visitante
         $visitor = new Visitor();
@@ -174,10 +177,9 @@ class VisitorController extends Controller
             return redirect()->route('show_consult')->with('success', 'Los datos se han enviado correctamente.');
         } elseif ($user->role == 'administrador') {
             return redirect()->route('show_Dashboard')->with('success', 'Los datos se han enviado correctamente.');
-        } else {
-            return redirect()->route('default_route')->with('success', 'Los datos se han enviado correctamente.');
-        }
+        } 
     }
+    
 
     public function getVisitorPhoto($filename)
     {
