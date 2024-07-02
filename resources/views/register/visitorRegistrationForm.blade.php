@@ -113,9 +113,10 @@
             justify-content: center;
             align-items: center;
             border: 1px solid black;
-            height: 100%;
-            width: 30%;
+            height: 92%;
+            width: 60%;
             cursor: pointer;
+
         }
 
 
@@ -136,6 +137,21 @@
         #photo {
             display: none;
             object-fit: cover
+        }
+
+        .foto {
+            width: 100%;
+            height: 100%;
+            object-fit: cover
+        }
+
+        .divisor {
+            display: flex;
+            align-items: center;
+        }
+
+        .divisor__inputs {
+            width: 100%;
         }
     </style>
 @endsection
@@ -189,17 +205,31 @@
                 </a>
                 <input type="submit" value="Enviar">
             @else
-                <label for="">Nacionalidad</label>
-                <select name="nacionalidad" readonly>
-                    <option value="V" {{ $visitor->nacionalidad == 'V' ? 'selected' : '' }}>V</option>
-                    <option value="E" {{ $visitor->nacionalidad == 'E' ? 'selected' : '' }}>E</option>
-                </select>
-                <label for="">Cédula</label>
-                <input name="cedula" readonly value="{{ $visitor->cedula }}" type="number">
-                <label for="">Nombre</label>
-                <input name="nombre" readonly value="{{ $visitor->nombre }}" type="text">
-                <label for="">Apellido</label>
-                <input name="apellido" readonly value="{{ $visitor->apellido }}" type="text">
+                <div class="divisor">
+                    <div class="divisor__inputs">
+                        <label for="">Nacionalidad</label>
+                        <select name="nacionalidad" readonly>
+                            <option value="V" {{ $visitor->nacionalidad == 'V' ? 'selected' : '' }}>V</option>
+                            <option value="E" {{ $visitor->nacionalidad == 'E' ? 'selected' : '' }}>E</option>
+                        </select>
+                        <label for="">Cédula</label>
+                        <input name="cedula" readonly value="{{ $visitor->cedula }}" type="number">
+                        <label for="">Nombre</label>
+                        <input name="nombre" readonly value="{{ $visitor->nombre }}" type="text">
+                        <label for="">Apellido</label>
+                        <input name="apellido" readonly value="{{ $visitor->apellido }}" type="text">
+                    </div>
+                    <div class="form_register__container form_register__container--containerimagen">
+                        <div class="form_register__container form_register__container--containerimagen">
+                            <div class="form_register__imagecontainer">
+                                <img class="foto" src="{{ route('visitor.photo', ['filename' => $visitor->foto]) }}"
+                                    alt="Foto del visitante" width="200">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
                 <label for="">Filial</label>
                 <select name="filial"
                     onchange="quitarSeleccionInicial('filial'), updateGerenciaOptions(this.value, 'gerencia')">
@@ -214,9 +244,6 @@
                 </select>
                 <label for="">Razón de la visita</label>
                 <textarea name="razon_visita" cols="30" rows="10" maxlength="255"></textarea>
-
-                <label class="form_register__label form_register__label--center" for="">Foto</label>
-                <img src="{{ asset('storage/app/visitors/' . $visitor->foto) }}" alt="Foto del visitante" width="200">
                 <input type="hidden" name="foto" value="{{ $visitor->foto }}">
 
                 <a class="button"
