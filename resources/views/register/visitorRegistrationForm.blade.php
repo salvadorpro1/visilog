@@ -124,6 +124,7 @@
         #photo {
             width: 100%;
             height: 100%;
+            object-fit: cover;
         }
 
 
@@ -153,6 +154,17 @@
         .divisor__inputs {
             width: 100%;
         }
+
+        .icono {
+            width: 20%;
+            text-align: center;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            left: 0;
+            margin: auto
+        }
     </style>
 @endsection
 
@@ -164,17 +176,33 @@
         <form method="POST" action="{{ route('guardar_RegistroVisitor') }}" enctype="multipart/form-data">
             @csrf
             @if ($showAll)
-                <label for="">Nacionalidad</label>
-                <select name="nacionalidad" readonly>
-                    <option value="V" {{ $nacionalidad == 'V' ? 'selected' : '' }}>V</option>
-                    <option value="E" {{ $nacionalidad == 'E' ? 'selected' : '' }}>E</option>
-                </select>
-                <label for="">Cédula</label>
-                <input name="cedula" value="{{ $cedula }}" type="number">
-                <label for="">Nombre</label>
-                <input name="nombre" type="text">
-                <label for="">Apellido</label>
-                <input name="apellido" type="text">
+                <div class="divisor">
+                    <div class="divisor__inputs">
+                        <label for="">Nacionalidad</label>
+                        <select name="nacionalidad" readonly>
+                            <option value="V" {{ $nacionalidad == 'V' ? 'selected' : '' }}>V</option>
+                            <option value="E" {{ $nacionalidad == 'E' ? 'selected' : '' }}>E</option>
+                        </select>
+                        <label for="">Cédula</label>
+                        <input name="cedula" value="{{ $cedula }}" type="number">
+                        <label for="">Nombre</label>
+                        <input name="nombre" type="text">
+                        <label for="">Apellido</label>
+                        <input name="apellido" type="text">
+                    </div>
+                    <input type="hidden" id="fotoInput" name="foto">
+                    <div class="form_register__container form_register__container--containerimagen">
+                        <div class="form_register__container form_register__container--containerimagen">
+                            <div class="form_register__imagecontainer" onclick="initCamera(); hideIcon()">
+                                <video id="video" autoplay></video>
+                                <img id="photo">
+                                <img class="icono" src="{{ asset('img/camara.png') }}" alt="">
+                            </div>
+                            <button type="button" id="capture" onclick="takePhoto()">Tomar Foto</button>
+                            <button type="button" id="reset" onclick="resetPhoto()">Reiniciar Foto</button>
+                        </div>
+                    </div>
+                </div>
                 <label for="">Filial</label>
                 <select name="filial"
                     onchange="quitarSeleccionInicial('filial'), updateGerenciaOptions(this.value, 'gerencia')">
@@ -189,16 +217,6 @@
                 </select>
                 <label for="">Razón de la visita</label>
                 <textarea name="razon_visita" cols="30" rows="10" maxlength="255"></textarea>
-                <input type="hidden" id="fotoInput" name="foto">
-                <div class="form_register__container form_register__container--containerimagen">
-                    <label class="form_register__label form_register__label--center" for="">Foto</label>
-                    <div class="form_register__imagecontainer" onclick="initCamera()">
-                        <video id="video" autoplay></video>
-                        <img id="photo">
-                    </div>
-                    <button type="button" id="capture" onclick="takePhoto()">Tomar Foto</button>
-                    <button type="button" id="reset" onclick="resetPhoto()">Reiniciar Foto</button>
-                </div>
                 <a class="button"
                     href="{{ Auth::user()->role == 'operador' ? route('show_consult') : route('show_Dashboard') }}">
                     Volver
@@ -362,6 +380,13 @@
 
             // Reiniciar la cámara
             initCamera();
+        }
+
+        function hideIcon() {
+            var icono = document.querySelector('.icono');
+            if (icono) {
+                icono.style.display = 'none';
+            }
         }
     </script>
 @endsection

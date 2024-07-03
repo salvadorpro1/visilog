@@ -34,6 +34,12 @@
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
+
+        .foto {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+        }
     </style>
 @endsection
 
@@ -84,6 +90,10 @@
             <tr>
                 <th>Razón de la Visita</th>
                 <td>{{ $persona->razon_visita }}</td>
+            </tr>
+            <tr>
+                <th>Foto</th>
+                <td><img class="foto" src="{{ route('visitor.photo', ['filename' => $persona->foto]) }}" alt="foto"></td>
             </tr>
             <tr>
                 <th>Fecha</th>
