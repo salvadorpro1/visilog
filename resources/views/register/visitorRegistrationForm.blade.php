@@ -165,6 +165,20 @@
             left: 0;
             margin: auto
         }
+
+        .loading-indicator {
+            display: none;
+            /* Oculto por defecto */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            z-index: 1000;
+        }
     </style>
 @endsection
 
@@ -194,6 +208,7 @@
                     <div class="form_register__container form_register__container--containerimagen">
                         <div class="form_register__container form_register__container--containerimagen">
                             <div class="form_register__imagecontainer" onclick="initCamera(); hideIcon()">
+                                <div id="loadingIndicator" class="loading-indicator">Cargando...</div>
                                 <video id="video" autoplay></video>
                                 <img id="photo">
                                 <img class="icono" src="{{ asset('img/camara.png') }}" alt="">
@@ -335,8 +350,10 @@
         let captureButton = document.getElementById('capture');
         let resetButton = document.getElementById('reset');
         let photoInput = document.getElementById('fotoInput');
+        let loadingIndicator = document.getElementById('loadingIndicator');
 
         function initCamera() {
+            loadingIndicator.style.display = 'block'; // Mostrar el indicador de carga
             navigator.mediaDevices.getUserMedia({
                     video: true
                 })
@@ -346,9 +363,12 @@
                     photo.style.display = 'none';
                     captureButton.style.display = 'block';
                     resetButton.style.display = 'none';
+                    loadingIndicator.style.display =
+                    'none'; // Ocultar el indicador de carga cuando la cámara esté lista
                 })
                 .catch(err => {
                     console.log("Error: " + err);
+                    loadingIndicator.style.display = 'none'; // Ocultar el indicador de carga en caso de error
                 });
         }
 

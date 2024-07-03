@@ -81,7 +81,7 @@
 
         .results-table th,
         .results-table td {
-            border: 1px solid #9c9c9c;
+            border: 1px solid #ffffff;
             padding: 8px;
             text-align: left;
             border: 1px solid black;
@@ -89,7 +89,7 @@
         }
 
         .results-table th {
-            background-color: #9c9c9c;
+            background-color: #ffffff;
             border: 1px solid black
         }
 
@@ -167,13 +167,13 @@
         }
 
         .container-table {
-            background: #9c9c9c;
+            background: #ffffff;
             border-radius: 8px;
 
         }
 
         th {
-            background: #9c9c9c;
+            background: #ffffff;
             border: 1px solid black;
         }
 
@@ -265,6 +265,7 @@
                             @endforeach
                         </tbody>
                     </table>
+                    <canvas id="visitantesDiariosChart"></canvas>
                 </div>
 
                 <div class="container-table">
@@ -285,8 +286,8 @@
                             @endforeach
                         </tbody>
                     </table>
+                    <canvas id="visitantesPorFilialChart"></canvas>
                 </div>
-
 
                 <div class="container-table">
                     <h2>Visitantes por Gerencia</h2>
@@ -308,7 +309,126 @@
                             @endforeach
                         </tbody>
                     </table>
+                    <canvas id="visitantesPorGerenciaChart"></canvas>
                 </div>
+
+                <script>
+                    const visitantesDiarios = @json($visitantesDiarios);
+                    const visitantesPorFilial = @json($visitantesPorFilial);
+                    const visitantesPorGerenciaFilial = @json($visitantesPorGerenciaFilial);
+
+                    // Gráfico Visitantes Diarios
+                    const ctxDiarios = document.getElementById('visitantesDiariosChart').getContext('2d');
+                    const labelsDiarios = visitantesDiarios.map(visita => visita.fecha);
+                    const dataDiarios = visitantesDiarios.map(visita => visita.cantidad_visitantes);
+
+                    new Chart(ctxDiarios, {
+                        type: 'bar',
+                        data: {
+                            labels: labelsDiarios,
+                            datasets: [{
+                                label: 'Visitantes Diarios',
+                                data: dataDiarios,
+                                backgroundColor: [
+                                    'rgb(255, 99, 132)',
+                                    'rgb(54, 162, 235)',
+                                    'rgb(255, 205, 86)',
+                                    'rgb(75, 192, 192)',
+                                    'rgb(153, 102, 255)',
+                                    'rgb(255, 159, 64)'
+                                ],
+                                hoverOffset: 4
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Visitantes Diarios'
+                                }
+                            }
+                        }
+                    });
+
+                    // Gráfico Visitantes por Filial
+                    const ctxFilial = document.getElementById('visitantesPorFilialChart').getContext('2d');
+                    const labelsFilial = visitantesPorFilial.map(visita => visita.filial);
+                    const dataFilial = visitantesPorFilial.map(visita => visita.cantidad_visitantes);
+
+                    new Chart(ctxFilial, {
+                        type: 'bar',
+                        data: {
+                            labels: labelsFilial,
+                            datasets: [{
+                                label: 'Visitantes por Filial',
+                                data: dataFilial,
+                                backgroundColor: [
+                                    'rgb(255, 99, 132)',
+                                    'rgb(54, 162, 235)',
+                                    'rgb(255, 205, 86)',
+                                    'rgb(75, 192, 192)',
+                                    'rgb(153, 102, 255)',
+                                    'rgb(255, 159, 64)'
+                                ],
+                                hoverOffset: 4
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Visitantes por Filial'
+                                }
+                            }
+                        }
+                    });
+
+                    // Gráfico Visitantes por Gerencia
+                    const ctxGerencia = document.getElementById('visitantesPorGerenciaChart').getContext('2d');
+                    const labelsGerencia = visitantesPorGerenciaFilial.map(visita => `${visita.gerencia} (${visita.filial})`);
+                    const dataGerencia = visitantesPorGerenciaFilial.map(visita => visita.cantidad_visitantes);
+
+                    new Chart(ctxGerencia, {
+                        type: 'bar',
+                        data: {
+                            labels: labelsGerencia,
+                            datasets: [{
+                                label: 'Visitantes por Gerencia',
+                                data: dataGerencia,
+                                backgroundColor: [
+                                    'rgb(255, 99, 132)',
+                                    'rgb(54, 162, 235)',
+                                    'rgb(255, 205, 86)',
+                                    'rgb(75, 192, 192)',
+                                    'rgb(153, 102, 255)',
+                                    'rgb(255, 159, 64)'
+                                ],
+                                hoverOffset: 4
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Visitantes por Gerencia'
+                                }
+                            }
+                        }
+                    });
+                </script>
+
 
 
         </div>

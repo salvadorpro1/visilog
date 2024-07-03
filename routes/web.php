@@ -18,7 +18,7 @@ use App\Http\Controllers\Dashboard;
 |
 */
 
-Route::get('/', [AuthenticateUserController::class, "showLoginForm"])->middleware('auth.redirect')->name('show_LoginForm');
+Route::get('/', [AuthenticateUserController::class, "showLoginForm"])->middleware('auth.redirect')->name('login');
 Route::post('/login', [AuthenticateUserController::class, "login"]);
 Route::get('/logout', [AuthenticateUserController::class, 'logout'])->name('logout');
 route::get('/operador', [AuthenticateUserController::class, 'showRegister'])->middleware(['auth', 'role:administrador'])->name('showRegisterCreate');
