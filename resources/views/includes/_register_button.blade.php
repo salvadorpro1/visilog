@@ -104,8 +104,16 @@
 <header>
     <div class="user-menu">
         <section class="user-menu__section">
-            <a class="logo_container" href="{{ route('show_Dashboard') }}"><img class="logo"
-                    src="{{ asset('img/logo.png') }}" alt=""></a>
+            @if ($user && $user->role === 'administrador')
+                <a class="logo_container" href="{{ route('show_Dashboard') }}">
+                    <img class="logo" src="{{ asset('img/logo.png') }}" alt="">
+                </a>
+            @else
+                <a class="logo_container" href="{{ route('show_consult') }}">
+                    <img class="logo" src="{{ asset('img/logo.png') }}" alt="">
+                </a>
+            @endif
+
         </section>
         <section class="menu-usuario__section">
             <ul class="user-menu__list">

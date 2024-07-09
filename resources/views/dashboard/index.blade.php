@@ -266,6 +266,7 @@
                         </tbody>
                     </table>
                     <canvas id="visitantesDiariosChart"></canvas>
+                    <button onclick="downloadChart('visitantesDiariosChart')">Descargar Gráfico</button>
                 </div>
 
                 <div class="container-table">
@@ -287,6 +288,7 @@
                         </tbody>
                     </table>
                     <canvas id="visitantesPorFilialChart"></canvas>
+                    <button onclick="downloadChart('visitantesPorFilialChart')">Descargar Gráfico</button>
                 </div>
 
                 <div class="container-table">
@@ -310,6 +312,7 @@
                         </tbody>
                     </table>
                     <canvas id="visitantesPorGerenciaChart"></canvas>
+                    <button onclick="downloadChart('visitantesPorGerenciaChart')">Descargar Gráfico</button>
                 </div>
 
                 <script>
@@ -317,10 +320,36 @@
                     const visitantesPorFilial = @json($visitantesPorFilial);
                     const visitantesPorGerenciaFilial = @json($visitantesPorGerenciaFilial);
 
+                    function getRandomColor() {
+                        const letters = '0123456789ABCDEF';
+                        let color = '#';
+                        for (let i = 0; i < 6; i++) {
+                            color += letters[Math.floor(Math.random() * 16)];
+                        }
+                        return color;
+                    }
+
+                    function getRandomColors(length) {
+                        const colors = [];
+                        for (let i = 0; i < length; i++) {
+                            colors.push(getRandomColor());
+                        }
+                        return colors;
+                    }
+
+                    function downloadChart(chartId) {
+                        const canvas = document.getElementById(chartId);
+                        const link = document.createElement('a');
+                        link.href = canvas.toDataURL('image/png');
+                        link.download = `${chartId}.png`;
+                        link.click();
+                    }
+
                     // Gráfico Visitantes Diarios
                     const ctxDiarios = document.getElementById('visitantesDiariosChart').getContext('2d');
                     const labelsDiarios = visitantesDiarios.map(visita => visita.fecha);
                     const dataDiarios = visitantesDiarios.map(visita => visita.cantidad_visitantes);
+                    const colorsDiarios = getRandomColors(dataDiarios.length);
 
                     new Chart(ctxDiarios, {
                         type: 'bar',
@@ -329,14 +358,7 @@
                             datasets: [{
                                 label: 'Visitantes Diarios',
                                 data: dataDiarios,
-                                backgroundColor: [
-                                    'rgb(255, 99, 132)',
-                                    'rgb(54, 162, 235)',
-                                    'rgb(255, 205, 86)',
-                                    'rgb(75, 192, 192)',
-                                    'rgb(153, 102, 255)',
-                                    'rgb(255, 159, 64)'
-                                ],
+                                backgroundColor: colorsDiarios,
                                 hoverOffset: 4
                             }]
                         },
@@ -358,6 +380,7 @@
                     const ctxFilial = document.getElementById('visitantesPorFilialChart').getContext('2d');
                     const labelsFilial = visitantesPorFilial.map(visita => visita.filial);
                     const dataFilial = visitantesPorFilial.map(visita => visita.cantidad_visitantes);
+                    const colorsFilial = getRandomColors(dataFilial.length);
 
                     new Chart(ctxFilial, {
                         type: 'bar',
@@ -366,14 +389,7 @@
                             datasets: [{
                                 label: 'Visitantes por Filial',
                                 data: dataFilial,
-                                backgroundColor: [
-                                    'rgb(255, 99, 132)',
-                                    'rgb(54, 162, 235)',
-                                    'rgb(255, 205, 86)',
-                                    'rgb(75, 192, 192)',
-                                    'rgb(153, 102, 255)',
-                                    'rgb(255, 159, 64)'
-                                ],
+                                backgroundColor: colorsFilial,
                                 hoverOffset: 4
                             }]
                         },
@@ -395,6 +411,7 @@
                     const ctxGerencia = document.getElementById('visitantesPorGerenciaChart').getContext('2d');
                     const labelsGerencia = visitantesPorGerenciaFilial.map(visita => `${visita.gerencia} (${visita.filial})`);
                     const dataGerencia = visitantesPorGerenciaFilial.map(visita => visita.cantidad_visitantes);
+                    const colorsGerencia = getRandomColors(dataGerencia.length);
 
                     new Chart(ctxGerencia, {
                         type: 'bar',
@@ -403,14 +420,7 @@
                             datasets: [{
                                 label: 'Visitantes por Gerencia',
                                 data: dataGerencia,
-                                backgroundColor: [
-                                    'rgb(255, 99, 132)',
-                                    'rgb(54, 162, 235)',
-                                    'rgb(255, 205, 86)',
-                                    'rgb(75, 192, 192)',
-                                    'rgb(153, 102, 255)',
-                                    'rgb(255, 159, 64)'
-                                ],
+                                backgroundColor: colorsGerencia,
                                 hoverOffset: 4
                             }]
                         },

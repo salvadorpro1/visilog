@@ -40,6 +40,11 @@
             height: 150px;
             object-fit: cover;
         }
+
+        .desactivate {
+            color: rgb(255, 0, 0);
+            font-weight: 600
+        }
     </style>
 @endsection
 
@@ -50,7 +55,11 @@
         <thead>
             <tr>
                 <th>Operador</th>
-                <td>{{ $persona->user->name }}</td>
+                @if ($persona->user->estatus == 'desactivado')
+                    <td>{{ $persona->user->name }} (<span class="desactivate">Desactivado</span>)</td>
+                @else
+                    <td>{{ $persona->user->name }}</td>
+                @endif
             </tr>
             <tr>
                 <th>Nombre</th>

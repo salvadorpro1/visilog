@@ -14,7 +14,7 @@
 
         /* Contenedor principal */
         .container {
-            width: 80%;
+            width: 90%;
             margin: 20px auto;
             padding: 20px;
             background-color: #fff;

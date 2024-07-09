@@ -93,7 +93,7 @@ class AuthenticateUserController extends Controller
             'name' => $request->name,
             'username' => $request->username,
             'role' => 'operador',
-            'password' => bcrypt($request->password),
+            'password' => $request->password,
         ]);
     
         return redirect()->route('show_Dashboard')->with('success', 'Usuario creado satisfactoriamente.');
@@ -127,7 +127,7 @@ class AuthenticateUserController extends Controller
             return back()->withErrors(['current_password' => 'La contraseña actual no es correcta']);
         }
     
-        $user->password = Hash::make($request->new_password); // Asegúrate de hashear la nueva contraseña
+        $user->password = $request->new_password; // Asegúrate de hashear la nueva contraseña
         $user->save();
     
         return redirect()->route('show_Dashboard')->with('success', 'Contraseña cambiada exitosamente');
