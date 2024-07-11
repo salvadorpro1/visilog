@@ -194,8 +194,6 @@
 
 @section('content')
     <div class="dividir">
-
-
         <div class="container">
             <h1>Crear Operador</h1>
 
@@ -209,7 +207,7 @@
                 </div>
             @endif
 
-            <form action="" method="POST" class="form">
+            <form action="{{ route('create_operator') }}" method="POST" class="form">
                 @csrf
 
                 <div class="form-group">
@@ -238,7 +236,7 @@
                 </div>
             </form>
         </div>
-        <div class="operator-card-container">
+        <div class="container">
             <h1>Operadores Activos</h1>
             <div class="operator-cards-container">
                 @if ($operadores->isEmpty())
@@ -258,6 +256,7 @@
             </div>
         </div>
     </div>
+
     <!-- Modal -->
     <div class="modal" id="confirmModal">
         <div class="modal-content">
@@ -287,6 +286,14 @@
 
         function closeModal() {
             document.getElementById('confirmModal').style.display = 'none';
+        }
+
+        // Close the modal if clicked outside of it
+        window.onclick = function(event) {
+            const modal = document.getElementById('confirmModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
         }
     </script>
 @endsection

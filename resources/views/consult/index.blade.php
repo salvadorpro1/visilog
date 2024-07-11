@@ -159,7 +159,6 @@
                 </select>
                 <input type="number" name="cedula" id="cedula">
             </div>
-            <a class="button" href="{{ route('show_Dashboard') }}">Volver</a>
             <input type="submit" value="Consultar" class="button">
 
         </form>

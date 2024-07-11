@@ -9,7 +9,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     @yield('style')
     <style>
-        .modal {
+        .modalApp {
             position: fixed;
             z-index: 1;
             left: 0;
@@ -24,7 +24,7 @@
             align-items: center;
         }
 
-        .modal-content {
+        .modal-contentApp {
             background-color: #fefefe;
             margin: auto;
             padding: 20px;
@@ -41,8 +41,8 @@
     @include('includes._register_button', ['titulo' => 'Consultar Cedula'])
 
     @yield('content')
-    <div id="inactivityModal" class="modal" style="display: none;">
-        <div class="modal-content">
+    <div id="inactivityModal" class="modalApp" style="display: none;">
+        <div class="modal-contentApp">
             <p>Se cerrará la sesión por inactividad. ¿Sigues ahí?</p>
         </div>
     </div>
