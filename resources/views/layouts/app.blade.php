@@ -44,6 +44,7 @@
     <div id="inactivityModal" class="modalApp" style="display: none;">
         <div class="modal-contentApp">
             <p>Se cerrará la sesión por inactividad. ¿Sigues ahí?</p>
+            <p>Tiempo restante: <span id="timer">03:00</span></p>
         </div>
     </div>
 
@@ -51,25 +52,28 @@
         let inactivityTime = function() {
             let time;
             let logoutTimer;
+            let countdownTimer;
             const modal = document.getElementById("inactivityModal");
-            const stayLoggedInBtn = document.getElementById("stayLoggedInBtn");
+            const timerDisplay = document.getElementById("timer");
 
-            // Reset timer on mouse movement
-            window.onload = resetTimer;
-            window.onmousemove = resetTimer;
-            window.onmousedown = resetTimer; // catches touchscreen presses
-            window.ontouchstart = resetTimer; // catches touchscreen swipes
-            window.onclick = resetTimer; // catches touchpad clicks
-            window.onkeydown = resetTimer;
-            window.addEventListener('scroll', resetTimer, true); // improved; see comments
+            // Duración del temporizador en segundos
+            const modalTimeout = 30 * 60; // 30 minutos de inactividad para mostrar el modal
+            const logoutTimeout = 3 * 60; // 3 minutos para cerrar sesión después de mostrar el modal
 
-            // Reset logout timer on modal interaction
-            modal.onmousemove = resetLogoutTimer;
-            modal.onmousedown = resetLogoutTimer; // catches touchscreen presses
-            modal.ontouchstart = resetLogoutTimer; // catches touchscreen swipes
-            modal.onclick = resetLogoutTimer; // catches touchpad clicks
-            modal.onkeydown = resetLogoutTimer;
-            modal.addEventListener('scroll', resetLogoutTimer, true); // improved; see comments
+            // Inicializar temporizadores
+            let inactivityDuration = modalTimeout;
+            let remainingLogoutDuration = logoutTimeout;
+
+            // Eventos para reiniciar el temporizador de inactividad
+            const events = [
+                'load', 'mousemove', 'mousedown', 'touchstart', 'click', 'keydown', 'scroll'
+            ];
+
+            // Asignar eventos para resetear el temporizador
+            events.forEach(event => {
+                window.addEventListener(event, resetTimer);
+                modal.addEventListener(event, resetLogoutTimer);
+            });
 
             function logout() {
                 window.location.href = "{{ route('logout') }}";
@@ -77,27 +81,48 @@
 
             function showModal() {
                 modal.style.display = "block";
-                logoutTimer = setTimeout(logout, 3 * 60 * 1000); // 3 minutes to logout after modal appears
+                remainingLogoutDuration = logoutTimeout; // Reiniciar duración de logout
+                startCountdown(); // Iniciar el temporizador de cuenta regresiva
+                logoutTimer = setTimeout(logout, logoutTimeout *
+                    1000); // 3 minutos para cerrar sesión después de mostrar el modal
             }
 
             function resetLogoutTimer() {
                 clearTimeout(logoutTimer);
-                logoutTimer = setTimeout(logout, 3 * 60 * 1000); // reset logout timer
+                clearInterval(countdownTimer);
+                startCountdown(); // Reiniciar el temporizador de cuenta regresiva
+                logoutTimer = setTimeout(logout, remainingLogoutDuration *
+                    1000); // Reiniciar el temporizador de cierre de sesión
             }
 
             function resetTimer() {
                 clearTimeout(time);
                 clearTimeout(logoutTimer);
-                modal.style.display = "none"; // hide modal
-                time = setTimeout(showModal, 30 * 60 * 1000);
+                clearInterval(countdownTimer);
+                modal.style.display = "none"; // Ocultar modal
+                inactivityDuration = modalTimeout; // Reiniciar la duración de inactividad
+                time = setTimeout(showModal, inactivityDuration * 1000); // Reiniciar el temporizador de inactividad
             }
 
-            stayLoggedInBtn.addEventListener("click", function() {
-                modal.style.display = "none";
-                resetTimer();
-            });
+            function startCountdown() {
+                countdownTimer = setInterval(function() {
+                    let minutes = parseInt(remainingLogoutDuration / 60, 10);
+                    let seconds = parseInt(remainingLogoutDuration % 60, 10);
 
-            // Start timer
+                    minutes = minutes < 10 ? "0" + minutes : minutes;
+                    seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                    timerDisplay.textContent = minutes + ":" + seconds;
+
+                    if (--remainingLogoutDuration < 0) {
+                        clearInterval(countdownTimer);
+                        logout(); // Cerrar sesión cuando el temporizador llegue a 0
+                    }
+                }, 1000);
+            }
+
+
+            // Iniciar el temporizador de inactividad
             resetTimer();
         };
 
