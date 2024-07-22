@@ -77,7 +77,7 @@
         display: none;
         justify-content: center;
         align-items: center;
-        top: 49px;
+        top: 110px;
         right: 0px;
         position: absolute;
         background-color: #01313F;
