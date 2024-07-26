@@ -219,16 +219,23 @@
                     </div>
                 </div>
                 <label for="">Filial</label>
-                <select name="filial"
+                <select name="filial_id" id="filial_id"
                     onchange="quitarSeleccionInicial('filial'), updateGerenciaOptions(this.value, 'gerencia')">
-                    <option value="" selected disabled>Elegir filial</option>
-                    <option value="vencemos">Vencemos</option>
-                    <option value="invecem">Invecem</option>
-                    <option value="fnc">FNC</option>
+                    @foreach ($filials as $filial)
+                        <option value="{{ $filial->id }}"
+                            {{ isset($visitor) && $visitor->filial_id == $filial->id ? 'selected' : '' }}>
+                            {{ $filial->nombre }}
+                        </option>
+                    @endforeach
                 </select>
-                <label for="">Gerencia</label>
-                <select name="gerencia" onchange="quitarSeleccionInicial('gerencia')">
-                    <option value="" selected disabled>Elegir gerencia</option>
+                <label for="gerencia_id">Gerencia</label>
+                <select name="gerencia_id" id="gerencia_id" onchange="quitarSeleccionInicial('gerencia')">
+                    @foreach ($gerencias as $gerencia)
+                        <option value="{{ $gerencia->id }}"
+                            {{ isset($visitor) && $visitor->gerencia_id == $gerencia->id ? 'selected' : '' }}>
+                            {{ $gerencia->nombre }}
+                        </option>
+                    @endforeach
                 </select>
                 <label for="">Razón de la visita</label>
                 <textarea name="razon_visita" cols="30" rows="10" maxlength="255"></textarea>
@@ -264,17 +271,25 @@
 
 
                 <label for="">Filial</label>
-                <select name="filial"
+                <select name="filial_id" id="filial_id"
                     onchange="quitarSeleccionInicial('filial'), updateGerenciaOptions(this.value, 'gerencia')">
-                    <option value="" selected disabled>Elegir filial</option>
-                    <option value="vencemos">Vencemos</option>
-                    <option value="invecem">Invecem</option>
-                    <option value="fnc">FNC</option>
+                    @foreach ($filials as $filial)
+                        <option value="{{ $filial->id }}"
+                            {{ isset($visitor) && $visitor->filial_id == $filial->id ? 'selected' : '' }}>
+                            {{ $filial->nombre }}
+                        </option>
+                    @endforeach
                 </select>
-                <label for="">Gerencia</label>
-                <select name="gerencia" onchange="quitarSeleccionInicial('gerencia')">
-                    <option value="" selected disabled>Elegir gerencia</option>
+                <label for="gerencia_id">Gerencia</label>
+                <select name="gerencia_id" id="gerencia_id" required>
+                    @foreach ($gerencias as $gerencia)
+                        <option value="{{ $gerencia->id }}"
+                            {{ isset($visitor) && $visitor->gerencia_id == $gerencia->id ? 'selected' : '' }}>
+                            {{ $gerencia->nombre }}
+                        </option>
+                    @endforeach
                 </select>
+
                 <label for="">Razón de la visita</label>
                 <textarea name="razon_visita" cols="30" rows="10" maxlength="255"></textarea>
                 <input type="hidden" name="foto" value="{{ $visitor->foto }}">
@@ -364,7 +379,7 @@
                     captureButton.style.display = 'block';
                     resetButton.style.display = 'none';
                     loadingIndicator.style.display =
-                    'none'; // Ocultar el indicador de carga cuando la cámara esté lista
+                        'none'; // Ocultar el indicador de carga cuando la cámara esté lista
                 })
                 .catch(err => {
                     console.log("Error: " + err);

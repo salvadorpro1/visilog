@@ -20,10 +20,12 @@ class VisitorController extends Controller
 
     public function showRegisterVisitor(Request $request)
     {
-
         $cedula = $request->input('cedula');
-        $nacionalidad = $request->input('nacionalidad', ''); // Default to empty string if not present
+        $nacionalidad = $request->input('nacionalidad', '');
         $visitor = Visitor::where('cedula', $cedula)->where('nacionalidad', $nacionalidad)->first();
+    
+        $filials = Filial::all();
+        $gerencias = Gerencia::all();
     
         if ($visitor) {
             return view('register.visitorRegistrationForm', [
@@ -31,16 +33,20 @@ class VisitorController extends Controller
                 'visitor' => $visitor,
                 'nacionalidad' => $visitor->nacionalidad,
                 'cedula' => $visitor->cedula,
+                'filials' => $filials,
+                'gerencias' => $gerencias
             ]);
         } else {
             return view('register.visitorRegistrationForm', [
                 'showAll' => true,
                 'nacionalidad' => $nacionalidad,
                 'cedula' => $cedula,
+                'filials' => $filials,
+                'gerencias' => $gerencias
             ]);
         }
     }
-
+    
     public function showRegister(Request $request)
     {
         $query = Visitor::query();
@@ -56,7 +62,6 @@ class VisitorController extends Controller
         return view('register.showRegistration', compact('registros'));
     }
     
-
     public function showRegisterDetail($id)
     {
         $persona = Visitor::where('id', $id)->first();
@@ -109,19 +114,17 @@ class VisitorController extends Controller
     
     public function saveVisitor(Request $request)
     {
-        // Define las reglas de validación
         $rules = [
             'nacionalidad' => 'required|in:V,E',
             'cedula' => 'required|digits_between:7,8',
             'nombre' => 'required|regex:/^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$/',
             'apellido' => 'required|regex:/^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$/',
-            'filial' => 'required',
-            'gerencia' => 'required',
+            'filial_id' => 'required|exists:filials,id',
+            'gerencia_id' => 'required|exists:gerencias,id',
             'razon_visita' => 'required|max:255',
-            'foto' => 'required', // Validar que la foto está presente
+            'foto' => 'required',
         ];
     
-        // Define los mensajes de error personalizados
         $messages = [
             'nacionalidad.required' => 'La nacionalidad es obligatoria.',
             'nacionalidad.in' => 'La nacionalidad debe ser "V" o "E".',
@@ -131,22 +134,21 @@ class VisitorController extends Controller
             'nombre.regex' => 'El nombre solo puede contener letras y espacios.',
             'apellido.required' => 'El apellido es obligatorio.',
             'apellido.regex' => 'El apellido solo puede contener letras y espacios.',
-            'filial.required' => 'La filial es obligatoria.',
-            'gerencia.required' => 'La gerencia es obligatoria.',
+            'filial_id.required' => 'La filial es obligatoria.',
+            'filial_id.exists' => 'La filial seleccionada no es válida.',
+            'gerencia_id.required' => 'La gerencia es obligatoria.',
+            'gerencia_id.exists' => 'La gerencia seleccionada no es válida.',
             'razon_visita.required' => 'La razón de visita es obligatoria.',
             'razon_visita.max' => 'La razón de visita no puede tener más de :max caracteres.',
             'foto.required' => 'La foto es obligatoria.',
         ];
     
-        // Valida los datos
         $validator = Validator::make($request->all(), $rules, $messages);
     
-        // Si la validación falla, redirige de vuelta con los errores
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
     
-        // Procesar la imagen solo si es nueva
         $foto = $request->input('foto');
         if (strpos($foto, 'data:image') === 0) {
             $data = explode(',', $foto);
@@ -154,20 +156,19 @@ class VisitorController extends Controller
             $fileName = 'visitor_' . Str::random(10) . '.png';
             Storage::disk('local')->put('visitors/' . $fileName, $imageData);
         } else {
-            $fileName = $foto; // Mantener la imagen existente
+            $fileName = $foto;
         }
     
-        // Guardar los datos del visitante
         $visitor = new Visitor();
         $visitor->nacionalidad = $request->input('nacionalidad');
         $visitor->cedula = $request->input('cedula');
         $visitor->nombre = $request->input('nombre');
         $visitor->apellido = $request->input('apellido');
-        $visitor->filial = $request->input('filial');
-        $visitor->gerencia = $request->input('gerencia');
+        $visitor->filial_id = $request->input('filial_id');
+        $visitor->gerencia_id = $request->input('gerencia_id');
         $visitor->razon_visita = $request->input('razon_visita');
         $visitor->user_id = auth()->id();
-        $visitor->foto = $fileName; // Guardar solo el nombre del archivo
+        $visitor->foto = $fileName;
     
         $visitor->save();
     
@@ -177,25 +178,23 @@ class VisitorController extends Controller
             return redirect()->route('show_consult')->with('success', 'Los datos se han enviado correctamente.');
         } elseif ($user->role == 'administrador') {
             return redirect()->route('show_Dashboard')->with('success', 'Los datos se han enviado correctamente.');
-        } 
+        }
     }
     
-
     public function getVisitorPhoto($filename)
     {
-    // Verifica si el archivo existe en el disco local
-    if (Storage::disk('local')->exists('visitors/' . $filename)) {
+         // Verifica si el archivo existe en el disco local
+        if (Storage::disk('local')->exists('visitors/' . $filename)) {
         // Devuelve el archivo como una respuesta
         $file = Storage::disk('local')->get('visitors/' . $filename);
         $type = Storage::disk('local')->mimeType('visitors/' . $filename);
 
         return response($file, 200)->header('Content-Type', $type);
-    } else {
+         } else {
         abort(404, 'Imagen no encontrada');
-    }
+        }
     }
     
-
     public function truncateText($text, $length = 50, $ending = '...')
     {
         return Str::limit($text, $length, $ending);
@@ -287,7 +286,6 @@ class VisitorController extends Controller
             ]);
         }
     }
-    
     
     public function accountConsul(Request $request)
     {

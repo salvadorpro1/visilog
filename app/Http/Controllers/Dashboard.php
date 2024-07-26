@@ -10,7 +10,6 @@ use Illuminate\Validation\ValidationException;
 
 class Dashboard extends Controller
 {    
-
     public function showDashboard(Request $request)
     {
         // Obtener la fecha actual
@@ -21,9 +20,9 @@ class Dashboard extends Controller
         $diahasta = $fechaActual;
     
         // Realizar las consultas de la base de datos con las fechas actuales
-        $visitantesPorGerenciaFilial = Visitor::select('gerencia', 'filial', DB::raw('COUNT(*) as cantidad_visitantes'))
+        $visitantesPorGerenciaFilial = Visitor::select('gerencia_id as gerencia', 'filial_id as filial', DB::raw('COUNT(*) as cantidad_visitantes'))
             ->whereBetween('created_at', [Carbon::parse($diadesde)->startOfDay(), Carbon::parse($diahasta)->endOfDay()])
-            ->groupBy('gerencia', 'filial')
+            ->groupBy('gerencia_id', 'filial_id')
             ->get();
     
         $visitantesDiarios = Visitor::select(DB::raw('DATE(created_at) as fecha'), DB::raw('COUNT(*) as cantidad_visitantes'))
@@ -31,14 +30,14 @@ class Dashboard extends Controller
             ->groupBy('fecha')
             ->get();
     
-        $visitantesPorGerencia = Visitor::select('gerencia', DB::raw('COUNT(*) as cantidad_visitantes'))
+        $visitantesPorGerencia = Visitor::select('gerencia_id as gerencia', DB::raw('COUNT(*) as cantidad_visitantes'))
             ->whereBetween('created_at', [Carbon::parse($diadesde)->startOfDay(), Carbon::parse($diahasta)->endOfDay()])
-            ->groupBy('gerencia')
+            ->groupBy('gerencia_id')
             ->get();
     
-        $visitantesPorFilial = Visitor::select('filial', DB::raw('COUNT(*) as cantidad_visitantes'))
+        $visitantesPorFilial = Visitor::select('filial_id as filial', DB::raw('COUNT(*) as cantidad_visitantes'))
             ->whereBetween('created_at', [Carbon::parse($diadesde)->startOfDay(), Carbon::parse($diahasta)->endOfDay()])
-            ->groupBy('filial')
+            ->groupBy('filial_id')
             ->get();
     
         // Pasar los datos a la vista
@@ -66,7 +65,6 @@ class Dashboard extends Controller
             'diahasta.after_or_equal' => 'La fecha de fin debe ser igual o posterior a la fecha de inicio.',
         ]);
         
-    
         if ($validator->fails()) {
             return redirect()->back()
                              ->withErrors($validator)
@@ -76,9 +74,9 @@ class Dashboard extends Controller
         $diadesde = $request->input('diadesde');
         $diahasta = $request->input('diahasta');
     
-        $visitantesPorGerenciaFilial = Visitor::select('gerencia', 'filial', DB::raw('COUNT(*) as cantidad_visitantes'))
+        $visitantesPorGerenciaFilial = Visitor::select('gerencia_id as gerencia', 'filial_id as filial', DB::raw('COUNT(*) as cantidad_visitantes'))
             ->whereBetween('created_at', [Carbon::parse($diadesde)->startOfDay(), Carbon::parse($diahasta)->endOfDay()])
-            ->groupBy('gerencia', 'filial')
+            ->groupBy('gerencia_id', 'filial_id')
             ->get();
     
         $visitantesDiarios = Visitor::select(DB::raw('DATE(created_at) as fecha'), DB::raw('COUNT(*) as cantidad_visitantes'))
@@ -86,14 +84,14 @@ class Dashboard extends Controller
             ->groupBy('fecha')
             ->get();
     
-        $visitantesPorGerencia = Visitor::select('gerencia', DB::raw('COUNT(*) as cantidad_visitantes'))
+        $visitantesPorGerencia = Visitor::select('gerencia_id as gerencia', DB::raw('COUNT(*) as cantidad_visitantes'))
             ->whereBetween('created_at', [Carbon::parse($diadesde)->startOfDay(), Carbon::parse($diahasta)->endOfDay()])
-            ->groupBy('gerencia')
+            ->groupBy('gerencia_id')
             ->get();
     
-        $visitantesPorFilial = Visitor::select('filial', DB::raw('COUNT(*) as cantidad_visitantes'))
+        $visitantesPorFilial = Visitor::select('filial_id as filial', DB::raw('COUNT(*) as cantidad_visitantes'))
             ->whereBetween('created_at', [Carbon::parse($diadesde)->startOfDay(), Carbon::parse($diahasta)->endOfDay()])
-            ->groupBy('filial')
+            ->groupBy('filial_id')
             ->get();
     
         return view('dashboard.index', [
@@ -106,7 +104,6 @@ class Dashboard extends Controller
             'fechaMinima' => $this->getFechaMinima(),
         ]);
     }
-    
 
     private function getFechaMinima()
     {
