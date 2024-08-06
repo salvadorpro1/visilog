@@ -15,5 +15,9 @@ class Gerencia extends Model
     {
         return $this->belongsTo(Filial::class);
     }
+<<<<<<< HEAD
 }
 
+=======
+}
+>>>>>>> recuperacion-commit

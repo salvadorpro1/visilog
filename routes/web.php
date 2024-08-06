@@ -8,7 +8,6 @@ use App\Http\Controllers\Dashboard;
 use App\Http\Controllers\FilialController;
 use App\Http\Controllers\GerenciaController;
 
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -53,5 +52,7 @@ Route::post('/dashboard', [Dashboard::class, 'dashboard'])->middleware('auth')->
 
 Route::get('/visitor/photo/{filename}', [VisitorController::class, 'getVisitorPhoto'])->name('visitor.photo');
 
-Route::resource('filiales', FilialController::class);
-Route::resource('gerencias', GerenciaController::class);
+Route::resource('filiales', FilialController::class)
+    ->parameters(['filiales' => 'filial'])
+    ->middleware(['auth', 'role:administrador']);
+Route::resource('gerencias', GerenciaController::class)->middleware(['auth', 'role:administrador']);

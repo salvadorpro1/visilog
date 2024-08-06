@@ -9,6 +9,7 @@ class Visitor extends Model
 {
     use HasFactory;
 
+<<<<<<< HEAD
     protected $fillable = [
         'nacionalidad', 
         'cedula', 
@@ -30,9 +31,22 @@ class Visitor extends Model
     {
         return $this->belongsTo(Gerencia::class);
     }
+=======
+    protected $fillable = ['nombre', 'apellido', 'cedula', 'filial_id', 'gerencia_id', 'razon_visita','nacionalidad','foto'];
+>>>>>>> recuperacion-commit
 
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function filial()
+    {
+        return $this->belongsTo(Filial::class);
+    }
+
+    public function gerencia()
+    {
+        return $this->belongsTo(Gerencia::class);
     }
 }
