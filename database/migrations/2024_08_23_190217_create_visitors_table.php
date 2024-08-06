@@ -18,15 +18,17 @@ return new class extends Migration
             $table->string('apellido');
             $table->enum('nacionalidad', ['V', 'E']);
             $table->string('cedula');
-            $table->enum('filial', ['Vencemos', 'Invecem', 'ENTIPI', 'Cemento Andino', 'Cemento Cerro Azul', 'FNC']);
-            $table->string('gerencia');
+            $table->unsignedBigInteger('filial_id');
+            $table->unsignedBigInteger('gerencia_id');
             $table->text('razon_visita');
             $table->string('foto');     
             $table->timestamps();
-            $table->foreign('user_id')->references('id')->on('users');
-        });
-    }
 
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('filial_id')->references('id')->on('filiales');
+            $table->foreign('gerencia_id')->references('id')->on('gerencias');
+        });
+    }   
     /**
      * Reverse the migrations.
      */
