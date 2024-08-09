@@ -219,8 +219,9 @@
                     </div>
                 </div>
                 <label for="">Filial</label>
-                <select name="filial_id" id="filial_id"
-                    onchange="quitarSeleccionInicial('filial'), updateGerenciaOptions(this.value, 'gerencia')">
+                <select name="filial_id" id="filial_id" onchange="updateGerencias(),quitarSeleccionInicial('filial')">
+                    <option value="" selected disabled>Elegir filial</option>
+
                     @foreach ($filials as $filial)
                         <option value="{{ $filial->id }}"
                             {{ isset($visitor) && $visitor->filial_id == $filial->id ? 'selected' : '' }}>
@@ -229,13 +230,8 @@
                     @endforeach
                 </select>
                 <label for="gerencia_id">Gerencia</label>
-                <select name="gerencia_id" id="gerencia_id" onchange="quitarSeleccionInicial('gerencia')">
-                    @foreach ($gerencias as $gerencia)
-                        <option value="{{ $gerencia->id }}"
-                            {{ isset($visitor) && $visitor->gerencia_id == $gerencia->id ? 'selected' : '' }}>
-                            {{ $gerencia->nombre }}
-                        </option>
-                    @endforeach
+                <select name="gerencia_id" id="gerencia_id">
+                    <option id="gerencia_option" value="" selected disabled>Elegir gerencia</option>
                 </select>
                 <label for="">Razón de la visita</label>
                 <textarea name="razon_visita" cols="30" rows="10" maxlength="255"></textarea>
@@ -271,8 +267,9 @@
 
 
                 <label for="">Filial</label>
-                <select name="filial_id" id="filial_id"
-                    onchange="quitarSeleccionInicial('filial'), updateGerenciaOptions(this.value, 'gerencia')">
+                <select name="filial_id" id="filial_id" onchange="updateGerencias(),quitarSeleccionInicial('filial')">
+                    <option value="" selected disabled>Elegir filial</option>
+
                     @foreach ($filials as $filial)
                         <option value="{{ $filial->id }}"
                             {{ isset($visitor) && $visitor->filial_id == $filial->id ? 'selected' : '' }}>
@@ -281,7 +278,8 @@
                     @endforeach
                 </select>
                 <label for="gerencia_id">Gerencia</label>
-                <select name="gerencia_id" id="gerencia_id" required>
+                <select name="gerencia_id" id="gerencia_id">
+                    <option value="" selected>Elegir gerencia</option>
                     @foreach ($gerencias as $gerencia)
                         <option value="{{ $gerencia->id }}"
                             {{ isset($visitor) && $visitor->gerencia_id == $gerencia->id ? 'selected' : '' }}>
@@ -319,32 +317,38 @@
 
 
     <script>
-        function quitarSeleccionInicial(nombreSelect) {
-            var selectElement = document.getElementsByName(nombreSelect)[0];
-            var optionElement = selectElement.querySelector("option[selected][disabled]");
-            if (optionElement) {
-                optionElement.remove();
+        function updateGerencias() {
+            var filial_id = document.getElementById('filial_id').value;
+            var gerenciaSelect = document.getElementById('gerencia_id');
+
+            // Limpiar el select de gerencias antes de llenarlo
+            gerenciaSelect.innerHTML = '<option value="" selected>Seleccione una gerencia</option>';
+
+            if (filial_id) {
+                fetch(`/get-gerencias/${filial_id}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.length === 0) {
+                            console.log('No hay gerencias para esta filial.');
+                        } else {
+                            gerenciaSelect.disabled = false;
+                        }
+                        data.forEach(gerencia => {
+                            var option = document.createElement('option');
+                            option.value = gerencia.id;
+                            option.text = gerencia.nombre;
+                            gerenciaSelect.add(option);
+                        });
+                    })
+                    .catch(error => console.error('Error en la solicitud:', error));
             }
-        }
 
-        function updateGerenciaOptions(filialValue, gerenciaName) {
-            var gerenciaSelect = document.getElementsByName(gerenciaName)[0];
-            gerenciaSelect.innerHTML = ''; // Limpiar opciones actuales
-
-            var opciones = [];
-            if (filialValue === 'vencemos') {
-                opciones = ['value1A', 'value2A', 'value3A'];
-            } else if (filialValue === 'invecem') {
-                opciones = ['value1B', 'value2B', 'value3B'];
-            } else {
-                opciones = ['value1C', 'value2C', 'value3C']; // Opciones predeterminadas
-            }
-
-            opciones.forEach(function(opcion) {
-                var option = document.createElement('option');
-                option.value = opcion;
-                option.text = opcion;
-                gerenciaSelect.appendChild(option);
+            // Agregar un event listener para deshabilitar la opción "Seleccione una gerencia" después de seleccionar una gerencia
+            gerenciaSelect.addEventListener('change', function() {
+                var selectedValue = gerenciaSelect.value;
+                if (selectedValue) {
+                    gerenciaSelect.querySelector('option[value=""]').disabled = true;
+                }
             });
         }
     </script>

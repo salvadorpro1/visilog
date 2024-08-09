@@ -56,3 +56,7 @@ Route::resource('filiales', FilialController::class)
     ->parameters(['filiales' => 'filial'])
     ->middleware(['auth', 'role:administrador']);
 Route::resource('gerencias', GerenciaController::class)->middleware(['auth', 'role:administrador']);
+
+
+
+Route::get('/get-gerencias/{filial_id}', [VisitorController::class, 'getGerenciasByFilial'])->name('getGerenciasByFilial');

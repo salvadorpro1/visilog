@@ -6,6 +6,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Visitor;
+use App\Models\Filial;
+use App\Models\Gerencia;
+
 use Illuminate\Support\Facades\Validator;
 
 use Illuminate\Http\Request;
@@ -47,6 +50,16 @@ class VisitorController extends Controller
         }
     }
     
+    public function getGerenciasByFilial($filial_id)
+    {
+        $gerencias = Gerencia::where('filial_id', $filial_id)->get();
+        
+        // Imprimir para debugging
+        \Log::info($gerencias);
+    
+        return response()->json($gerencias);
+    }
+
     public function showRegister(Request $request)
     {
         $query = Visitor::query();
