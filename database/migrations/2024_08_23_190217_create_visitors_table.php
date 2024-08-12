@@ -10,12 +10,10 @@ class CreateVisitorsTable extends Migration
     {
         Schema::create('visitors', function (Blueprint $table) {
             $table->id();
-            $table->string('nacionalidad');
-            $table->string('cedula');
+            $table->enum('nacionalidad', ['V', 'E']); // Define 'nacionalidad' como enum una sola vez
+            $table->string('cedula'); // Define 'cedula' una sola vez
             $table->string('nombre');
             $table->string('apellido');
-            $table->enum('nacionalidad', ['V', 'E']);
-            $table->string('cedula');
             $table->unsignedBigInteger('filial_id');
             $table->unsignedBigInteger('gerencia_id');
             $table->text('razon_visita');
@@ -23,11 +21,12 @@ class CreateVisitorsTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('filial_id')->references('id')->on('filiales');
-            $table->foreign('gerencia_id')->references('id')->on('gerencias');
+            // Foreign keys
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('filial_id')->references('id')->on('filiales')->onDelete('cascade');
+            $table->foreign('gerencia_id')->references('id')->on('gerencias')->onDelete('cascade');
         });
-    }   
+    }
     /**
      * Reverse the migrations.
      */

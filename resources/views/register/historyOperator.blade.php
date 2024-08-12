@@ -128,8 +128,8 @@
                                 <td><a
                                         href="{{ route('show_Register_Visitor_Detail', $visitante->id) }}">{{ $visitante->cedula }}</a>
                                 </td>
-                                <td>{{ $visitante->filial }}</td>
-                                <td>{{ $visitante->gerencia }}</td>
+                                <td>{{ $visitante->filial->nombre }}</td>
+                                <td>{{ $visitante->gerencia->nombre }}</td>
                                 <td class="truncate">{{ $visitante->razon_visita }}</td>
                                 <td>{{ $visitante->created_at->format('d-m-Y') }}</td>
                             </tr>

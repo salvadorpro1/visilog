@@ -90,11 +90,11 @@
             </tr>
             <tr>
                 <th>Filial</th>
-                <td>{{ $persona->filial }}</td>
+                <td>{{ $persona->filial->nombre }}</td>
             </tr>
             <tr>
                 <th>Gerencia</th>
-                <td>{{ $persona->gerencia }}</td>
+                <td>{{ $persona->gerencia->nombre }}</td>
             </tr>
             <tr>
                 <th>Razón de la Visita</th>

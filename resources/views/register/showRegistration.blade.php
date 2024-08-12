@@ -100,7 +100,7 @@
                             <td>Dato no valido</td>
                     @endswitch
                     <td><a href="{{ route('show_Register_Visitor_Detail', $registro->id) }}">{{ $registro->cedula }}</a>
-                    <td>{{ $registro->gerencia }}</td>
+                    <td>{{ $registro->gerencia->nombre }}</td>
                     <td class="truncate">{{ $registro->razon_visita }}</td>
                     <td>{{ \Carbon\Carbon::parse($registro->created_at)->format('d/m/Y') }}</td>
                 </tr>

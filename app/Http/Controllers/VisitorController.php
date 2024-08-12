@@ -132,7 +132,7 @@ class VisitorController extends Controller
             'cedula' => 'required|digits_between:7,8',
             'nombre' => 'required|regex:/^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$/',
             'apellido' => 'required|regex:/^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$/',
-            'filial_id' => 'required|exists:filials,id',
+            'filial_id' => 'required|exists:filiales,id',
             'gerencia_id' => 'required|exists:gerencias,id',
             'razon_visita' => 'required|max:255',
             'foto' => 'required',
