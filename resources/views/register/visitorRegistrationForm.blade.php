@@ -279,13 +279,7 @@
                 </select>
                 <label for="gerencia_id">Gerencia</label>
                 <select name="gerencia_id" id="gerencia_id">
-                    <option value="" selected>Elegir gerencia</option>
-                    @foreach ($gerencias as $gerencia)
-                        <option value="{{ $gerencia->id }}"
-                            {{ isset($visitor) && $visitor->gerencia_id == $gerencia->id ? 'selected' : '' }}>
-                            {{ $gerencia->nombre }}
-                        </option>
-                    @endforeach
+                    <option id="gerencia_option" value="" selected disabled>Elegir gerencia</option>
                 </select>
 
                 <label for="">Razón de la visita</label>

@@ -215,160 +215,105 @@ class VisitorController extends Controller
 
     public function showAccount(Request $request)
     {
-        $fechaMinima = $this->getFechaMinima();
+        $filial_id = $request->input('filial_id');
+        $gerencia_id = $request->input('gerencia_id');
+        $diadesde = $request->input('diadesde');
+        $diahasta = $request->input('diahasta');
     
-        $visitorQuery = Visitor::query();
+        // Verifica que se hayan seleccionado Filial, Gerencia, y fechas
+        if ($filial_id && $gerencia_id && $diadesde && $diahasta) {
+            $visitorQuery = Visitor::query()
+                ->where('filial_id', $filial_id)
+                ->where('gerencia_id', $gerencia_id)
+                ->whereBetween('created_at', [Carbon::parse($diadesde)->startOfDay(), Carbon::parse($diahasta)->endOfDay()]);
     
-        if ($request->has(['filial', 'gerencia', 'diadesde', 'diahasta'])) {
-            // Validar los datos
-            $rules = [
-                'filial' => 'required|string',
-                'gerencia' => 'required|string',
-                'diadesde' => 'required|date',
-                'diahasta' => 'required|date|after_or_equal:diadesde',
-            ];
-    
-            $messages = [
-                'filial.required' => 'La filial es obligatoria.',
-                'filial.string' => 'La filial debe ser una cadena de texto.',
-                'gerencia.required' => 'La gerencia es obligatoria.',
-                'gerencia.string' => 'La gerencia debe ser una cadena de texto.',
-                'diadesde.required' => 'La fecha de inicio es obligatoria.',
-                'diadesde.date' => 'La fecha de inicio debe ser una fecha válida.',
-                'diahasta.required' => 'La fecha de fin es obligatoria.',
-                'diahasta.date' => 'La fecha de fin debe ser una fecha válida.',
-                'diahasta.after_or_equal' => 'La fecha de fin debe ser igual o posterior a la fecha de inicio.',
-            ];
-    
-            $validator = Validator::make($request->all(), $rules, $messages);
-    
-            if ($validator->fails()) {
-                return redirect()->back()->withErrors($validator)->withInput();
-            }
-    
-            // Obtener los datos validados
-            $validated = $validator->validated();
-            $filial = $validated['filial'];
-            $gerencia = $validated['gerencia'];
-            $diadesde = $validated['diadesde'];
-            $diahasta = $validated['diahasta'];
-    
-            // Filtrar por filial
-            $visitorQuery->where('filial', $filial);
-    
-            // Filtrar por gerencia
-            if (strpos($gerencia, 'Todo') === 0) {
-                // No se filtra por gerencia, incluye todas las gerencias para la filial seleccionada
-            } else {
-                $visitorQuery->where('gerencia', $gerencia);
-            }
-    
-            // Filtrar por fechas
-            $visitorQuery->whereBetween('created_at', [Carbon::parse($diadesde)->startOfDay(), Carbon::parse($diahasta)->endOfDay()]);
-    
-            // Obtener el conteo total de visitantes
-            $visitorCount = $visitorQuery->count();
-    
-            // Obtener los visitantes paginados
             $visitors = $visitorQuery->paginate(10)->appends($request->all());
-    
-            $visitorCountsByFilial = Visitor::select('filial', DB::raw('COUNT(*) as visitor_count'))
-                ->whereBetween('created_at', [Carbon::parse($diadesde)->startOfDay(), Carbon::parse($diahasta)->endOfDay()])
-                ->groupBy('filial')
-                ->get();
-    
-            $visitantesPorGerenciaFilial = Visitor::select('gerencia', 'filial', DB::raw('COUNT(*) as cantidad_visitantes'))
-                ->whereBetween('created_at', [Carbon::parse($diadesde)->startOfDay(), Carbon::parse($diahasta)->endOfDay()])
-                ->groupBy('gerencia', 'filial')
-                ->get();
+            $visitorCount = $visitors->total(); // Usa el total de la paginación
     
             return view('account.index', [
                 'visitors' => $visitors,
                 'visitorCount' => $visitorCount,
-                'filial' => $filial,
-                'gerencia' => $gerencia,
+                'filial' => Filial::find($filial_id)->nombre,
+                'gerencia' => Gerencia::find($gerencia_id)->nombre,
                 'diadesde' => $diadesde,
                 'diahasta' => $diahasta,
-                'fechaMinima' => $fechaMinima,
-                'visitorCountsByFilial' => $visitorCountsByFilial,
-                'visitantesPorGerenciaFilial' => $visitantesPorGerenciaFilial,
+                'filials' => Filial::all(),
+                'gerencias' => Gerencia::where('filial_id', $filial_id)->get(),
+                'fechaMinima' => $this->getFechaMinima(),
             ]);
         } else {
+            // Si no se ha seleccionado Filial, Gerencia o las fechas
             return view('account.index', [
-                'fechaMinima' => $fechaMinima,
+                'filials' => Filial::all(),
+                'gerencias' => collect(), // Enviar una colección vacía si no hay selección
+                'fechaMinima' => $this->getFechaMinima(),
             ]);
         }
     }
-    
+
     public function accountConsul(Request $request)
     {
         // Define las reglas de validación
-         $rules = [
-        'filial' => 'required|string',
-        'gerencia' => 'required|string',
-        'diadesde' => 'required|date',
-        'diahasta' => 'required|date|after_or_equal:diadesde',
-         ];
+        $rules = [
+            'filial' => 'required|string',
+            'gerencia' => 'required|string',
+            'diadesde' => 'required|date',
+            'diahasta' => 'required|date|after_or_equal:diadesde',
+        ];
 
         // Define los mensajes de error personalizados
-         $messages = [
-        'filial.required' => 'La filial es obligatoria.',
-        'filial.string' => 'La filial debe ser una cadena de texto.',
-        'gerencia.required' => 'La gerencia es obligatoria.',
-        'gerencia.string' => 'La gerencia debe ser una cadena de texto.',
-        'diadesde.required' => 'La fecha de inicio es obligatoria.',
-        'diadesde.date' => 'La fecha de inicio debe ser una fecha válida.',
-        'diahasta.required' => 'La fecha de fin es obligatoria.',
-        'diahasta.date' => 'La fecha de fin debe ser una fecha válida.',
-        'diahasta.after_or_equal' => 'La fecha de fin debe ser igual o posterior a la fecha de inicio.',
+        $messages = [
+            'filial.required' => 'La filial es obligatoria.',
+            'filial.string' => 'La filial debe ser una cadena de texto.',
+            'gerencia.required' => 'La gerencia es obligatoria.',
+            'gerencia.string' => 'La gerencia debe ser una cadena de texto.',
+            'diadesde.required' => 'La fecha de inicio es obligatoria.',
+            'diadesde.date' => 'La fecha de inicio debe ser una fecha válida.',
+            'diahasta.required' => 'La fecha de fin es obligatoria.',
+            'diahasta.date' => 'La fecha de fin debe ser una fecha válida.',
+            'diahasta.after_or_equal' => 'La fecha de fin debe ser igual o posterior a la fecha de inicio.',
         ];
-    
+
         // Valida los datos
         $validator = Validator::make($request->all(), $rules, $messages);
-    
+
         // Si la validación falla, redirige de vuelta con los errores
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
-    
+
         // Obtener los datos validados
         $validated = $validator->validated();
         $filial = $validated['filial'];
         $gerencia = $validated['gerencia'];
         $diadesde = $validated['diadesde'];
         $diahasta = $validated['diahasta'];
-    
-        // Realizar la consulta a la base de datos
-        $visitorQuery = Visitor::query();
-    
-        // Filtrar por filial
-        $visitorQuery->where('filial', $filial);
-    
-        // Filtrar por gerencia
-        if (strpos($gerencia, 'Todo') === 0) {
-            // No se filtra por gerencia, incluye todas las gerencias para la filial seleccionada
-        } else {
+
+        // Consulta principal
+        $visitorQuery = Visitor::query()
+            ->where('filial', $filial)
+            ->whereBetween('created_at', [Carbon::parse($diadesde)->startOfDay(), Carbon::parse($diahasta)->endOfDay()]);
+
+        // Filtrar por gerencia si no es 'Todo'
+        if (strpos($gerencia, 'Todo') !== 0) {
             $visitorQuery->where('gerencia', $gerencia);
         }
-    
-        // Filtrar por fechas
-        $visitorQuery->whereBetween('created_at', [Carbon::parse($diadesde)->startOfDay(), Carbon::parse($diahasta)->endOfDay()]);
-    
-        // Obtener el conteo total de visitantes
-        $visitorCount = $visitorQuery->count();
-    
-        // Obtener los visitantes paginados
-        $visitors = $visitorQuery->paginate(10)->appends($request->all());
-    
-        $visitorCountsByFilial = Visitor::select('filial', DB::raw('COUNT(*) as visitor_count'))
-        ->whereBetween('created_at', [Carbon::parse($diadesde)->startOfDay(), Carbon::parse($diahasta)->endOfDay()])
-        ->groupBy('filial')
-        ->get();
 
+        // Paginación y total
+        $visitors = $visitorQuery->paginate(10)->appends($request->all());
+        $visitorCount = $visitors->total();
+
+        // Conteo por filial
+        $visitorCountsByFilial = Visitor::select('filial', DB::raw('COUNT(*) as visitor_count'))
+            ->whereBetween('created_at', [Carbon::parse($diadesde)->startOfDay(), Carbon::parse($diahasta)->endOfDay()])
+            ->groupBy('filial')
+            ->get();
+
+        // Conteo por gerencia y filial
         $visitantesPorGerenciaFilial = Visitor::select('gerencia', 'filial', DB::raw('COUNT(*) as cantidad_visitantes'))
-        ->whereBetween('created_at', [Carbon::parse($diadesde)->startOfDay(), Carbon::parse($diahasta)->endOfDay()])
-        ->groupBy('gerencia', 'filial')
-        ->get();
+            ->whereBetween('created_at', [Carbon::parse($diadesde)->startOfDay(), Carbon::parse($diahasta)->endOfDay()])
+            ->groupBy('gerencia', 'filial')
+            ->get();
 
         // Retornar los resultados a la misma vista
         return view('account.index', [
@@ -381,15 +326,13 @@ class VisitorController extends Controller
             'fechaMinima' => $this->getFechaMinima(),
             'visitorCountsByFilial' => $visitorCountsByFilial,
             'visitantesPorGerenciaFilial' => $visitantesPorGerenciaFilial,
-
-
         ]);
     }
-    
+
+    // Método auxiliar para obtener la fecha mínima
     private function getFechaMinima()
     {
-        $fechaMinima = Visitor::orderBy('created_at')->value('created_at');
-        return $fechaMinima ? Carbon::parse($fechaMinima)->format('Y-m-d') : Carbon::now()->format('Y-m-d');
+        return Visitor::min('created_at');
     }
     
 }

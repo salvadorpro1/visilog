@@ -260,6 +260,7 @@
         }
     </style>
 @endsection
+
 @section('content')
     <h1>Reporte</h1>
     <div class="container">
@@ -275,47 +276,53 @@
         <form class="form" method="GET" action="{{ route('show_Account') }}">
             @csrf
             <label class="form__label" for="filial">Filial</label>
-            <select class="form__select" name="filial" id="filial"
-                onchange="quitarSeleccionInicial('filial'), updateGerenciaOptions(this.value, 'gerencia')">
+            <select class="form__select" name="filial_id" id="filial_id" onchange="updateGerencias()">
                 <option value="" selected disabled>Elegir filial</option>
-                <option value="Vencemos">Vencemos</option>
-                <option value="Invecem">Invecem</option>
-                <option value="ENTIPI">ENTIPI</option>
-                <option value="Cemento Andino">Cemento Andino</option>
-                <option value="Cemento Cerro Azul">Cemento Cerro Azul</option>
-                <option value="FNC">FNC</option>
+                @foreach ($filials as $filial)
+                    <option value="{{ $filial->id }}" {{ old('filial_id') == $filial->id ? 'selected' : '' }}>
+                        {{ $filial->nombre }}
+                    </option>
+                @endforeach
             </select>
-            <label class="form__label" for="gerencia">Gerencia</label>
-            <select class="form__select" name="gerencia" id="gerencia" onchange="quitarSeleccionInicial('gerencia')">
+
+            <label class="form__label" for="gerencia_id">Gerencia</label>
+            <select class="form__select" name="gerencia_id" id="gerencia_id">
                 <option value="" selected disabled>Elegir gerencia</option>
+                @foreach ($gerencias as $gerencia)
+                    <option value="{{ $gerencia->id }}" {{ old('gerencia_id') == $gerencia->id ? 'selected' : '' }}>
+                        {{ $gerencia->nombre }}
+                    </option>
+                @endforeach
             </select>
+
             <div class="form__container_date">
                 <div>
-                    <label class="form__label" for="dia">Desde</label>
+                    <label class="form__label" for="diadesde">Desde</label>
                     <input class="form__input" type="date" name="diadesde" id="diadesde"
                         min="{{ \Carbon\Carbon::parse($fechaMinima)->format('Y-m-d') }}" max="{{ date('Y-m-d') }}">
                 </div>
                 <div>
-                    <label class="form__label" for="dia">Hasta</label>
+                    <label class="form__label" for="diahasta">Hasta</label>
                     <input class="form__input" type="date" name="diahasta" id="diahasta"
                         min="{{ \Carbon\Carbon::parse($fechaMinima)->format('Y-m-d') }}" max="{{ date('Y-m-d') }}">
                 </div>
             </div>
+
             <a class="button" href="{{ route('show_Dashboard') }}">Volver</a>
             <input class="form__submit" type="submit" value="Consultar">
         </form>
 
-        @if (isset($visitorCount))
+        @if (isset($visitorCount) && !is_null($visitorCount))
             <div class="results">
                 <h2>Resultados de la Consulta</h2>
                 <div class="result-cards">
                     <div class="result-card">
                         <span class="result-label">Filial:</span>
-                        <span class="result-value">{{ $filial }}</span>
+                        <span class="result-value">{{ $filial->nombre }}</span>
                     </div>
                     <div class="result-card">
                         <span class="result-label">Gerencia:</span>
-                        <span class="result-value">{{ $gerencia }}</span>
+                        <span class="result-value">{{ $gerencia->nombre }}</span>
                     </div>
                     <div class="dates-container">
                         <div class="result-card">
@@ -334,50 +341,44 @@
                 </div>
 
                 @if ($visitors->count() > 0)
-                    <form method="GET" action="{{ route('show_Account') }}">
-                        <input type="hidden" name="filial" value="{{ request('filial') }}">
-                        <input type="hidden" name="gerencia" value="{{ request('gerencia') }}">
-                        <input type="hidden" name="diadesde" value="{{ request('diadesde') }}">
-                        <input type="hidden" name="diahasta" value="{{ request('diahasta') }}">
-                        <table class="results-table">
-                            <thead>
+                    <table class="results-table">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Apellido</th>
+                                <th>Nacionalidad</th>
+                                <th>Cédula</th>
+                                <th>Fecha</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($visitors as $visitor)
                                 <tr>
-                                    <th>Nombre</th>
-                                    <th>Apellido</th>
-                                    <th>Nacionalidad</th>
-                                    <th>Cédula</th>
-                                    <th>Fecha</th>
+                                    <td>{{ $visitor->nombre }}</td>
+                                    <td>{{ $visitor->apellido }}</td>
+                                    @switch($visitor->nacionalidad)
+                                        @case('V')
+                                            <td>Venezolana</td>
+                                        @break
+
+                                        @case('E')
+                                            <td>Extranjero</td>
+                                        @break
+
+                                        @default
+                                            <td>Dato no válido</td>
+                                    @endswitch
+                                    <td><a
+                                            href="{{ route('show_Register_Visitor_Detail', $visitor->id) }}">{{ $visitor->cedula }}</a>
+                                    </td>
+                                    <td>{{ \Carbon\Carbon::parse($visitor->created_at)->format('d/m/Y') }}</td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($visitors as $visitor)
-                                    <tr>
-                                        <td>{{ $visitor->nombre }}</td>
-                                        <td>{{ $visitor->apellido }}</td>
-                                        @switch($visitor->nacionalidad)
-                                            @case('V')
-                                                <td>Venezolana</td>
-                                            @break
-
-                                            @case('E')
-                                                <td>Extranjero</td>
-                                            @break
-
-                                            @default
-                                                <td>Dato no válido</td>
-                                        @endswitch
-                                        <td><a
-                                                href="{{ route('show_Register_Visitor_Detail', $visitor->id) }}">{{ $visitor->cedula }}</a>
-                                        </td>
-                                        <td>{{ \Carbon\Carbon::parse($visitor->created_at)->format('d/m/Y') }}</td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                        <div class="pagination">
-                            {{ $visitors->appends(request()->query())->links() }}
-                        </div>
-                    </form>
+                            @endforeach
+                        </tbody>
+                    </table>
+                    <div class="pagination">
+                        {{ $visitors->appends(request()->input())->links() }}
+                    </div>
                 @else
                     <p class="no-results">No se encontraron visitantes para los criterios seleccionados.</p>
                 @endif
@@ -386,39 +387,49 @@
     </div>
 
     <script>
+        function updateGerencias() {
+            var filial_id = document.getElementById('filial_id').value;
+            var gerenciaSelect = document.getElementById('gerencia_id');
+
+            // Limpiar el select de gerencias antes de llenarlo
+            gerenciaSelect.innerHTML = '<option value="" selected>Seleccione una gerencia</option>';
+
+            if (filial_id) {
+                fetch(`/get-gerencias/${filial_id}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.length === 0) {
+                            console.log('No hay gerencias para esta filial.');
+                        } else {
+                            gerenciaSelect.disabled = false;
+                        }
+                        data.forEach(gerencia => {
+                            var option = document.createElement('option');
+                            option.value = gerencia.id;
+                            option.text = gerencia.nombre;
+                            gerenciaSelect.add(option);
+                        });
+                    })
+                    .catch(error => console.error('Error en la solicitud:', error));
+            }
+
+            // Agregar un event listener para deshabilitar la opción "Seleccione una gerencia" después de seleccionar una gerencia
+            gerenciaSelect.addEventListener('change', function() {
+                var selectedValue = gerenciaSelect.value;
+                if (selectedValue) {
+                    gerenciaSelect.querySelector('option[value=""]').disabled = true;
+                }
+            });
+        }
+    </script>
+
+    <script>
         function quitarSeleccionInicial(nombreSelect) {
             var selectElement = document.getElementsByName(nombreSelect)[0];
             var optionElement = selectElement.querySelector("option[selected][disabled]");
             if (optionElement) {
                 optionElement.remove();
             }
-        }
-
-        function updateGerenciaOptions(filialValue, gerenciaName) {
-            var gerenciaSelect = document.getElementsByName(gerenciaName)[0];
-            gerenciaSelect.innerHTML = ''; // Limpiar opciones actuales
-
-            var opciones = [];
-            if (filialValue === 'Vencemos') {
-                opciones = ['Todo(Vencemos)', 'value1A', 'value2A', 'value3A'];
-            } else if (filialValue === 'Invecem') {
-                opciones = ['Todo(Invecem)', 'value1B', 'value2B', 'value3B'];
-            } else if (filialValue === 'ENTIPI') {
-                opciones = ['Todo(ENTIPI)', 'value1C', 'value2C', 'value3C'];
-            } else if (filialValue === 'Cemento Andino') {
-                opciones = ['Todo(Cemento Andino)', 'value1D', 'value2D', 'value3D'];
-            } else if (filialValue === 'Cemento Cerro Azul') {
-                opciones = ['Todo(Cemento Cerro Azul)', 'value1E', 'value2E', 'value3E'];
-            } else if (filialValue === 'FNC') {
-                opciones = ['Todo(FNC)', 'value1F', 'value2F', 'value3F'];
-            }
-
-            opciones.forEach(function(opcion) {
-                var option = document.createElement('option');
-                option.value = opcion;
-                option.text = opcion;
-                gerenciaSelect.appendChild(option);
-            });
         }
     </script>
 @endsection
