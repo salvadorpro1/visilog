@@ -262,174 +262,180 @@
 @endsection
 
 @section('content')
-    <h1>Reporte</h1>
     <div class="container">
-        @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-        <form class="form" method="GET" action="{{ route('show_Account') }}">
-            @csrf
-            <label class="form__label" for="filial">Filial</label>
-            <select class="form__select" name="filial_id" id="filial_id" onchange="updateGerencias()">
-                <option value="" selected disabled>Elegir filial</option>
-                @foreach ($filials as $filial)
-                    <option value="{{ $filial->id }}" {{ old('filial_id') == $filial->id ? 'selected' : '' }}>
-                        {{ $filial->nombre }}
-                    </option>
-                @endforeach
-            </select>
+        <h1 class="text-center my-4">Reporte de Visitantes</h1>
 
-            <label class="form__label" for="gerencia_id">Gerencia</label>
-            <select class="form__select" name="gerencia_id" id="gerencia_id">
-                <option value="" selected disabled>Elegir gerencia</option>
-                @foreach ($gerencias as $gerencia)
-                    <option value="{{ $gerencia->id }}" {{ old('gerencia_id') == $gerencia->id ? 'selected' : '' }}>
-                        {{ $gerencia->nombre }}
-                    </option>
-                @endforeach
-            </select>
-
-            <div class="form__container_date">
-                <div>
-                    <label class="form__label" for="diadesde">Desde</label>
-                    <input class="form__input" type="date" name="diadesde" id="diadesde"
-                        min="{{ \Carbon\Carbon::parse($fechaMinima)->format('Y-m-d') }}" max="{{ date('Y-m-d') }}">
+        <!-- Formulario de filtros con estilos -->
+        <form method="GET" action="{{ route('show_Account') }}" class="mb-5">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="filial_id" class="font-weight-bold">Filial:</label>
+                        <select name="filial_id" id="filial_id" class="form-control" required>
+                            <option value="">Seleccione una filial</option>
+                            @foreach ($filials as $filial)
+                                <option value="{{ $filial->id }}" {{ old('filial_id') == $filial->id ? 'selected' : '' }}>
+                                    {{ $filial->nombre }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
-                <div>
-                    <label class="form__label" for="diahasta">Hasta</label>
-                    <input class="form__input" type="date" name="diahasta" id="diahasta"
-                        min="{{ \Carbon\Carbon::parse($fechaMinima)->format('Y-m-d') }}" max="{{ date('Y-m-d') }}">
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="gerencia_id" class="font-weight-bold">Gerencia:</label>
+                        <select name="gerencia_id" id="gerencia_id" class="form-control" required>
+                            <option value="">Seleccione una gerencia</option>
+                            @if (isset($gerencias))
+                                @foreach ($gerencias as $gerencia)
+                                    <option value="{{ $gerencia->id }}"
+                                        {{ old('gerencia_id') == $gerencia->id ? 'selected' : '' }}>
+                                        {{ $gerencia->nombre }}
+                                    </option>
+                                @endforeach
+                            @endif
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="diadesde" class="font-weight-bold">Fecha desde:</label>
+                        <input type="date" name="diadesde" id="diadesde" class="form-control"
+                            value="{{ old('diadesde', $diadesde ?? '') }}" required min="{{ $fechaMinima }}">
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="diahasta" class="font-weight-bold">Fecha hasta:</label>
+                        <input type="date" name="diahasta" id="diahasta" class="form-control"
+                            value="{{ old('diahasta', $diahasta ?? '') }}" required>
+                    </div>
                 </div>
             </div>
 
-            <a class="button" href="{{ route('show_Dashboard') }}">Volver</a>
-            <input class="form__submit" type="submit" value="Consultar">
+            <button type="submit" class="btn btn-primary btn-block mt-3">Filtrar</button>
         </form>
 
-        @if (isset($visitorCount) && !is_null($visitorCount))
-            <div class="results">
-                <h2>Resultados de la Consulta</h2>
-                <div class="result-cards">
-                    <div class="result-card">
-                        <span class="result-label">Filial:</span>
-                        <span class="result-value">{{ $filial->nombre }}</span>
-                    </div>
-                    <div class="result-card">
-                        <span class="result-label">Gerencia:</span>
-                        <span class="result-value">{{ $gerencia->nombre }}</span>
-                    </div>
-                    <div class="dates-container">
-                        <div class="result-card">
-                            <span class="result-label">Desde:</span>
-                            <span class="result-value">{{ \Carbon\Carbon::parse($diadesde)->format('d/m/Y') }}</span>
-                        </div>
-                        <div class="result-card">
-                            <span class="result-label">Hasta:</span>
-                            <span class="result-value">{{ \Carbon\Carbon::parse($diahasta)->format('d/m/Y') }}</span>
-                        </div>
-                    </div>
-                    <div class="result-card">
-                        <span class="result-label">Visitantes:</span>
-                        <span class="result-value">{{ 'Hay ' . $visitorCount . ' visitantes totales' }}</span>
-                    </div>
-                </div>
+        <!-- Tabla de resultados -->
+        @if (isset($visitors) && $visitors->count() > 0)
+            <h4>
+                Resultados para {{ $visitors->first()->filial->nombre }} - {{ $visitors->first()->gerencia->nombre }}
+                ({{ \Carbon\Carbon::parse($diadesde)->format('d/m/Y') }}
+                {{ \Carbon\Carbon::parse($diahasta)->format('d/m/Y') }})
+            </h4>
+            <p><strong>Total de Visitantes: {{ $visitorCount }}</strong></p>
 
-                @if ($visitors->count() > 0)
-                    <table class="results-table">
-                        <thead>
-                            <tr>
-                                <th>Nombre</th>
-                                <th>Apellido</th>
-                                <th>Nacionalidad</th>
-                                <th>Cédula</th>
-                                <th>Fecha</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($visitors as $visitor)
-                                <tr>
-                                    <td>{{ $visitor->nombre }}</td>
-                                    <td>{{ $visitor->apellido }}</td>
-                                    @switch($visitor->nacionalidad)
-                                        @case('V')
-                                            <td>Venezolana</td>
-                                        @break
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Fecha de Visita</th>
+                        <th>Filial</th>
+                        <th>Gerencia</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($visitors as $visitor)
+                        <tr>
+                            <td>{{ $visitor->id }}</td>
+                            <td>{{ $visitor->nombre }}</td>
+                            <td>{{ \Carbon\Carbon::parse($diahasta)->format('d/m/Y') }}</td>
+                            <td>{{ $visitor->filial->nombre }}</td>
+                            <td>{{ $visitor->gerencia->nombre }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
 
-                                        @case('E')
-                                            <td>Extranjero</td>
-                                        @break
-
-                                        @default
-                                            <td>Dato no válido</td>
-                                    @endswitch
-                                    <td><a
-                                            href="{{ route('show_Register_Visitor_Detail', $visitor->id) }}">{{ $visitor->cedula }}</a>
-                                    </td>
-                                    <td>{{ \Carbon\Carbon::parse($visitor->created_at)->format('d/m/Y') }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                    <div class="pagination">
-                        {{ $visitors->appends(request()->input())->links() }}
-                    </div>
-                @else
-                    <p class="no-results">No se encontraron visitantes para los criterios seleccionados.</p>
-                @endif
+            <!-- Paginación -->
+            <div class="d-flex justify-content-center">
+                {{ $visitors->links() }}
             </div>
+        @else
+            <p class="alert alert-info">No se encontraron visitantes para los filtros seleccionados.</p>
+        @endif
+
+        <!-- Resumen de visitantes por filial -->
+        @if (isset($visitorCountsByFilial) && $visitorCountsByFilial->count() > 0)
+            <h4>Conteo de Visitantes por Filial</h4>
+            <table class="table table-bordered mt-3">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Filial</th>
+                        <th>Total de Visitantes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($visitorCountsByFilial as $filialData)
+                        <tr>
+                            <td>{{ $filialData->filial }}</td>
+                            <td>{{ $filialData->visitor_count }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        @endif
+
+        <!-- Resumen de visitantes por gerencia y filial -->
+        @if (isset($visitantesPorGerenciaFilial) && $visitantesPorGerenciaFilial->count() > 0)
+            <h4>Visitantes por Gerencia y Filial</h4>
+            <table class="table table-bordered mt-3">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Gerencia</th>
+                        <th>Filial</th>
+                        <th>Cantidad de Visitantes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($visitantesPorGerenciaFilial as $data)
+                        <tr>
+                            <td>{{ $data->gerencia }}</td>
+                            <td>{{ $data->filial }}</td>
+                            <td>{{ $data->cantidad_visitantes }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
         @endif
     </div>
 
     <script>
-        function updateGerencias() {
-            var filial_id = document.getElementById('filial_id').value;
-            var gerenciaSelect = document.getElementById('gerencia_id');
+        // Script para actualizar las gerencias cuando se seleccione una filial
+        document.getElementById('filial_id').addEventListener('change', function() {
+            var filialId = this.value;
 
-            // Limpiar el select de gerencias antes de llenarlo
-            gerenciaSelect.innerHTML = '<option value="" selected>Seleccione una gerencia</option>';
-
-            if (filial_id) {
-                fetch(`/get-gerencias/${filial_id}`)
+            // Hacer la solicitud AJAX para obtener las gerencias de la filial seleccionada
+            if (filialId) {
+                fetch(`/get-gerencias/${filialId}`)
                     .then(response => response.json())
                     .then(data => {
-                        if (data.length === 0) {
-                            console.log('No hay gerencias para esta filial.');
+                        var gerenciaSelect = document.getElementById('gerencia_id');
+                        gerenciaSelect.innerHTML = ''; // Limpiar las opciones actuales
+
+                        if (data.length > 0) {
+                            data.forEach(function(gerencia) {
+                                var option = document.createElement('option');
+                                option.value = gerencia.id;
+                                option.text = gerencia.nombre;
+                                gerenciaSelect.add(option);
+                            });
                         } else {
-                            gerenciaSelect.disabled = false;
-                        }
-                        data.forEach(gerencia => {
                             var option = document.createElement('option');
-                            option.value = gerencia.id;
-                            option.text = gerencia.nombre;
+                            option.value = '';
+                            option.text = 'No hay gerencias disponibles';
                             gerenciaSelect.add(option);
-                        });
+                        }
                     })
-                    .catch(error => console.error('Error en la solicitud:', error));
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
             }
-
-            // Agregar un event listener para deshabilitar la opción "Seleccione una gerencia" después de seleccionar una gerencia
-            gerenciaSelect.addEventListener('change', function() {
-                var selectedValue = gerenciaSelect.value;
-                if (selectedValue) {
-                    gerenciaSelect.querySelector('option[value=""]').disabled = true;
-                }
-            });
-        }
+        });
     </script>
 
-    <script>
-        function quitarSeleccionInicial(nombreSelect) {
-            var selectElement = document.getElementsByName(nombreSelect)[0];
-            var optionElement = selectElement.querySelector("option[selected][disabled]");
-            if (optionElement) {
-                optionElement.remove();
-            }
-        }
-    </script>
 @endsection

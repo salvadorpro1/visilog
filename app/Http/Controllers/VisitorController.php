@@ -334,5 +334,12 @@ class VisitorController extends Controller
     {
         return Visitor::min('created_at');
     }
-    
+
+    public function getGerencias($filialId)
+{
+    $gerencias = Gerencia::where('filial_id', $filialId)->get();
+    return response()->json($gerencias);
+}
+
+
 }
