@@ -220,21 +220,27 @@ class VisitorController extends Controller
         $diadesde = $request->input('diadesde');
         $diahasta = $request->input('diahasta');
     
-        // Verifica que se hayan seleccionado Filial, Gerencia, y fechas
-        if ($filial_id && $gerencia_id && $diadesde && $diahasta) {
+        // Verifica que se haya seleccionado Filial y las fechas
+        if ($filial_id && $diadesde && $diahasta) {
+            // Consulta base para los visitantes por filial y fechas
             $visitorQuery = Visitor::query()
                 ->where('filial_id', $filial_id)
-                ->where('gerencia_id', $gerencia_id)
                 ->whereBetween('created_at', [Carbon::parse($diadesde)->startOfDay(), Carbon::parse($diahasta)->endOfDay()]);
     
+            // Si se ha seleccionado una gerencia, agregarla a la consulta
+            if ($gerencia_id) {
+                $visitorQuery->where('gerencia_id', $gerencia_id);
+            }
+    
+            // Obtener los visitantes paginados y el total
             $visitors = $visitorQuery->paginate(10)->appends($request->all());
-            $visitorCount = $visitors->total(); // Usa el total de la paginación
+            $visitorCount = $visitors->total();
     
             return view('account.index', [
                 'visitors' => $visitors,
                 'visitorCount' => $visitorCount,
                 'filial' => Filial::find($filial_id)->nombre,
-                'gerencia' => Gerencia::find($gerencia_id)->nombre,
+                'gerencia' => $gerencia_id ? Gerencia::find($gerencia_id)->nombre : 'Todas',
                 'diadesde' => $diadesde,
                 'diahasta' => $diahasta,
                 'filials' => Filial::all(),
@@ -242,7 +248,7 @@ class VisitorController extends Controller
                 'fechaMinima' => $this->getFechaMinima(),
             ]);
         } else {
-            // Si no se ha seleccionado Filial, Gerencia o las fechas
+            // Si no se ha seleccionado Filial o fechas
             return view('account.index', [
                 'filials' => Filial::all(),
                 'gerencias' => collect(), // Enviar una colección vacía si no hay selección

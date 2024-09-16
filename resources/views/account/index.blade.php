@@ -211,8 +211,8 @@
 
             <div class="form-group">
                 <label for="gerencia_id">Gerencia:</label>
-                <select name="gerencia_id" id="gerencia_id" class="form-control" required>
-                    <option value="">Seleccione una gerencia</option>
+                <select name="gerencia_id" id="gerencia_id" class="form-control">
+                    <option value="">Todas las gerencias</option>
                     @if (isset($gerencias))
                         @foreach ($gerencias as $gerencia)
                             <option value="{{ $gerencia->id }}" {{ old('gerencia_id') == $gerencia->id ? 'selected' : '' }}>
@@ -226,54 +226,62 @@
             <div class="form-group">
                 <label for="diadesde">Fecha desde:</label>
                 <input type="date" name="diadesde" id="diadesde" class="form-control"
-                    value="{{ old('diadesde', $diadesde ?? '') }}" required min="{{ $fechaMinima }}">
+                    value="{{ old('diadesde', $diadesde ?? '') }}" required
+                    min="{{ \Carbon\Carbon::parse($fechaMinima)->format('Y-m-d') }}" max="{{ date('Y-m-d') }}">
             </div>
 
             <div class="form-group">
                 <label for="diahasta">Fecha hasta:</label>
                 <input type="date" name="diahasta" id="diahasta" class="form-control"
-                    value="{{ old('diahasta', $diahasta ?? '') }}" required>
+                    value="{{ old('diahasta', $diahasta ?? '') }}"
+                    min="{{ \Carbon\Carbon::parse($fechaMinima)->format('Y-m-d') }}" max="{{ date('Y-m-d') }}">
             </div>
 
             <button type="submit" class="btn btn-primary">Filtrar</button>
         </form>
 
         <!-- Resultados -->
-        @if (isset($visitors) && $visitors->count() > 0)
-            <h4>Resultados para {{ $visitors->first()->filial->nombre }} - {{ $visitors->first()->gerencia->nombre }}
-                ({{ \Carbon\Carbon::parse($diadesde)->format('d/m/Y') }} -
-                {{ \Carbon\Carbon::parse($diahasta)->format('d/m/Y') }})</h4>
-            <p><strong>Total de Visitantes: {{ $visitorCount }}</strong></p>
+        @if (request()->has('filial_id') &&
+                request()->has('gerencia_id') &&
+                request()->has('diadesde') &&
+                request()->has('diahasta'))
+            @if (isset($visitors) && $visitors->count() > 0)
+                <h4>Resultados para {{ $visitors->first()->filial->nombre }} -
+                    {{ $visitors->first()->gerencia->nombre ?? 'Todas las gerencias' }}
+                    ({{ \Carbon\Carbon::parse($diadesde)->format('d/m/Y') }} -
+                    {{ \Carbon\Carbon::parse($diahasta)->format('d/m/Y') }})</h4>
+                <p><strong>Total de Visitantes: {{ $visitorCount }}</strong></p>
 
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nombre</th>
-                        <th>Fecha de Visita</th>
-                        <th>Filial</th>
-                        <th>Gerencia</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($visitors as $visitor)
+                <table class="table table-striped">
+                    <thead>
                         <tr>
-                            <td>{{ $visitor->id }}</td>
-                            <td>{{ $visitor->nombre }}</td>
-                            <td>{{ \Carbon\Carbon::parse($diahasta)->format('d/m/Y') }}</td>
-                            <td>{{ $visitor->filial->nombre }}</td>
-                            <td>{{ $visitor->gerencia->nombre }}</td>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Fecha de Visita</th>
+                            <th>Filial</th>
+                            <th>Gerencia</th>
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach ($visitors as $visitor)
+                            <tr>
+                                <td>{{ $visitor->id }}</td>
+                                <td>{{ $visitor->nombre }}</td>
+                                <td>{{ \Carbon\Carbon::parse($diahasta)->format('d/m/Y') }}</td>
+                                <td>{{ $visitor->filial->nombre }}</td>
+                                <td>{{ $visitor->gerencia->nombre }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
 
-            <!-- Paginación -->
-            <div class="pagination">
-                {{ $visitors->links() }}
-            </div>
-        @else
-            <p class="alert alert-info">No se encontraron visitantes para los filtros seleccionados.</p>
+                <!-- Paginación -->
+                <div class="pagination">
+                    {{ $visitors->links() }}
+                </div>
+            @else
+                <p class="alert alert-info">No se encontraron visitantes para los filtros seleccionados.</p>
+            @endif
         @endif
 
         <!-- Resumen por Filial -->
@@ -313,6 +321,12 @@
                     .then(data => {
                         var gerenciaSelect = document.getElementById('gerencia_id');
                         gerenciaSelect.innerHTML = ''; // Limpiar las opciones actuales
+
+                        // Agregar opción para "Todas las gerencias"
+                        var defaultOption = document.createElement('option');
+                        defaultOption.value = '';
+                        defaultOption.text = 'Todas las gerencias';
+                        gerenciaSelect.add(defaultOption);
 
                         if (data.length > 0) {
                             data.forEach(function(gerencia) {
