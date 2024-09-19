@@ -17,9 +17,10 @@ class VisitorFactory extends Factory
             'apellido' => $this->faker->lastName,
             'nacionalidad' => $this->faker->randomElement(['V', 'E']),
             'cedula' => $this->faker->unique()->numberBetween(10000000, 99999999),
-            'filial' => $this->faker->randomElement(['Vencemos', 'Invecem', 'ENTIPI', 'Cemento Andino', 'Cemento Cerro Azul', 'FNC']),
-            'gerencia' => $this->faker->word,
+            'filial_id' => $this->faker->numberBetween(1, 2), // Ajustado para ser un id de filial
+            'gerencia_id' => $this->faker->numberBetween(1, 4), // Ajustado para ser un id de gerencia
             'razon_visita' => $this->faker->sentence,
+            'foto' => $this->faker->imageUrl(), // Generar una URL de imagen de ejemplo
             'created_at' => now(),
             'updated_at' => now(),
         ];

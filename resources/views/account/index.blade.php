@@ -67,13 +67,26 @@
 
         .btn-primary {
             padding: 10px 30px;
-            background-color: #007bff;
+            background-color: #4CAF50;
             color: white;
             border: none;
             border-radius: 5px;
             font-size: 16px;
             transition: background-color 0.3s ease;
             cursor: pointer;
+        }
+
+        .btn-primary--back {
+            padding: 10px 30px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+
         }
 
         .btn-primary:hover {
@@ -188,6 +201,13 @@
         .summary-table td {
             color: #666;
         }
+
+        .form-buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0 10px
+        }
     </style>
 @endsection
 
@@ -197,12 +217,18 @@
 
         <!-- Formulario de filtros -->
         <form method="GET" action="{{ route('show_Account') }}" class="mb-5">
+            <input type="hidden" name="filial_id" value="{{ request('filial_id') }}">
+            <input type="hidden" name="gerencia_id" value="{{ request('gerencia_id') }}">
+            <input type="hidden" name="diadesde" value="{{ request('diadesde') }}">
+            <input type="hidden" name="diahasta" value="{{ request('diahasta') }}">
+
             <div class="form-group">
                 <label for="filial_id">Filial:</label>
                 <select name="filial_id" id="filial_id" class="form-control" required>
                     <option value="">Seleccione una filial</option>
                     @foreach ($filials as $filial)
-                        <option value="{{ $filial->id }}" {{ old('filial_id') == $filial->id ? 'selected' : '' }}>
+                        <option value="{{ $filial->id }}"
+                            {{ old('filial_id', request('filial_id')) == $filial->id ? 'selected' : '' }}>
                             {{ $filial->nombre }}
                         </option>
                     @endforeach
@@ -215,7 +241,8 @@
                     <option value="">Todas las gerencias</option>
                     @if (isset($gerencias))
                         @foreach ($gerencias as $gerencia)
-                            <option value="{{ $gerencia->id }}" {{ old('gerencia_id') == $gerencia->id ? 'selected' : '' }}>
+                            <option value="{{ $gerencia->id }}"
+                                {{ old('gerencia_id', request('gerencia_id')) == $gerencia->id ? 'selected' : '' }}>
                                 {{ $gerencia->nombre }}
                             </option>
                         @endforeach
@@ -226,18 +253,21 @@
             <div class="form-group">
                 <label for="diadesde">Fecha desde:</label>
                 <input type="date" name="diadesde" id="diadesde" class="form-control"
-                    value="{{ old('diadesde', $diadesde ?? '') }}" required
+                    value="{{ old('diadesde', request('diadesde')) }}" required
                     min="{{ \Carbon\Carbon::parse($fechaMinima)->format('Y-m-d') }}" max="{{ date('Y-m-d') }}">
             </div>
 
             <div class="form-group">
                 <label for="diahasta">Fecha hasta:</label>
                 <input type="date" name="diahasta" id="diahasta" class="form-control"
-                    value="{{ old('diahasta', $diahasta ?? '') }}"
+                    value="{{ old('diahasta', request('diahasta')) }}"
                     min="{{ \Carbon\Carbon::parse($fechaMinima)->format('Y-m-d') }}" max="{{ date('Y-m-d') }}">
             </div>
 
-            <button type="submit" class="btn btn-primary">Filtrar</button>
+            <div class="form-buttons">
+                <a class="btn btn-primary--back" href="{{ route('show_Dashboard') }}">Volver</a>
+                <button type="submit" class="btn btn-primary">Filtrar</button>
+            </div>
         </form>
 
         <!-- Resultados -->
@@ -277,7 +307,7 @@
 
                 <!-- Paginación -->
                 <div class="pagination">
-                    {{ $visitors->links() }}
+                    {{ $visitors->appends(request()->except('page'))->links() }}
                 </div>
             @else
                 <p class="alert alert-info">No se encontraron visitantes para los filtros seleccionados.</p>

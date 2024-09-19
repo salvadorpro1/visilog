@@ -39,6 +39,8 @@
             width: 150px;
             height: 150px;
             object-fit: cover;
+            transform: rotatey(180deg);
+
         }
 
         .desactivate {

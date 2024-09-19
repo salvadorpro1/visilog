@@ -12,6 +12,8 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call(UsersTableSeeder::class);
+        $this->call(VisitorSeeder::class);
+
         Visitor::factory()->count(100)->create(); // Cambia "Visit" por "Visitor"
     }
 

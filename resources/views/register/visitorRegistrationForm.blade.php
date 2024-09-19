@@ -125,6 +125,8 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+            transform: rotatey(180deg);
+
         }
 
 
