@@ -277,7 +277,7 @@
                 request()->has('diahasta'))
             @if (isset($visitors) && $visitors->count() > 0)
                 <h4>Resultados para {{ $visitors->first()->filial->nombre }} -
-                    {{ $visitors->first()->gerencia->nombre ?? 'Todas las gerencias' }}
+                    {{ request('gerencia_id') ? $visitors->first()->gerencia->nombre : 'Todas las gerencias' }}
                     ({{ \Carbon\Carbon::parse($diadesde)->format('d/m/Y') }} -
                     {{ \Carbon\Carbon::parse($diahasta)->format('d/m/Y') }})</h4>
                 <p><strong>Total de Visitantes: {{ $visitorCount }}</strong></p>
@@ -307,7 +307,12 @@
 
                 <!-- Paginación -->
                 <div class="pagination">
-                    {{ $visitors->appends(request()->except('page'))->links() }}
+                    {{ $visitors->appends([
+                            'filial_id' => request('filial_id'),
+                            'gerencia_id' => request('gerencia_id') ?? '',
+                            'diadesde' => request('diadesde'),
+                            'diahasta' => request('diahasta'),
+                        ])->links() }}
                 </div>
             @else
                 <p class="alert alert-info">No se encontraron visitantes para los filtros seleccionados.</p>

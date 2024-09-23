@@ -227,9 +227,12 @@ class VisitorController extends Controller
                 ->where('filial_id', $filial_id)
                 ->whereBetween('created_at', [Carbon::parse($diadesde)->startOfDay(), Carbon::parse($diahasta)->endOfDay()]);
     
-            // Si se ha seleccionado una gerencia, agregarla a la consulta
+            // Si se ha seleccionado una gerencia específica, aplicarla
             if ($gerencia_id) {
                 $visitorQuery->where('gerencia_id', $gerencia_id);
+            } else {
+                // Si no se selecciona ninguna gerencia específica (por ejemplo "Todas"), no aplicar filtro de gerencia
+                // Esto ya está implícito si no haces nada aquí
             }
     
             // Obtener los visitantes paginados y el total
@@ -256,6 +259,7 @@ class VisitorController extends Controller
             ]);
         }
     }
+    
 
     public function accountConsul(Request $request)
     {
@@ -266,7 +270,7 @@ class VisitorController extends Controller
             'diadesde' => 'required|date',
             'diahasta' => 'required|date|after_or_equal:diadesde',
         ];
-
+    
         // Define los mensajes de error personalizados
         $messages = [
             'filial.required' => 'La filial es obligatoria.',
@@ -279,49 +283,52 @@ class VisitorController extends Controller
             'diahasta.date' => 'La fecha de fin debe ser una fecha válida.',
             'diahasta.after_or_equal' => 'La fecha de fin debe ser igual o posterior a la fecha de inicio.',
         ];
-
+    
         // Valida los datos
         $validator = Validator::make($request->all(), $rules, $messages);
-
+    
         // Si la validación falla, redirige de vuelta con los errores
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
-
+    
         // Obtener los datos validados
         $validated = $validator->validated();
         $filial = $validated['filial'];
         $gerencia = $validated['gerencia'];
         $diadesde = $validated['diadesde'];
         $diahasta = $validated['diahasta'];
-
+    
         // Consulta principal
         $visitorQuery = Visitor::query()
             ->where('filial', $filial)
             ->whereBetween('created_at', [Carbon::parse($diadesde)->startOfDay(), Carbon::parse($diahasta)->endOfDay()]);
-
-        // Filtrar por gerencia si no es 'Todo'
-        if (strpos($gerencia, 'Todo') !== 0) {
+    
+        // Si el filtro de gerencia no es "Todas", aplicarlo
+        if ($gerencia !== 'Todas') {
             $visitorQuery->where('gerencia', $gerencia);
+        } else {
+            // Si es "Todas", no aplicar el filtro de gerencia
+            // Esto ya está implícito si no haces nada aquí
         }
-
+    
         // Paginación y total
         $visitors = $visitorQuery->paginate(10)->appends($request->all());
         $visitorCount = $visitors->total();
-
+    
         // Conteo por filial
         $visitorCountsByFilial = Visitor::select('filial', DB::raw('COUNT(*) as visitor_count'))
             ->whereBetween('created_at', [Carbon::parse($diadesde)->startOfDay(), Carbon::parse($diahasta)->endOfDay()])
             ->groupBy('filial')
             ->get();
-
+    
         // Conteo por gerencia y filial
         $visitantesPorGerenciaFilial = Visitor::select('gerencia', 'filial', DB::raw('COUNT(*) as cantidad_visitantes'))
             ->whereBetween('created_at', [Carbon::parse($diadesde)->startOfDay(), Carbon::parse($diahasta)->endOfDay()])
             ->groupBy('gerencia', 'filial')
             ->get();
-
-        // Retornar los resultados a la misma vista
+    
+        // Retornar los resultados a la vista
         return view('account.index', [
             'visitors' => $visitors,
             'visitorCount' => $visitorCount,
