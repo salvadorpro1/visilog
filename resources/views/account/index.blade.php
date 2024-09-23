@@ -285,7 +285,7 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th>ID</th>
+                            <th>Cedula</th>
                             <th>Nombre</th>
                             <th>Fecha de Visita</th>
                             <th>Filial</th>
@@ -295,7 +295,9 @@
                     <tbody>
                         @foreach ($visitors as $visitor)
                             <tr>
-                                <td>{{ $visitor->id }}</td>
+                                <td><a
+                                        href="{{ route('show_Register_Visitor_Detail', $visitor->id) }}">{{ $visitor->cedula }}</a>
+                                </td>
                                 <td>{{ $visitor->nombre }}</td>
                                 <td>{{ \Carbon\Carbon::parse($diahasta)->format('d/m/Y') }}</td>
                                 <td>{{ $visitor->filial->nombre }}</td>
