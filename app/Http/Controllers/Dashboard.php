@@ -20,10 +20,11 @@ class Dashboard extends Controller
         $diahasta = $fechaActual;
     
         // Realizar las consultas de la base de datos con las fechas actuales
-        $visitantesPorGerenciaFilial = Visitor::select('gerencia_id as gerencia', 'filial_id as filial', DB::raw('COUNT(*) as cantidad_visitantes'))
-            ->whereBetween('created_at', [Carbon::parse($diadesde)->startOfDay(), Carbon::parse($diahasta)->endOfDay()])
-            ->groupBy('gerencia_id', 'filial_id')
-            ->get();
+        $visitantesPorGerenciaFilial = Visitor::with(['gerencia', 'filial']) // Cargar ambas relaciones
+        ->select('gerencia_id', 'filial_id', DB::raw('COUNT(*) as cantidad_visitantes'))
+        ->whereBetween('created_at', [Carbon::parse($diadesde)->startOfDay(), Carbon::parse($diahasta)->endOfDay()])
+        ->groupBy('gerencia_id', 'filial_id')
+        ->get();
     
         $visitantesDiarios = Visitor::select(DB::raw('DATE(created_at) as fecha'), DB::raw('COUNT(*) as cantidad_visitantes'))
             ->whereBetween('created_at', [Carbon::parse($diadesde)->startOfDay(), Carbon::parse($diahasta)->endOfDay()])
@@ -35,7 +36,8 @@ class Dashboard extends Controller
             ->groupBy('gerencia_id')
             ->get();
     
-        $visitantesPorFilial = Visitor::select('filial_id as filial', DB::raw('COUNT(*) as cantidad_visitantes'))
+            $visitantesPorFilial = Visitor::with('filial') // Cargar la relación filial
+            ->select('filial_id', DB::raw('COUNT(*) as cantidad_visitantes'))
             ->whereBetween('created_at', [Carbon::parse($diadesde)->startOfDay(), Carbon::parse($diahasta)->endOfDay()])
             ->groupBy('filial_id')
             ->get();
@@ -74,10 +76,11 @@ class Dashboard extends Controller
         $diadesde = $request->input('diadesde');
         $diahasta = $request->input('diahasta');
     
-        $visitantesPorGerenciaFilial = Visitor::select('gerencia_id as gerencia', 'filial_id as filial', DB::raw('COUNT(*) as cantidad_visitantes'))
-            ->whereBetween('created_at', [Carbon::parse($diadesde)->startOfDay(), Carbon::parse($diahasta)->endOfDay()])
-            ->groupBy('gerencia_id', 'filial_id')
-            ->get();
+        $visitantesPorGerenciaFilial = Visitor::with(['gerencia', 'filial']) // Cargar ambas relaciones
+        ->select('gerencia_id', 'filial_id', DB::raw('COUNT(*) as cantidad_visitantes'))
+        ->whereBetween('created_at', [Carbon::parse($diadesde)->startOfDay(), Carbon::parse($diahasta)->endOfDay()])
+        ->groupBy('gerencia_id', 'filial_id')
+        ->get();
     
         $visitantesDiarios = Visitor::select(DB::raw('DATE(created_at) as fecha'), DB::raw('COUNT(*) as cantidad_visitantes'))
             ->whereBetween('created_at', [Carbon::parse($diadesde)->startOfDay(), Carbon::parse($diahasta)->endOfDay()])
@@ -89,7 +92,8 @@ class Dashboard extends Controller
             ->groupBy('gerencia_id')
             ->get();
     
-        $visitantesPorFilial = Visitor::select('filial_id as filial', DB::raw('COUNT(*) as cantidad_visitantes'))
+            $visitantesPorFilial = Visitor::with('filial') // Cargar la relación filial
+            ->select('filial_id', DB::raw('COUNT(*) as cantidad_visitantes'))
             ->whereBetween('created_at', [Carbon::parse($diadesde)->startOfDay(), Carbon::parse($diahasta)->endOfDay()])
             ->groupBy('filial_id')
             ->get();

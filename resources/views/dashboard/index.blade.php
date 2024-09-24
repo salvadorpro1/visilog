@@ -281,7 +281,7 @@
                         <tbody>
                             @foreach ($visitantesPorFilial as $visita)
                                 <tr>
-                                    <td>{{ $visita->filial }}</td>
+                                    <td>{{ $visita->filial->nombre }}</td>
                                     <td>{{ $visita->cantidad_visitantes }}</td>
                                 </tr>
                             @endforeach
@@ -304,8 +304,8 @@
                         <tbody>
                             @foreach ($visitantesPorGerenciaFilial as $visita)
                                 <tr>
-                                    <td>{{ $visita->gerencia }}</td>
-                                    <td>{{ $visita->filial }}</td>
+                                    <td>{{ $visita->gerencia->nombre }}</td>
+                                    <td>{{ $visita->filial->nombre }}</td>
                                     <td>{{ $visita->cantidad_visitantes }}</td>
                                 </tr>
                             @endforeach
@@ -378,7 +378,7 @@
 
                     // Gráfico Visitantes por Filial
                     const ctxFilial = document.getElementById('visitantesPorFilialChart').getContext('2d');
-                    const labelsFilial = visitantesPorFilial.map(visita => visita.filial);
+                    const labelsFilial = visitantesPorFilial.map(visita => visita.filial ? visita.filial.nombre : 'Desconocido');
                     const dataFilial = visitantesPorFilial.map(visita => visita.cantidad_visitantes);
                     const colorsFilial = getRandomColors(dataFilial.length);
 
@@ -409,7 +409,11 @@
 
                     // Gráfico Visitantes por Gerencia
                     const ctxGerencia = document.getElementById('visitantesPorGerenciaChart').getContext('2d');
-                    const labelsGerencia = visitantesPorGerenciaFilial.map(visita => `${visita.gerencia} (${visita.filial})`);
+                    const labelsGerencia = visitantesPorGerenciaFilial.map(visita => {
+                        const gerenciaNombre = visita.gerencia ? visita.gerencia.nombre : 'Gerencia desconocida';
+                        const filialNombre = visita.filial ? visita.filial.nombre : 'Filial desconocida';
+                        return `${gerenciaNombre} (${filialNombre})`;
+                    });
                     const dataGerencia = visitantesPorGerenciaFilial.map(visita => visita.cantidad_visitantes);
                     const colorsGerencia = getRandomColors(dataGerencia.length);
 
