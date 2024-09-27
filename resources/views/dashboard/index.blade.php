@@ -259,7 +259,7 @@
                         <tbody>
                             @foreach ($visitantesDiarios as $visita)
                                 <tr>
-                                    <td>{{ $visita->fecha }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($visita->fecha)->format('d/m/Y') }}</td>
                                     <td>{{ $visita->cantidad_visitantes }}</td>
                                 </tr>
                             @endforeach
@@ -347,7 +347,13 @@
 
                     // Gráfico Visitantes Diarios
                     const ctxDiarios = document.getElementById('visitantesDiariosChart').getContext('2d');
-                    const labelsDiarios = visitantesDiarios.map(visita => visita.fecha);
+                    const labelsDiarios = visitantesDiarios.map(visita => {
+                        const fecha = new Date(visita.fecha);
+                        const dia = String(fecha.getDate() + 1).padStart(2, '0');
+                        const mes = String(fecha.getMonth() + 1).padStart(2, '0'); // Los meses son 0-indexed
+                        const anio = fecha.getFullYear();
+                        return `${dia}/${mes}/${anio}`;
+                    });
                     const dataDiarios = visitantesDiarios.map(visita => visita.cantidad_visitantes);
                     const colorsDiarios = getRandomColors(dataDiarios.length);
 
