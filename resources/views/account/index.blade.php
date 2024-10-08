@@ -212,11 +212,21 @@
 @endsection
 
 @section('content')
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
     <div class="container">
         <h1>Reporte de Visitantes</h1>
 
         <!-- Formulario de filtros -->
-        <form method="GET" action="{{ route('show_Account') }}" class="mb-5">
+        <form method="POST" action="{{ route('show_Account') }}" class="mb-5">
+            @csrf
             <input type="hidden" name="filial_id" value="{{ request('filial_id') }}">
             <input type="hidden" name="gerencia_id" value="{{ request('gerencia_id') }}">
             <input type="hidden" name="diadesde" value="{{ request('diadesde') }}">

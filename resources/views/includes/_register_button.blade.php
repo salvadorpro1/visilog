@@ -137,17 +137,17 @@
 
                 @if ($user && $user->role === 'administrador')
                     <li class="user-menu__item">
-                        <a class="user-menu__item-link" href="{{ route('showRegisterCreate') }}">Crear operador</a>
+                        <a class="user-menu__item-link" href="{{ route('showRegisterCreate') }}">Operadores</a>
                     </li>
                 @endif
                 @if ($user && $user->role === 'administrador')
                     <li class="user-menu__item">
-                        <a class="user-menu__item-link" href="{{ route('gerencias.index') }}">Crear gerencias</a>
+                        <a class="user-menu__item-link" href="{{ route('gerencias.index') }}">Gerencias</a>
                     </li>
                 @endif
                 @if ($user && $user->role === 'administrador')
                     <li class="user-menu__item">
-                        <a class="user-menu__item-link" href="{{ route('filiales.index') }}">Crear filiales</a>
+                        <a class="user-menu__item-link" href="{{ route('filiales.index') }}">Filiales</a>
 
                     </li>
                 @endif
