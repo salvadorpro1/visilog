@@ -208,6 +208,26 @@
             align-items: center;
             gap: 0 10px
         }
+
+        .alert-danger {
+            color: #a94442;
+            background-color: #f2dede;
+            border-color: #ebccd1;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+
+        .alert-danger ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .alert-danger li {
+            margin: 0;
+        }
     </style>
 @endsection
 
@@ -360,7 +380,7 @@
         // Script para actualizar las gerencias cuando se seleccione una filial
         document.getElementById('filial_id').addEventListener('change', function() {
             var filialId = this.value;
-
+            console.log(filialId);
             // Hacer la solicitud AJAX para obtener las gerencias de la filial seleccionada
             if (filialId) {
                 fetch(`/get-gerencias/${filialId}`)

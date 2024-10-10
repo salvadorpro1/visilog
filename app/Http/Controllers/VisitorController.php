@@ -267,16 +267,16 @@ class VisitorController extends Controller
     {
         // Validación de datos
         $rules = [
-            'filial_id' => 'required|integer', // Cambiado a 'filial_id'
-            'gerencia_id' => 'nullable|integer', // Cambiado a 'gerencia_id', y lo hacemos opcional
+            'filial_id' => 'required|integer',
+            'gerencia_id' => 'nullable|integer',
             'diadesde' => 'required|date',
             'diahasta' => 'required|date|after_or_equal:diadesde',
         ];
     
         $messages = [
-            'filial_id.required' => 'La filial es obligatoria.', // Cambiado a 'filial_id'
-            'filial_id.integer' => 'La filial debe ser un valor numérico.', // Cambiado a 'filial_id'
-            'gerencia_id.integer' => 'La gerencia debe ser un valor numérico.', // Cambiado a 'gerencia_id'
+            'filial_id.required' => 'La filial es obligatoria.',
+            'filial_id.integer' => 'La filial debe ser un valor numérico.',
+            'gerencia_id.integer' => 'La gerencia debe ser un valor numérico.',
             'diadesde.required' => 'La fecha de inicio es obligatoria.',
             'diadesde.date' => 'La fecha de inicio debe ser una fecha válida.',
             'diahasta.required' => 'La fecha de fin es obligatoria.',
@@ -298,7 +298,7 @@ class VisitorController extends Controller
     
         // Consulta principal
         $visitorQuery = Visitor::query()
-            ->where('filial_id', $filialId)  // Aplicar filtro por filial siempre
+            ->where('filial_id', $filialId) // Aplicar filtro por filial siempre
             ->whereBetween('created_at', [Carbon::parse($diadesde)->startOfDay(), Carbon::parse($diahasta)->endOfDay()]);
     
         // Si la gerencia no es nula, aplicamos el filtro de gerencia
@@ -310,6 +310,9 @@ class VisitorController extends Controller
         $visitors = $visitorQuery->paginate(10)->appends($request->all());
         $visitorCount = $visitors->total();
     
+        // Obtener las gerencias correspondientes a la filial seleccionada
+        $gerencias = Gerencia::where('filial_id', $filialId)->get();
+    
         return view('account.index', [
             'visitors' => $visitors,
             'visitorCount' => $visitorCount,
@@ -319,9 +322,10 @@ class VisitorController extends Controller
             'diahasta' => $diahasta,
             'fechaMinima' => $this->getFechaMinima(),
             'filials' => Filial::all(),
-
+            'gerencias' => $gerencias, // Pasar las gerencias a la vista
         ]);
     }
+    
 
     // Método auxiliar para obtener la fecha mínima
     private function getFechaMinima()

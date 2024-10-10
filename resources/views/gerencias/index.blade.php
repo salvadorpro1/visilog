@@ -98,6 +98,66 @@
             display: flex;
             gap: 10px;
         }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 400px;
+            border-radius: 10px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            margin: 0;
+        }
+
+        .close {
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 15px;
+            margin: 10px 0;
+            color: #ffffff;
+            background-color: #17a2b8;
+            border: none;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s ease-in-out;
+        }
+
+        .button:hover {
+            background-color: #138496;
+        }
+
+        .button-danger {
+            background-color: #dc3545;
+        }
+
+        .button-danger:hover {
+            background-color: #c82333;
+        }
     </style>
 @endsection
 
@@ -133,7 +193,8 @@
                                 style="display:inline-block;">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-danger">Eliminar</button>
+                                <button type="button" class="btn btn-danger"
+                                    onclick="confirmDeletion({{ $gerencia->id }}, '{{ $gerencia->nombre }}')">Eliminar</button>
                             </form>
                         </td>
                     </tr>
@@ -141,4 +202,49 @@
             </tbody>
         </table>
     </div>
+    <div class="modal" id="confirmModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirmar Eliminación</h5>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p id="confirmMessage"></p>
+                <form id="confirmForm" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <button type="button" class="button" onclick="closeModal()">Cancelar</button>
+                    <button type="submit" class="button button-danger">Eliminar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Mostrar el modal de confirmación
+        function confirmDeletion(gerenciaId, gerenciaName) {
+            // Definir la URL de eliminación
+            const actionUrl = '{{ route('gerencias.destroy', ':id') }}'.replace(':id', gerenciaId);
+            document.getElementById('confirmForm').action = actionUrl;
+
+            // Cambiar el mensaje dentro del modal
+            document.getElementById('confirmMessage').innerText =
+                `¿Está seguro de que desea eliminar la gerencia ${gerenciaName}?`;
+
+            // Mostrar el modal
+            document.getElementById('confirmModal').style.display = 'block';
+        }
+
+        // Cerrar el modal
+        function closeModal() {
+            document.getElementById('confirmModal').style.display = 'none';
+        }
+
+        // Cerrar el modal si se hace clic fuera de él
+        window.onclick = function(event) {
+            const modal = document.getElementById('confirmModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+    </script>
 @endsection
