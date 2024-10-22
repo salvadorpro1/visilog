@@ -118,6 +118,7 @@
             border: 1px solid #888;
             width: 400px;
             border-radius: 10px;
+            overflow: hidden;
         }
 
         .modal-header {
@@ -158,15 +159,55 @@
         .button-danger:hover {
             background-color: #c82333;
         }
+
+        .alert {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .truncate {
+            white-space: nowrap;
+            /* Evita que el texto se envuelva */
+            overflow: hidden;
+            /* Oculta el texto que se desborda */
+            text-overflow: ellipsis;
+            /* Agrega puntos suspensivos (...) al final del texto truncado */
+            max-width: 250px;
+            /* Ancho máximo del contenedor */
+        }
     </style>
 @endsection
-
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
 @section('content')
+    @if (session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
     <div class="container">
         <h1>Filiales</h1>
 
         <!-- Botón para volver -->
-        <a class="button" href="{{ route('showRegisterCreate') }}">Volver</a>
+        <a class="button" href="{{ route('show_Dashboard') }}">Volver</a>
 
         <!-- Botón para crear filial -->
         <a href="{{ route('filiales.create') }}" class="btn btn-primary">Crear Filial</a>
@@ -184,7 +225,7 @@
                 @foreach ($filiales as $filial)
                     <tr>
                         <td>{{ $filial->id }}</td>
-                        <td>{{ $filial->nombre }}</td>
+                        <td class="truncate">{{ $filial->nombre }}</td>
                         <td class="actions">
                             <a href="{{ route('filiales.edit', $filial->id) }}" class="btn btn-warning">Editar</a>
                             <form action="{{ route('filiales.destroy', $filial->id) }}" method="POST"
@@ -193,7 +234,7 @@
                                 @csrf
                                 @method('DELETE')
                                 <button type="button" class="btn btn-danger"
-                                    onclick="confirmDeletion({{ $filial->id }}, '{{ $filial->nombre }}')">Eliminar</button>
+                                    onclick="confirmDeletion({{ $filial->id }}, '{{ addslashes($filial->nombre) }}')">Eliminar</button>
                             </form>
                         </td>
                     </tr>

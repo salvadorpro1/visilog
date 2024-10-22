@@ -22,10 +22,11 @@ class CheckRole
         if ($user->role !== $role) {
             if ($role == 'operador') {
                 // Redirige a los operadores a la ruta 'show_consult'
-                return redirect()->route('show_consult');
+                return redirect()->route('show_Dashboard');
+
             } else {
                 // Redirige a los administradores a la ruta 'show_Dashboard'
-                return redirect()->route('show_Dashboard');
+                return redirect()->route('show_consult');
             }
         }
 

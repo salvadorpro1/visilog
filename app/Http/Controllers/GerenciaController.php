@@ -23,8 +23,11 @@ class GerenciaController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nombre' => 'required|string|max:255',
+            'nombre' => 'required|string|max:255|regex:/^[a-zA-Z\s]+$/',
             'filial_id' => 'required|exists:filiales,id',
+        ], [
+            'nombre.regex' => 'El nombre solo puede contener letras y espacios.',
+            'filial_id.exists' => 'La filial seleccionada no es válida.',
         ]);
         Gerencia::create($request->all());
         return redirect()->route('gerencias.index')->with('success', 'Gerencia creada exitosamente.');
@@ -39,8 +42,10 @@ class GerenciaController extends Controller
     public function update(Request $request, Gerencia $gerencia)
     {
         $request->validate([
-            'nombre' => 'required|string|max:255',
+            'nombre' => 'required|string|max:255|regex:/^[a-zA-Z\s]+$/',
             'filial_id' => 'required|exists:filiales,id',
+        ],[
+            'nombre.regex' => 'El nombre solo puede contener letras y espacios.',
         ]);
         $gerencia->update($request->all());
         return redirect()->route('gerencias.index')->with('success', 'Gerencia actualizada exitosamente.');
