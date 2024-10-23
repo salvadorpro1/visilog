@@ -127,6 +127,18 @@ class VisitorController extends Controller
     
     public function saveVisitor(Request $request)
     {
+        $cedula = $request->input('cedula');
+        $nacionalidad = $request->input('nacionalidad');
+    
+        // Obtener el visitante de la base de datos
+        $visitor = Visitor::where('cedula', $cedula)->where('nacionalidad', $nacionalidad)->first();
+    
+        // Comprobar si el visitante existe
+        if (!$visitor) {
+            return redirect()->back()->withErrors(['error' => 'Visitante no encontrado.'])->withInput();
+        }
+    
+        // Validar los datos
         $rules = [
             'nacionalidad' => 'required|in:V,E',
             'cedula' => 'required|digits_between:7,8',
@@ -138,30 +150,33 @@ class VisitorController extends Controller
             'foto' => 'required',
         ];
     
+        // Mensajes de error personalizados
         $messages = [
             'nacionalidad.required' => 'La nacionalidad es obligatoria.',
-            'nacionalidad.in' => 'La nacionalidad debe ser "V" o "E".',
             'cedula.required' => 'La cédula es obligatoria.',
-            'cedula.digits_between' => 'La cédula debe tener entre :min y :max dígitos.',
             'nombre.required' => 'El nombre es obligatorio.',
-            'nombre.regex' => 'El nombre solo puede contener letras y espacios.',
             'apellido.required' => 'El apellido es obligatorio.',
-            'apellido.regex' => 'El apellido solo puede contener letras y espacios.',
             'filial_id.required' => 'La filial es obligatoria.',
-            'filial_id.exists' => 'La filial seleccionada no es válida.',
             'gerencia_id.required' => 'La gerencia es obligatoria.',
-            'gerencia_id.exists' => 'La gerencia seleccionada no es válida.',
             'razon_visita.required' => 'La razón de visita es obligatoria.',
-            'razon_visita.max' => 'La razón de visita no puede tener más de :max caracteres.',
             'foto.required' => 'La foto es obligatoria.',
         ];
     
+        // Validar datos recibidos
         $validator = Validator::make($request->all(), $rules, $messages);
     
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
+        // Comparar datos con los de la base de datos
+if ($validator->fails() || 
+        !$visitor || // Si el visitante no se encuentra
+        $request->input('nombre') !== $visitor->nombre || 
+        $request->input('apellido') !== $visitor->apellido ||
+        $request->input('foto') !== $visitor->foto || // Para la foto
+        $request->input('nacionalidad') !== $visitor->nacionalidad // Para la nacionalidad
+    ) {
+        return redirect()->back()->withErrors(['error' => 'Los datos proporcionados no coinciden con los registrados.'])->withInput();
+    }
     
+        // Si se pasa la validación, procesar la foto
         $foto = $request->input('foto');
         if (strpos($foto, 'data:image') === 0) {
             $data = explode(',', $foto);
@@ -172,26 +187,18 @@ class VisitorController extends Controller
             $fileName = $foto;
         }
     
-        $visitor = new Visitor();
-        $visitor->nacionalidad = $request->input('nacionalidad');
-        $visitor->cedula = $request->input('cedula');
-        $visitor->nombre = $request->input('nombre');
-        $visitor->apellido = $request->input('apellido');
+        // Guardar los cambios
         $visitor->filial_id = $request->input('filial_id');
         $visitor->gerencia_id = $request->input('gerencia_id');
         $visitor->razon_visita = $request->input('razon_visita');
         $visitor->user_id = auth()->id();
         $visitor->foto = $fileName;
-    
+        
         $visitor->save();
     
         $user = Auth::user();
-    
-        if ($user->role == 'operador') {
-            return redirect()->route('show_consult')->with('success', 'Los datos se han enviado correctamente.');
-        } elseif ($user->role == 'administrador') {
-            return redirect()->route('show_Dashboard')->with('success', 'Los datos se han enviado correctamente.');
-        }
+        return redirect()->route($user->role == 'operador' ? 'show_consult' : 'show_Dashboard')
+                         ->with('success', 'Los datos se han enviado correctamente.');
     }
     
     public function getVisitorPhoto($filename)

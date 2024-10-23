@@ -201,6 +201,10 @@
         .alert-danger li {
             margin: 0;
         }
+
+        .divisor__element {
+            margin: 10px 0
+        }
     </style>
 @endsection
 
@@ -274,17 +278,27 @@
             @else
                 <div class="divisor">
                     <div class="divisor__inputs">
-                        <label for="">Nacionalidad</label>
-                        <select name="nacionalidad" readonly>
-                            <option value="V" {{ $visitor->nacionalidad == 'V' ? 'selected' : '' }}>V</option>
-                            <option value="E" {{ $visitor->nacionalidad == 'E' ? 'selected' : '' }}>E</option>
-                        </select>
-                        <label for="">Cédula</label>
-                        <input name="cedula" readonly value="{{ $visitor->cedula }}" type="number">
-                        <label for="">Nombre</label>
-                        <input name="nombre" readonly value="{{ $visitor->nombre }}" type="text">
-                        <label for="">Apellido</label>
-                        <input name="apellido" readonly value="{{ $visitor->apellido }}" type="text">
+                        <div class="divisor__element">
+                            <label for="nacionalidad">Nacionalidad</label>
+                            <p>{{ $visitor->nacionalidad }}</p>
+                            <input type="hidden" id="nacionalidad" name="nacionalidad"
+                                value="{{ $visitor->nacionalidad }}">
+                        </div>
+                        <div class="divisor__element">
+                            <label for="cedula">Cédula</label>
+                            <p>{{ $visitor->cedula }}</p>
+                            <input type="hidden" id="cedula" name="cedula" value="{{ $visitor->cedula }}">
+                        </div>
+                        <div class="divisor__element">
+                            <label for="nombre">Nombre</label>
+                            <p>{{ $visitor->nombre }}</p>
+                            <input type="hidden" id="nombre" name="nombre" value="{{ $visitor->nombre }}">
+                        </div>
+                        <div class="divisor__element">
+                            <label for="apellido">Apellido</label>
+                            <p>{{ $visitor->apellido }}</p>
+                            <input type="hidden" id="apellido" name="apellido" value="{{ $visitor->apellido }}">
+                        </div>
                     </div>
                     <div class="form_register__container form_register__container--containerimagen">
                         <div class="form_register__container form_register__container--containerimagen">
@@ -302,8 +316,7 @@
                     <option value="" selected disabled>Elegir filial</option>
 
                     @foreach ($filials as $filial)
-                        <option value="{{ $filial->id }}"
-                            {{ isset($visitor) && $visitor->filial_id == $filial->id ? 'selected' : '' }}>
+                        <option value="{{ $filial->id }}" {{ isset($visitor) && $visitor->filial_id == $filial->id }}>
                             {{ $filial->nombre }}
                         </option>
                     @endforeach
