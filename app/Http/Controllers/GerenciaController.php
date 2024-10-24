@@ -10,7 +10,7 @@ class GerenciaController extends Controller
 {
     public function index()
     {
-        $gerencias = Gerencia::with('filial')->get();
+        $gerencias = Gerencia::with('filial')->paginate(10); // Combina 'with' y 'paginate'
         return view('gerencias.index', compact('gerencias'));
     }
 

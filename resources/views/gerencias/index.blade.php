@@ -263,6 +263,9 @@
             </div>
         </div>
     </div>
+    <div class="pagination justify-content-center">
+        {{ $gerencias->links() }} <!-- Enlaces de paginación -->
+    </div>
     <script>
         // Mostrar el modal de confirmación
         function confirmDeletion(gerenciaId, gerenciaName) {

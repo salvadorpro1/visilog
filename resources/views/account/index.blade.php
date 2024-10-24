@@ -228,6 +228,10 @@
         .alert-danger li {
             margin: 0;
         }
+
+        .btn-secondary {
+            padding: 8px
+        }
     </style>
 @endsection
 
@@ -243,7 +247,14 @@
     @endif
     <div class="container">
         <h1>Reporte de Visitantes</h1>
-
+        <form method="GET" action="{{ route('download_report') }}">
+            @csrf
+            <input type="hidden" name="filial_id" value="{{ request('filial_id') }}">
+            <input type="hidden" name="gerencia_id" value="{{ request('gerencia_id') }}">
+            <input type="hidden" name="diadesde" value="{{ request('diadesde') }}">
+            <input type="hidden" name="diahasta" value="{{ request('diahasta') }}">
+            <button type="submit" class="btn btn-secondary">Descargar Excel</button>
+        </form>
         <!-- Formulario de filtros -->
         <form method="POST" action="{{ route('show_Account') }}" class="mb-5">
             @csrf

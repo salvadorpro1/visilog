@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\Visitor;
 use App\Models\Filial;
 use App\Models\Gerencia;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\VisitorsExport;
 
 use Illuminate\Support\Facades\Validator;
 
@@ -166,7 +168,7 @@ class VisitorController extends Controller
         $validator = Validator::make($request->all(), $rules, $messages);
     
         // Comparar datos con los de la base de datos
-if ($validator->fails() || 
+    if ($validator->fails() || 
         !$visitor || // Si el visitante no se encuentra
         $request->input('nombre') !== $visitor->nombre || 
         $request->input('apellido') !== $visitor->apellido ||
@@ -268,8 +270,6 @@ if ($validator->fails() ||
         }
     }
     
-    
-
     public function accountConsul(Request $request)
     {
         // Validación de datos
@@ -346,5 +346,14 @@ if ($validator->fails() ||
     return response()->json($gerencias);
 }
 
+public function downloadReport(Request $request)
+{
+    $filial_id = $request->input('filial_id');
+    $gerencia_id = $request->input('gerencia_id');
+    $diadesde = $request->input('diadesde');
+    $diahasta = $request->input('diahasta');
+
+    return Excel::download(new VisitorsExport($filial_id, $gerencia_id, $diadesde, $diahasta), 'reporte_visitantes.xlsx');
+}
 
 }
