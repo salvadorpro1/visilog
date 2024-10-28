@@ -224,6 +224,8 @@
 
         <form method="POST" action="{{ route('guardar_RegistroVisitor') }}" enctype="multipart/form-data">
             @csrf
+            <input type="hidden" name="showAll" value="{{ $showAll ? 'true' : 'false' }}">
+
             @if ($showAll)
                 <div class="divisor">
                     <div class="divisor__inputs">
@@ -274,6 +276,7 @@
                     href="{{ Auth::user()->role == 'operador' ? route('show_consult') : route('show_Dashboard') }}">
                     Volver
                 </a>
+
                 <input type="submit" value="Enviar">
             @else
                 <div class="divisor">

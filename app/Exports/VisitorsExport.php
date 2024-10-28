@@ -33,7 +33,15 @@ class VisitorsExport implements FromCollection, WithHeadings
             $query->where('gerencia_id', $this->gerencia_id);
         }
 
-        return $query->get(['cedula', 'nombre', 'created_at', 'filial_id', 'gerencia_id']); // Modifica según tus columnas
+        return $query->get()->map(function ($visitor) {
+            return [
+                'cedula' => $visitor->cedula,
+                'nombre' => $visitor->nombre,
+                'created_at' => Carbon::parse($visitor->created_at)->format('d/m/Y'), // Formato DD/MM/AAAA
+                'filial_id' => $visitor->filial_id,
+                'gerencia_id' => $visitor->gerencia_id,
+            ];
+        });
     }
 
     public function headings(): array
