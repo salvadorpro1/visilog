@@ -88,10 +88,7 @@
             text-decoration: none;
             border-radius: 5px;
             transition: background 0.3s ease-in-out;
-        }
-
-        .button:hover {
-            background-color: #138496;
+            cursor: pointer;
         }
 
         .actions {
@@ -102,7 +99,7 @@
         .modal {
             display: none;
             position: fixed;
-            z-index: 1000;
+            z-index: 1;
             left: 0;
             top: 0;
             width: 100%;
@@ -113,23 +110,41 @@
 
         .modal-content {
             background-color: #fff;
-            margin: 15% auto;
+            margin: 10% auto;
             padding: 20px;
             border: 1px solid #888;
-            width: 400px;
-            border-radius: 10px;
-            overflow: hidden;
-
+            width: 80%;
+            max-width: 500px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
 
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
         }
 
-        .modal-title {
-            margin: 0;
+        .modal-header .close {
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .modal-body {
+            padding: 10px 0;
+        }
+
+        .modal-body p {
+            margin: 0 0 20px 0;
+        }
+
+        .modal-body form {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .close {
@@ -142,15 +157,11 @@
             padding: 10px 15px;
             margin: 10px 0;
             color: #ffffff;
-            background-color: #17a2b8;
+            background-color: #6C757D;
             border: none;
             text-decoration: none;
             border-radius: 5px;
             transition: background 0.3s ease-in-out;
-        }
-
-        .button:hover {
-            background-color: #138496;
         }
 
         .button-danger {
@@ -187,6 +198,10 @@
             max-width: 250px;
             /* Ancho máximo del contenedor */
         }
+
+        .btn {
+            text-decoration: none
+        }
     </style>
 @endsection
 
@@ -210,10 +225,10 @@
         <h1>Gerencias</h1>
 
         <!-- Botón para volver -->
-        <a class="button" href="{{ route('show_Dashboard') }}">Volver</a>
+        <a class="button" href="{{ route('show_Dashboard') }}">Volver al tablero</a>
 
         <!-- Botón para crear gerencia -->
-        <a href="{{ route('gerencias.create') }}" class="btn btn-primary">Crear Gerencia</a>
+        <a href="{{ route('gerencias.create') }}" class="btn btn-primary">Crear</a>
 
         <!-- Tabla de gerencias -->
         <table class="table">

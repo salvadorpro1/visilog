@@ -94,7 +94,7 @@
             padding: 10px 15px;
             margin: 10px 0;
             color: #ffffff;
-            background-color: #17a2b8;
+            background-color: #6C757D;
             border: none;
             text-decoration: none;
             border-radius: 5px;
@@ -137,15 +137,15 @@
             @csrf
             <!-- Campo de nombre de la gerencia -->
             <div class="form-group">
-                <label for="nombre">Nombre de la Gerencia</label>
+                <label for="nombre">Nombre</label>
                 <input type="text" name="nombre" id="nombre" class="form-control"
-                    placeholder="Ingrese el nombre de la gerencia" required>
+                    placeholder="Ingrese el nombre de la gerencia">
             </div>
 
             <!-- Campo de selección de la filial -->
             <div class="form-group">
-                <label for="filial_id">Filial Asociada</label>
-                <select name="filial_id" id="filial_id" class="form-control" required>
+                <label for="filial_id">Filial</label>
+                <select name="filial_id" id="filial_id" class="form-control">
                     <option value="">Seleccione una filial</option>
                     @foreach ($filiales as $filial)
                         <option value="{{ $filial->id }}">{{ $filial->nombre }}</option>

@@ -26,13 +26,17 @@
             display: inline-block;
             padding: 10px 20px;
             margin: 10px;
-            background-color: #007bff;
+            background-color: #6C757D;
             color: #fff;
             border: none;
             border-radius: 5px;
             text-decoration: none;
             cursor: pointer;
             transition: background-color 0.3s ease;
+        }
+
+        .button:active {
+            transform: scale(0.97)
         }
 
         .truncate {
@@ -55,16 +59,72 @@
             text-decoration: underline;
             color: #0000d1;
         }
+
+        .search-form {
+            display: flex;
+            justify-content: center;
+            /* Centra el formulario horizontalmente */
+            align-items: center;
+            /* Centra verticalmente el contenido */
+            margin: 20px;
+            /* Espaciado alrededor del formulario */
+            padding: 10px;
+            /* Espaciado interno */
+            border-radius: 5px;
+            /* Bordes redondeados */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            /* Sombra sutil */
+            background-color: #f9f9f9;
+            /* Color de fondo */
+        }
+
+        .search-form__input {
+            padding: 10px;
+            /* Espaciado interno */
+            border: 1px solid #ccc;
+            /* Borde */
+            border-radius: 5px;
+            /* Bordes redondeados */
+            width: 250px;
+            /* Ancho del campo de búsqueda */
+            margin-right: 10px;
+            /* Espaciado entre el input y el botón */
+            font-size: 16px;
+            /* Tamaño de fuente */
+        }
+
+        .search-form__button {
+            padding: 10px 15px;
+            /* Espaciado interno */
+            border: none;
+            /* Sin borde */
+            border-radius: 5px;
+            /* Bordes redondeados */
+            background-color: #007bff;
+            /* Color de fondo del botón */
+            color: white;
+            /* Color del texto */
+            font-size: 16px;
+            /* Tamaño de fuente */
+            cursor: pointer;
+            /* Cambia el cursor al pasar sobre el botón */
+            transition: background-color 0.3s ease;
+            /* Transición suave */
+        }
+
+        .search-form__button:active {
+            transform: scale(0.97);
+        }
     </style>
 @endsection
 
 @section('content')
     <h1>Tabla De Visitante</h1>
-    <a class="button" href="{{ route('show_Dashboard') }}">Volver</a>
-    <form action="{{ route('show_Register_Visitor') }}" method="GET">
-        <input type="search" name="search" id="search" placeholder="Buscar por nombre o cédula"
+    <a class="button" href="{{ route('show_Dashboard') }}">Volver al tablero</a>
+    <form class="search-form" action="{{ route('show_Register_Visitor') }}" method="GET">
+        <input type="search" class="search-form__input" name="search" id="search" placeholder="Buscar por nombre o cédula"
             value="{{ request('search') }}">
-        <button type="submit">Buscar</button>
+        <button type="submit" class="search-form__button">Buscar</button>
     </form>
 
     <table>

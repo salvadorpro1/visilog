@@ -43,36 +43,32 @@
         button[type="submit"] {
             padding: 10px 20px;
             font-size: 16px;
-            background-color: #4CAF50;
             color: white;
             border: none;
             cursor: pointer;
         }
 
-        button[type="submit"]:hover {
-            background-color: #45a049;
-        }
-
         .button {
             display: inline-block;
             padding: 10px 20px;
-            margin: 10px;
-            background-color: #007bff;
+            margin: 10px 0;
+            background-color: #0dcaf0;
+            /* Color por defecto */
             color: #fff;
             border: none;
             border-radius: 5px;
             text-decoration: none;
             cursor: pointer;
             transition: background-color 0.3s ease;
+            text-align: center;
+            font-size: 16px;
         }
 
-        .button-danger {
-            background-color: #dc3545;
+        .button:active {
+            transform: scale(0.97)
         }
 
-        .button-danger:hover {
-            background-color: #c82333;
-        }
+
 
         .alert-danger {
             color: #a94442;
@@ -116,18 +112,12 @@
 
         .operator-card .button {
             display: inline-block;
-            padding: 8px 15px;
-            background-color: #007bff;
             color: #fff;
             border: none;
             border-radius: 5px;
             text-decoration: none;
             cursor: pointer;
             transition: background-color 0.3s ease;
-        }
-
-        .operator-card .button:hover {
-            background-color: #0056b3;
         }
 
         /* Modal styles */
@@ -189,14 +179,49 @@
             align-items: center;
             height: 83.5vh;
         }
+
+        .button-danger {
+            background-color: #dc3545;
+        }
+
+        .button__back {
+            background-color: #6C757D;
+            /* Color para volver */
+        }
+
+
+        .button__summit {
+            background-color: #007bff;
+            /* Color para guardar */
+        }
+
+        .button:hover {
+            opacity: 0.9;
+            /* Efecto hover para todos los botones */
+        }
+
+        .alert {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
     </style>
 @endsection
 
 @section('content')
+    @if (session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
     <div class="dividir">
         <div class="container">
             <h1>Crear Operador</h1>
-
             @if ($errors->any())
                 <div class="alert alert-danger">
                     <ul>
@@ -212,27 +237,27 @@
 
                 <div class="form-group">
                     <label for="name">Nombre:</label>
-                    <input type="text" name="name" id="name" required>
+                    <input type="text" name="name" id="name" value="{{ old('name') }}">
                 </div>
 
                 <div class="form-group">
                     <label for="username">Nombre de Usuario:</label>
-                    <input type="text" name="username" id="username" required>
+                    <input type="text" name="username" id="username" value="{{ old('username') }}">
                 </div>
 
                 <div class="form-group">
                     <label for="password">Contraseña:</label>
-                    <input type="password" name="password" id="password" required>
+                    <input type="password" name="password" id="password">
                 </div>
 
                 <div class="form-group">
                     <label for="password_confirmation">Confirmar Contraseña:</label>
-                    <input type="password" name="password_confirmation" id="password_confirmation" required>
+                    <input type="password" name="password_confirmation" id="password_confirmation">
                 </div>
 
                 <div class="form-actions">
-                    <a class="button" href="{{ route('show_Dashboard') }}">Volver</a>
-                    <button type="submit" class="button">Guardar</button>
+                    <a class="button button__back" href="{{ route('show_Dashboard') }}">Volver al tablero</a>
+                    <button type="submit" class="button button__summit">Guardar</button>
                 </div>
             </form>
         </div>
@@ -249,7 +274,7 @@
                             <button type="button" class="button button-danger"
                                 onclick="confirmDeactivation({{ $operador->id }}, '{{ $operador->name }}')">Desactivar
                             </button>
-                            <a href="{{ route('history_Operator', $operador->id) }}" class="button">Historial</a>
+                            <a href="{{ route('history_Operator', $operador->id) }}" class="button">Registros</a>
                         </div>
                     @endforeach
                 @endif

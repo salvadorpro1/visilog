@@ -235,11 +235,11 @@
                             <option value="E" {{ $nacionalidad == 'E' ? 'selected' : '' }}>E</option>
                         </select>
                         <label for="">Cédula</label>
-                        <input name="cedula" value="{{ $cedula }}" type="number">
+                        <input name="cedula" value="{{ old('cedula', $cedula) }}" type="number">
                         <label for="">Nombre</label>
-                        <input name="nombre" type="text">
+                        <input name="nombre" value="{{ old('nombre') }}" type="text">
                         <label for="">Apellido</label>
-                        <input name="apellido" type="text">
+                        <input name="apellido" value="{{ old('apellido') }}" type="text">
                     </div>
                     <input type="hidden" id="fotoInput" name="foto">
                     <div class="form_register__container form_register__container--containerimagen">

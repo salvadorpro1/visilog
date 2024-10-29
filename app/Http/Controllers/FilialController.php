@@ -47,9 +47,9 @@ class FilialController extends Controller
         return redirect()->route('filiales.index')->with('success', 'Filial actualizada exitosamente.');
     }
 
-    public function destroy(Filial $filial)
-    {
-        $filial->delete();
-        return redirect()->route('filiales.index')->with('success', 'Filial eliminada exitosamente.');
-    }
+    // public function destroy(Filial $filial)
+    // {
+    //     $filial->delete();
+    //     return redirect()->route('filiales.index')->with('success', 'Filial eliminada exitosamente.');
+    // }
 }

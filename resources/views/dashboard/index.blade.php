@@ -42,12 +42,16 @@
         .form__submit {
             padding: 10px 20px;
             font-size: 16px;
-            background-color: #4CAF50;
+            background-color: #007BFF;
             color: white;
             border: none;
             cursor: pointer;
             margin-top: 14px;
             height: 42px;
+        }
+
+        .form__submit:active {
+            transform: scale(0.97)
         }
 
         .form__container_date {
@@ -216,12 +220,12 @@
                 <div>
                     <label class="form__label" for="diadesde">Desde:</label>
                     <input class="form__input" type="date" id="diadesde" value="{{ $diadesde }}" name="diadesde"
-                        min="{{ \Carbon\Carbon::parse($fechaMinima)->format('Y-m-d') }}" max="{{ date('Y-m-d') }}" required>
+                        min="{{ \Carbon\Carbon::parse($fechaMinima)->format('Y-m-d') }}" max="{{ date('Y-m-d') }}">
                 </div>
                 <div>
                     <label class="form__label" for="diahasta">Hasta:</label>
                     <input class="form__input" type="date" id="diahasta" value="{{ $diahasta }}" name="diahasta"
-                        min="{{ \Carbon\Carbon::parse($fechaMinima)->format('Y-m-d') }}" max="{{ date('Y-m-d') }}" required>
+                        min="{{ \Carbon\Carbon::parse($fechaMinima)->format('Y-m-d') }}" max="{{ date('Y-m-d') }}">
                 </div>
                 <input class="form__submit" type="submit" value="Filtrar">
             </div>

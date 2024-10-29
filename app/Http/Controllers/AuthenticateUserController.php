@@ -96,7 +96,7 @@ class AuthenticateUserController extends Controller
             'password' => $request->password,
         ]);
     
-        return redirect()->route('show_Dashboard')->with('success', 'Usuario creado satisfactoriamente.');
+        return redirect()->route('showRegisterCreate')->with('success', 'Usuario creado satisfactoriamente.');
     }
 
     public function showChangePassword()

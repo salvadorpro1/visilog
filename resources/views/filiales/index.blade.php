@@ -83,15 +83,11 @@
             padding: 10px 15px;
             margin: 10px 0;
             color: #ffffff;
-            background-color: #17a2b8;
+            background-color: #6C757D;
             border: none;
             text-decoration: none;
             border-radius: 5px;
             transition: background 0.3s ease-in-out;
-        }
-
-        .button:hover {
-            background-color: #138496;
         }
 
         .actions {
@@ -141,16 +137,13 @@
             padding: 10px 15px;
             margin: 10px 0;
             color: #ffffff;
-            background-color: #17a2b8;
+            background-color: #6C757D;
             border: none;
             text-decoration: none;
             border-radius: 5px;
             transition: background 0.3s ease-in-out;
         }
 
-        .button:hover {
-            background-color: #138496;
-        }
 
         .button-danger {
             background-color: #dc3545;
@@ -186,6 +179,10 @@
             max-width: 250px;
             /* Ancho máximo del contenedor */
         }
+
+        .btn {
+            text-decoration: none;
+        }
     </style>
 @endsection
 @if ($errors->any())
@@ -207,10 +204,10 @@
         <h1>Filiales</h1>
 
         <!-- Botón para volver -->
-        <a class="button" href="{{ route('show_Dashboard') }}">Volver</a>
+        <a class="button" href="{{ route('show_Dashboard') }}">Volver al tablero</a>
 
         <!-- Botón para crear filial -->
-        <a href="{{ route('filiales.create') }}" class="btn btn-primary">Crear Filial</a>
+        <a href="{{ route('filiales.create') }}" class="btn btn-primary">Crear</a>
 
         <!-- Tabla de filiales -->
         <table class="table">
@@ -228,38 +225,13 @@
                         <td class="truncate">{{ $filial->nombre }}</td>
                         <td class="actions">
                             <a href="{{ route('filiales.edit', $filial->id) }}" class="btn btn-warning">Editar</a>
-                            <form action="{{ route('filiales.destroy', $filial->id) }}" method="POST"
-                                style="display:inline-block;"
-                                onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta filial?');">
-                                @csrf
-                                @method('DELETE')
-                                <button type="button" class="btn btn-danger"
-                                    onclick="confirmDeletion({{ $filial->id }}, '{{ addslashes($filial->nombre) }}')">Eliminar</button>
-                            </form>
                         </td>
                     </tr>
                 @endforeach
             </tbody>
         </table>
     </div>
-    <div class="modal" id="confirmModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Confirmar Eliminación</h5>
-                <span class="close" onclick="closeModal()">&times;</span>
-            </div>
-            <div class="modal-body">
-                <p id="confirmMessage"></p>
-                <form id="confirmForm" method="POST">
-                    @csrf
-                    @method('DELETE')
-                    <button type="button" class="button" onclick="closeModal()">Cancelar</button>
-                    <button type="submit" class="button button-danger">Eliminar</button>
-                </form>
-            </div>
-        </div>
-    </div>
-    <script>
+    {{-- <script>
         // Mostrar el modal de confirmación
         function confirmDeletion(filialId, filialName) {
             // Definir la URL de eliminación
@@ -286,5 +258,5 @@
                 modal.style.display = 'none';
             }
         }
-    </script>
+    </script> --}}
 @endsection

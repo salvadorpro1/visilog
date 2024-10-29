@@ -55,7 +55,7 @@
             padding: 14px 20px;
             font-size: 18px;
             color: #ffffff;
-            background-color: #28a745;
+            background-color: #007bff;
             border: none;
             border-radius: 5px;
             cursor: pointer;
@@ -63,16 +63,12 @@
             margin-top: 15px;
         }
 
-        button[type="submit"]:hover {
-            background-color: #218838;
-        }
-
         /* Botón de "Volver" */
         .button {
             display: inline-block;
             padding: 12px 18px;
             color: #ffffff;
-            background-color: #17a2b8;
+            background-color: #6C757D;
             border: none;
             text-decoration: none;
             border-radius: 5px;
@@ -80,10 +76,6 @@
             font-size: 16px;
             margin-right: 10px;
             margin-bottom: 20px;
-        }
-
-        .button:hover {
-            background-color: #138496;
         }
 
         /* Centrado de botones */
@@ -125,15 +117,15 @@
             @csrf
             <!-- Campo de nombre de la filial -->
             <div class="form-group">
-                <label for="nombre">Nombre de la Filial</label>
+                <label for="nombre">Nombre</label>
                 <input type="text" name="nombre" id="nombre" class="form-control"
-                    placeholder="Ingrese el nombre de la filial" required>
+                    placeholder="Ingrese el nombre de la filial">
             </div>
 
             <!-- Botón de "Volver" y de "Guardar" -->
             <div class="button-container">
                 <a class="button" href="{{ route('filiales.index') }}">Volver</a>
-                <button type="submit" class="btn btn-primary">Guardar Filial</button>
+                <button type="submit" class="btn btn-primary">Guardar</button>
             </div>
         </form>
     </div>

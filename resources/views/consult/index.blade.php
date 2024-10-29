@@ -53,7 +53,8 @@
             display: inline-block;
             padding: 10px 20px;
             margin-right: 10px;
-            background-color: #4CAF50;
+            background-color: #007bff;
+            ;
             color: #fff;
             border: none;
             border-radius: 5px;

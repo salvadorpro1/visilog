@@ -67,17 +67,6 @@
 
         .btn-primary {
             padding: 10px 30px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            transition: background-color 0.3s ease;
-            cursor: pointer;
-        }
-
-        .btn-primary--back {
-            padding: 10px 30px;
             background-color: #007BFF;
             color: white;
             border: none;
@@ -85,12 +74,26 @@
             font-size: 16px;
             transition: background-color 0.3s ease;
             cursor: pointer;
-            text-decoration: none;
-
         }
 
-        .btn-primary:hover {
-            background-color: #0056b3;
+        .btn-primary:active {
+            transform: scale(0.97)
+        }
+
+        .btn-primary--back {
+            padding: 10px 30px;
+            background-color: #6C757D;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .btn-primary--back:active {
+            transform: scale(0.97)
         }
 
         /* Estilos para la tabla */
@@ -269,11 +272,10 @@
 
             <div class="form-group">
                 <label for="filial_id">Filial:</label>
-                <select name="filial_id" id="filial_id" class="form-control" required>
+                <select name="filial_id" id="filial_id" class="form-control">
                     <option value="">Seleccione una filial</option>
                     @foreach ($filials as $filial)
-                        <option value="{{ $filial->id }}"
-                            {{ old('filial_id', request('filial_id')) == $filial->id ? 'selected' : '' }}>
+                        <option value="{{ $filial->id }}" {{ request('filial_id') == $filial->id ? 'selected' : '' }}>
                             {{ $filial->nombre }}
                         </option>
                     @endforeach
@@ -298,7 +300,7 @@
             <div class="form-group">
                 <label for="diadesde">Fecha desde:</label>
                 <input type="date" name="diadesde" id="diadesde" class="form-control"
-                    value="{{ old('diadesde', request('diadesde')) }}" required
+                    value="{{ old('diadesde', request('diadesde')) }}"
                     min="{{ \Carbon\Carbon::parse($fechaMinima)->format('Y-m-d') }}" max="{{ date('Y-m-d') }}">
             </div>
 
@@ -310,7 +312,7 @@
             </div>
 
             <div class="form-buttons">
-                <a class="btn btn-primary--back" href="{{ route('show_Dashboard') }}">Volver</a>
+                <a class="button btn-primary--back" href="{{ route('show_Dashboard') }}">Volver al tablero</a>
                 <button type="submit" class="btn btn-primary">Filtrar</button>
             </div>
         </form>

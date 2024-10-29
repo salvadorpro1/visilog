@@ -45,26 +45,23 @@
         button[type="submit"] {
             padding: 10px 20px;
             font-size: 16px;
-            background-color: #4CAF50;
+            background-color: #007bff;
             color: white;
             border: none;
             cursor: pointer;
-        }
-
-        button[type="submit"]:hover {
-            background-color: #45a049;
         }
 
         .button {
             display: inline-block;
             padding: 10px 20px;
             margin: 10px;
-            background-color: #007bff;
+            background-color: #6C757D;
             color: #fff;
             border: none;
             border-radius: 5px;
             text-decoration: none;
             cursor: pointer;
+            text-align: center;
             transition: background-color 0.3s ease;
         }
 
@@ -87,6 +84,13 @@
         .alert-danger li {
             margin: 0;
         }
+
+        .juntos {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+        }
     </style>
 @endsection
 
@@ -107,16 +111,17 @@
             @csrf
 
             <label for="current_password">Contraseña Actual:</label>
-            <input type="password" name="current_password" id="current_password" required>
+            <input type="password" name="current_password" id="current_password">
 
             <label for="new_password">Nueva Contraseña:</label>
-            <input type="password" name="new_password" id="new_password" required>
+            <input type="password" name="new_password" id="new_password">
 
             <label for="new_password_confirmation">Confirmar Nueva Contraseña:</label>
-            <input type="password" name="new_password_confirmation" id="new_password_confirmation" required>
-
-            <a class="button" href="{{ route('show_Dashboard') }}">Volver</a>
-            <button type="submit">Cambiar Contraseña</button>
+            <input type="password" name="new_password_confirmation" id="new_password_confirmation">
+            <div class="juntos">
+                <a class="button" href="{{ route('show_Dashboard') }}">Volver al tablero</a>
+                <button type="submit">Cambiar Contraseña</button>
+            </div>
 
         </form>
 
