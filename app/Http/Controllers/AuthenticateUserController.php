@@ -96,7 +96,7 @@ class AuthenticateUserController extends Controller
             'password' => $request->password,
         ]);
     
-        return redirect()->route('showRegisterCreate')->with('success', 'Usuario creado satisfactoriamente.');
+        return redirect()->route('showRegisterCreate')->with('success', 'Usuario registrado satisfactoriamente.');
     }
 
     public function showChangePassword()
@@ -130,7 +130,7 @@ class AuthenticateUserController extends Controller
         $user->password = $request->new_password; // Asegúrate de hashear la nueva contraseña
         $user->save();
     
-        return redirect()->route('show_Dashboard')->with('success', 'Contraseña cambiada exitosamente');
+        return redirect()->route('logout')->with('success', 'Contraseña cambiada exitosamente');
     }
 
     public function deactivateOperator($id)

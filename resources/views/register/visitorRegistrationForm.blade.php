@@ -210,7 +210,7 @@
 
 @section('content')
 
-    <h1>Registrar Visitante</h1>
+    <h1>Registro de visitas </h1>
     @if ($errors->any())
         <div class="alert alert-danger">
             <ul>
@@ -283,7 +283,20 @@
                     <div class="divisor__inputs">
                         <div class="divisor__element">
                             <label for="nacionalidad">Nacionalidad</label>
-                            <p>{{ $visitor->nacionalidad }}</p>
+                            <p>
+                                @switch($visitor->nacionalidad)
+                                    @case('V')
+                                        Venezolana
+                                    @break
+
+                                    @case('E')
+                                        Extranjero
+                                    @break
+
+                                    @default
+                                        Dato no valido
+                                @endswitch
+                            </p>
                             <input type="hidden" id="nacionalidad" name="nacionalidad"
                                 value="{{ $visitor->nacionalidad }}">
                         </div>

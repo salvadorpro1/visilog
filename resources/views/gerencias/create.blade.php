@@ -57,21 +57,15 @@
             background-size: 10px;
         }
 
-        button[type="submit"] {
-            display: block;
-            width: 100%;
-            padding: 12px 15px;
-            font-size: 18px;
-            color: #ffffff;
-            background-color: #007bff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease-in-out;
-        }
 
-        button[type="submit"]:hover {
-            background-color: #0056b3;
+
+        button[type="submit"] {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
         }
 
         .btn-primary {
@@ -91,14 +85,16 @@
 
         .button {
             display: inline-block;
-            padding: 10px 15px;
-            margin: 10px 0;
-            color: #ffffff;
+            padding: 10px 20px;
+            margin: 10px;
             background-color: #6C757D;
+            color: #fff;
             border: none;
-            text-decoration: none;
             border-radius: 5px;
-            transition: background 0.3s ease-in-out;
+            text-decoration: none;
+            cursor: pointer;
+            text-align: center;
+            transition: background-color 0.3s ease;
         }
 
         .alert {
@@ -116,6 +112,13 @@
             background-color: #f8d7da;
             color: #721c24;
         }
+
+        .juntos {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+        }
     </style>
 @endsection
 
@@ -131,8 +134,6 @@
     @endif
     <div class="container">
         <h1>Crear Gerencia</h1>
-        <a class="user-menu__item-link  button" href="{{ route('gerencias.index') }}">Volver</a>
-
         <form action="{{ route('gerencias.store') }}" method="POST">
             @csrf
             <!-- Campo de nombre de la gerencia -->
@@ -154,7 +155,10 @@
             </div>
 
             <!-- Botón de guardar -->
-            <button type="submit" class="btn btn-primary">Guardar Gerencia</button>
+            <div class="juntos">
+                <a class="user-menu__item-link  button" href="{{ route('gerencias.index') }}">Volver</a>
+                <button type="submit" class="btn btn-primary">Guardar</button>
+            </div>
         </form>
     </div>
 @endsection

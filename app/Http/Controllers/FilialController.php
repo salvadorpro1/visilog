@@ -28,7 +28,7 @@ class FilialController extends Controller
             'nombre.regex' => 'El nombre solo puede contener letras y espacios.',
         ]);
         Filial::create($request->all());
-        return redirect()->route('filiales.index')->with('success', 'Filial creada exitosamente.');
+        return redirect()->route('filiales.index')->with('success', 'Filial registrada exitosamente.');
     }
 
     public function edit(Filial $filial)

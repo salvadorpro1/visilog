@@ -49,33 +49,28 @@
         }
 
         /* Botón de envío */
-        button[type="submit"] {
-            display: block;
-            width: 100%;
-            padding: 14px 20px;
-            font-size: 18px;
-            color: #ffffff;
-            background-color: #007bff;
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 10px;
+            background-color: #6C757D;
+            color: #fff;
             border: none;
             border-radius: 5px;
+            text-decoration: none;
             cursor: pointer;
-            transition: background-color 0.3s ease-in-out;
-            margin-top: 15px;
+            text-align: center;
+            transition: background-color 0.3s ease;
         }
 
         /* Botón de "Volver" */
-        .button {
-            display: inline-block;
-            padding: 12px 18px;
-            color: #ffffff;
-            background-color: #6C757D;
-            border: none;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: background-color 0.3s ease-in-out;
+        button[type="submit"] {
+            padding: 10px 20px;
             font-size: 16px;
-            margin-right: 10px;
-            margin-bottom: 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
         }
 
         /* Centrado de botones */
@@ -97,6 +92,13 @@
         .alert-danger {
             background-color: #f8d7da;
             color: #721c24;
+        }
+
+        .juntos {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
         }
     </style>
 @endsection
@@ -123,7 +125,7 @@
             </div>
 
             <!-- Botón de "Volver" y de "Guardar" -->
-            <div class="button-container">
+            <div class="juntos">
                 <a class="button" href="{{ route('filiales.index') }}">Volver</a>
                 <button type="submit" class="btn btn-primary">Guardar</button>
             </div>

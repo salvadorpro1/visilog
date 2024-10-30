@@ -30,7 +30,7 @@ class GerenciaController extends Controller
             'filial_id.exists' => 'La filial seleccionada no es válida.',
         ]);
         Gerencia::create($request->all());
-        return redirect()->route('gerencias.index')->with('success', 'Gerencia creada exitosamente.');
+        return redirect()->route('gerencias.index')->with('success', 'Gerencia registrada exitosamente.');
     }
 
     public function edit(Gerencia $gerencia)

@@ -131,7 +131,7 @@
                 @endif
                 @if ($user && $user->role === 'operador')
                     <li class="user-menu__item">
-                        <a href="{{ route('show_consult') }}" class="user-menu__item-link">Registrar visitante</a>
+                        <a href="{{ route('show_consult') }}" class="user-menu__item-link">Registro de visitas </a>
                     </li>
                 @endif
 

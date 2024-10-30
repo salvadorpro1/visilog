@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-    dashboard
+    Tablero
 @endsection
 
 @section('style')
@@ -211,7 +211,7 @@
             </ul>
         </div>
     @endif
-    <h1>Dashboard de Visitantes </h1>
+    <h1>Tablero</h1>
     <div class="container">
         <form class="form" action="" method="POST">
             @csrf

@@ -270,7 +270,7 @@
                     @foreach ($operadores as $operador)
                         <div class="operator-card">
                             <p>Nombre: {{ $operador->name }}</p>
-                            <p>Username: {{ $operador->username }}</p>
+                            <p>Nombre de usuario: {{ $operador->username }}</p>
                             <button type="button" class="button button-danger"
                                 onclick="confirmDeactivation({{ $operador->id }}, '{{ $operador->name }}')">Desactivar
                             </button>
