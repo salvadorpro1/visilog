@@ -23,11 +23,12 @@ class GerenciaController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nombre' => 'required|string|max:255|regex:/^[a-zA-Z\s]+$/',
+            'nombre' => 'required|string|max:255|regex:/^[\p{L}ñÑ\s]+$/u',
             'filial_id' => 'required|exists:filiales,id',
         ], [
-            'nombre.regex' => 'El nombre solo puede contener letras y espacios.',
+            'nombre.regex' => 'El nombre de la direccion solo puede contener letras y espacios.',
             'filial_id.exists' => 'La filial seleccionada no es válida.',
+            'filial_id.required'=> 'Necesita seleccionar una filial ',
         ]);
         Gerencia::create($request->all());
         return redirect()->route('gerencias.index')->with('success', 'Gerencia registrada exitosamente.');
@@ -42,10 +43,13 @@ class GerenciaController extends Controller
     public function update(Request $request, Gerencia $gerencia)
     {
         $request->validate([
-            'nombre' => 'required|string|max:255|regex:/^[a-zA-Z\s]+$/',
+            'nombre' => 'required|string|max:255|regex:/^[\p{L}ñÑ\s]+$/u',
             'filial_id' => 'required|exists:filiales,id',
         ],[
-            'nombre.regex' => 'El nombre solo puede contener letras y espacios.',
+            'nombre.regex' => 'El nombre de la direccion solo puede contener letras y espacios.',
+            'filial_id.required'=> 'Necesita seleccionar una filial ',
+            'filial_id.exists' => 'La filial seleccionada no es válida.',
+
         ]);
         $gerencia->update($request->all());
         return redirect()->route('gerencias.index')->with('success', 'Gerencia actualizada exitosamente.');

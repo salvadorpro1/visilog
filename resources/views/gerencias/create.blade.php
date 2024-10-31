@@ -133,7 +133,7 @@
         </div>
     @endif
     <div class="container">
-        <h1>Crear Gerencia</h1>
+        <h1>Crear Direccion</h1>
         <form action="{{ route('gerencias.store') }}" method="POST">
             @csrf
             <!-- Campo de nombre de la gerencia -->

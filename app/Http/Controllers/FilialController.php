@@ -23,9 +23,9 @@ class FilialController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nombre' => 'required|string|max:255|regex:/^[a-zA-Z\s]+$/',
+            'nombre' => 'required|string|max:255|regex:/^[\p{L}ñÑ\s]+$/u',
         ],[
-            'nombre.regex' => 'El nombre solo puede contener letras y espacios.',
+            'nombre.regex' => 'El  nombre de la filial solo puede contener letras y espacios.',
         ]);
         Filial::create($request->all());
         return redirect()->route('filiales.index')->with('success', 'Filial registrada exitosamente.');
@@ -39,9 +39,9 @@ class FilialController extends Controller
     public function update(Request $request, Filial $filial)
     {
         $request->validate([
-            'nombre' => 'required|string|max:255|regex:/^[a-zA-Z\s]+$/',
+            'nombre' => 'required|string|max:255|regex:/^[\p{L}ñÑ\s]+$/u',
         ],[
-            'nombre.regex' => 'El nombre solo puede contener letras y espacios.',
+            'nombre.regex' => 'El nombre de la filial solo puede contener letras y espacios.',
         ]);
         $filial->update($request->all());
         return redirect()->route('filiales.index')->with('success', 'Filial actualizada exitosamente.');

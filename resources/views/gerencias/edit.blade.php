@@ -130,7 +130,7 @@
         </div>
     @endif
     <div class="container">
-        <h1>Editar Gerencia</h1>
+        <h1>Editar Direccion</h1>
         <form action="{{ route('gerencias.update', $gerencia->id) }}" method="POST">
             @csrf
             @method('PUT')

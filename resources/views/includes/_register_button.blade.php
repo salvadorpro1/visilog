@@ -142,7 +142,7 @@
                 @endif
                 @if ($user && $user->role === 'administrador')
                     <li class="user-menu__item">
-                        <a class="user-menu__item-link" href="{{ route('gerencias.index') }}">Gerencias</a>
+                        <a class="user-menu__item-link" href="{{ route('gerencias.index') }}">Direcciones</a>
                     </li>
                 @endif
                 @if ($user && $user->role === 'administrador')

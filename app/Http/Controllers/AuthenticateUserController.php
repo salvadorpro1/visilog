@@ -66,7 +66,7 @@ class AuthenticateUserController extends Controller
     {
         // Define las reglas de validación
         $rules = [
-            'name' => 'required|regex:/^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$/',
+            'name' => 'required|regex:/^[\p{L}ñÑ\s]+$/u',
             'username' => 'required|alpha_num|unique:users,username', // Agregamos la regla 'unique'
             'password' => 'required|min:6|confirmed',
         ];

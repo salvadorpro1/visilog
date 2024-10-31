@@ -222,7 +222,7 @@
         </div>
     @endif
     <div class="container">
-        <h1>Gerencias</h1>
+        <h1>Direcciones</h1>
 
         <!-- Botón para volver -->
         <a class="button" href="{{ route('show_Dashboard') }}">Volver al tablero</a>
@@ -290,7 +290,7 @@
 
             // Cambiar el mensaje dentro del modal
             document.getElementById('confirmMessage').innerText =
-                `¿Está seguro de que desea eliminar la gerencia ${gerenciaName}?`;
+                `¿Está seguro de que desea eliminar la direccion ${gerenciaName}?`;
 
             // Mostrar el modal
             document.getElementById('confirmModal').style.display = 'block';

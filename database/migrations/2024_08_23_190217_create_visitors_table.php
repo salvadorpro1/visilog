@@ -10,17 +10,21 @@ class CreateVisitorsTable extends Migration
     {
         Schema::create('visitors', function (Blueprint $table) {
             $table->id();
-            $table->enum('nacionalidad', ['V', 'E']); // Define 'nacionalidad' como enum una sola vez
-            $table->string('cedula'); // Define 'cedula' una sola vez
+            $table->enum('nacionalidad', ['V', 'E']);
+            $table->string('cedula'); 
             $table->string('nombre');
             $table->string('apellido');
             $table->unsignedBigInteger('filial_id');
             $table->unsignedBigInteger('gerencia_id');
             $table->text('razon_visita');
-            $table->string('foto');
+            $table->string('foto')->nullable(); // Permitir valores null en la columna 'foto'
             $table->unsignedBigInteger('user_id');
+            $table->char('numero_carnet');
+            $table->enum('clasificacion', ['empresa', 'persona']);
+            $table->string('nombre_empresa');
+            $table->string('telefono', 11);
             $table->timestamps();
-
+            
             // Foreign keys
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('filial_id')->references('id')->on('filiales')->onDelete('cascade');

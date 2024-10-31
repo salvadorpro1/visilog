@@ -136,13 +136,22 @@ class VisitorController extends Controller
             'gerencia_id' => 'required|exists:gerencias,id',
             'razon_visita' => 'required|max:255',
             'cedula' => 'required|digits_between:7,8',
-            'foto' => 'required',
+            'numero_carnet' => 'required', // 10 caracteres exactos
+            'clasificacion' => 'required|in:empresa,persona', // Validación para los valores permitidos
+            'telefono' =>  'required|digits:11', // Validación para los prefijos y formato
+            'nombre_empresa' => 'required_if:clasificacion,empresa', // Obligatorio si clasificacion es 'empresa'
         ];
+
+    // Asegurar que 'foto' sea obligatorio solo si 'no_foto' no está marcado
+    if (!$visitorExists && (!$request->has('no_foto') || $request->input('no_foto') != 'on')) {
+        $rules['foto'] = 'required';
+    }
+    
 
         if ($visitorExists) {
             $rules['cedula'] = 'required|digits_between:7,8';
-            $rules['nombre'] = 'required|regex:/^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$/';
-            $rules['apellido'] = 'required|regex:/^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$/';
+            $rules['nombre'] = 'required|regex:/^[\p{L}ñÑ\s]+$/u';
+            $rules['apellido'] = 'required|regex:/^[\p{L}ñÑ\s]+$/u';
             $rules['nacionalidad'] = 'required|in:V,E';
         }
 
@@ -163,6 +172,10 @@ class VisitorController extends Controller
             'nombre.regex' => 'El nombre solo puede contener letras y espacios.',
             'apellido.required' => 'El apellido es obligatorio.',
             'apellido.regex' => 'El apellido solo puede contener letras y espacios.',
+            'telefono.required' => 'El número de teléfono es obligatorio.',
+            'telefono.regex' => 'El teléfono debe comenzar con 0424, 0412, 0416, 0212 o 0414 y tener 11 dígitos en total.',
+            'nombre_empresa.required_if' => 'El nombre de la empresa es obligatorio cuando la clasificación es "empresa".',
+
         ];
 
         $validator = Validator::make($request->all(), $rules, $messages);
@@ -197,7 +210,9 @@ class VisitorController extends Controller
             }
         }
 
-        // Procesamiento de imagen de la foto
+    // Procesamiento de imagen de la foto si se envía
+    $fileName = null;
+    if ($request->input('foto')) {
         $foto = $request->input('foto');
         if (strpos($foto, 'data:image') === 0) {
             $data = explode(',', $foto);
@@ -207,6 +222,7 @@ class VisitorController extends Controller
         } else {
             $fileName = $foto;
         }
+    }
 
         // Crear o actualizar visitante
         $visitor = $visitorExists ? $existingVisitor : new Visitor();
@@ -219,14 +235,24 @@ class VisitorController extends Controller
             $visitor->apellido = $request->input('apellido');
         }
 
-        // Datos que se pueden actualizar
-        $visitor->filial_id = $request->input('filial_id');
-        $visitor->gerencia_id = $request->input('gerencia_id');
-        $visitor->razon_visita = $request->input('razon_visita');
-        $visitor->user_id = auth()->id();
-        $visitor->foto = $fileName;
+  // Datos que se pueden actualizar
+  $visitor->filial_id = $request->input('filial_id');
+  $visitor->gerencia_id = $request->input('gerencia_id');
+  $visitor->razon_visita = $request->input('razon_visita');
+  $visitor->telefono = $request->input('telefono');
+  $visitor->numero_carnet = $request->input('numero_carnet');
+  $visitor->clasificacion = $request->input('clasificacion');
+  $visitor->nombre_empresa = $request->input('clasificacion') === 'empresa' ? $request->input('nombre_empresa') : '';
+  $visitor->user_id = auth()->id();
 
-        $visitor->save();
+  // Asignar foto solo si no_foto no está marcado
+  if (!$request->has('no_foto') || $request->input('no_foto') != 'on') {
+      $visitor->foto = $fileName; // Asegúrate de que fileName no sea null
+  } else {
+      $visitor->foto = ''; // O puedes dejarlo en null si la base de datos lo permite
+  }
+
+  $visitor->save();
 
         $user = Auth::user();
 
@@ -312,6 +338,10 @@ class VisitorController extends Controller
             'gerencia_id' => 'nullable|integer',
             'diadesde' => 'required|date',
             'diahasta' => 'required|date|after_or_equal:diadesde',
+            'numero_carnet' => 'required', // 10 caracteres exactos
+            'clasificacion' => 'required|in:empresa,persona', // Validación para los valores permitidos
+            'telefono' =>  'required|digits:11', // Validación para los prefijos y formato
+
         ];
     
         $messages = [
@@ -323,6 +353,8 @@ class VisitorController extends Controller
             'diahasta.required' => 'La fecha de fin es obligatoria.',
             'diahasta.date' => 'La fecha de fin debe ser una fecha válida.',
             'diahasta.after_or_equal' => 'La fecha de fin debe ser igual o posterior a la fecha de inicio.',
+            'telefono.required' => 'El número de teléfono es obligatorio.',
+            'telefono.regex' => 'El teléfono debe comenzar con 0424, 0412, 0416, 0212 o 0414 y tener 11 dígitos en total.',
         ];
     
         $validator = Validator::make($request->all(), $rules, $messages);

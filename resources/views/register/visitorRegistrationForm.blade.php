@@ -84,6 +84,7 @@
             justify-content: center;
             align-items: center;
             flex-direction: column;
+            margin-bottom: 20px
         }
 
         .form_register__container--containerimagen {
@@ -205,6 +206,25 @@
         .divisor__element {
             margin: 10px 0
         }
+
+        .separar {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .separar__uni {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+            gap: 5px;
+
+
+        }
+
+        .separar__uni input {
+            margin-bottom: 5px;
+        }
     </style>
 @endsection
 
@@ -240,6 +260,31 @@
                         <input name="nombre" value="{{ old('nombre') }}" type="text">
                         <label for="">Apellido</label>
                         <input name="apellido" value="{{ old('apellido') }}" type="text">
+                        <label for="">Clasificación</label>
+                        <div class="separar">
+                            <div class="separar__uni">
+                                <label for="persona">Persona</label>
+                                <label for="empresa">Empresa</label>
+                            </div>
+                            <div class="separar__uni">
+                                <input type="radio" id="persona" name="clasificacion" value="persona"
+                                    {{ old('clasificacion') == 'persona' ? 'checked' : '' }} onclick="toggleEmpresaInput()">
+                                <input type="radio" id="empresa" name="clasificacion" value="empresa"
+                                    {{ old('clasificacion') == 'empresa' ? 'checked' : '' }} onclick="toggleEmpresaInput()">
+                            </div>
+                        </div>
+                        <div id="empresaInput" style="display: none;">
+                            <label for="nombre_empresa">Nombre de la empresa</label>
+                            <input type="text" id="nombre_empresa" name="nombre_empresa"
+                                value="{{ old('nombre_empresa') }}">
+                        </div>
+
+                        <label for="">Teléfono</label>
+                        <input name="telefono" value="{{ old('telefono') }}" type="text" placeholder="Ej: 04121234567">
+                        <label for="numero_carnet">Número de Carnet</label>
+                        <input name="numero_carnet" id="numero_carnet" type="text" maxlength="10" minlength="10"
+                            pattern="[A-Za-z0-9]{10}" placeholder="Ingrese 10 caracteres"
+                            value="{{ old('numero_carnet') }}">
                     </div>
                     <input type="hidden" id="fotoInput" name="foto">
                     <div class="form_register__container form_register__container--containerimagen">
@@ -253,6 +298,10 @@
                             <button type="button" id="capture" onclick="takePhoto()">Tomar Foto</button>
                             <button type="button" id="reset" onclick="resetPhoto()">Reiniciar Foto</button>
                         </div>
+                        <label>
+                            <input type="checkbox" name="no_foto" id="no_foto" onchange="toggleFotoRequired()"> No tomar
+                            foto
+                        </label>
                     </div>
                 </div>
                 <label for="">Filial</label>
@@ -319,13 +368,41 @@
                     <div class="form_register__container form_register__container--containerimagen">
                         <div class="form_register__container form_register__container--containerimagen">
                             <div class="form_register__imagecontainer">
-                                <img class="foto" src="{{ route('visitor.photo', ['filename' => $visitor->foto]) }}"
-                                    alt="Foto del visitante" width="200">
+                                @if (!empty($visitor->foto))
+                                    <img class="foto"
+                                        src="{{ route('visitor.photo', ['filename' => $visitor->foto]) }}"
+                                        alt="Foto del visitante" width="200">
+                                @else
+                                    <p>No hay foto disponible.</p>
+                                @endif
                             </div>
                         </div>
                     </div>
                 </div>
+                <label for="">Clasificación</label>
+                <div class="separar">
+                    <div class="separar__uni">
+                        <label for="persona">Persona</label>
+                        <label for="empresa">Empresa</label>
+                    </div>
+                    <div class="separar__uni">
+                        <input type="radio" id="persona" name="clasificacion" value="persona"
+                            {{ old('clasificacion') == 'persona' ? 'checked' : '' }} onclick="toggleEmpresaInput()">
+                        <input type="radio" id="empresa" name="clasificacion" value="empresa"
+                            {{ old('clasificacion') == 'empresa' ? 'checked' : '' }} onclick="toggleEmpresaInput()">
+                    </div>
+                </div>
+                <div id="empresaInput" style="display: none;">
+                    <label for="nombre_empresa">Nombre de la empresa</label>
+                    <input type="text" id="nombre_empresa" name="nombre_empresa"
+                        value="{{ old('nombre_empresa') }}">
+                </div>
+                <label for="">Teléfono</label>
+                <input name="telefono" value="{{ old('telefono') }}" type="text" placeholder="Ej: 04121234567">
 
+                <label for="numero_carnet">Número de Carnet</label>
+                <input name="numero_carnet" id="numero_carnet" type="text" placeholder="Ingrese 10 caracteres"
+                    value="{{ old('numero_carnet') }}">
 
                 <label for="">Filial</label>
                 <select name="filial_id" id="filial_id" onchange="updateGerencias(),quitarSeleccionInicial('filial')">
@@ -473,5 +550,27 @@
                 icono.style.display = 'none';
             }
         }
+    </script>
+    <script>
+        function toggleFotoRequired() {
+            const noFotoChecked = document.getElementById('no_foto').checked;
+            document.getElementById('fotoInput').required = !noFotoChecked;
+        }
+    </script>
+    <script>
+        function toggleEmpresaInput() {
+            const empresaInput = document.getElementById('empresaInput');
+            const empresaRadio = document.getElementById('empresa');
+
+            // Mostrar u ocultar el input dependiendo del radio seleccionado
+            if (empresaRadio.checked) {
+                empresaInput.style.display = 'block';
+            } else {
+                empresaInput.style.display = 'none';
+            }
+        }
+
+        // Inicializar el estado del input cuando se carga la página
+        document.addEventListener('DOMContentLoaded', toggleEmpresaInput);
     </script>
 @endsection

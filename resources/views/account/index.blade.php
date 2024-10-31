@@ -275,7 +275,8 @@
                 <select name="filial_id" id="filial_id" class="form-control">
                     <option value="">Seleccione una filial</option>
                     @foreach ($filials as $filial)
-                        <option value="{{ $filial->id }}" {{ request('filial_id') == $filial->id ? 'selected' : '' }}>
+                        <option value="{{ $filial->id }}"
+                            {{ old('filial_id', request('filial_id')) == $filial->id ? 'selected' : '' }}>
                             {{ $filial->nombre }}
                         </option>
                     @endforeach
@@ -283,7 +284,7 @@
             </div>
 
             <div class="form-group">
-                <label for="gerencia_id">Gerencia:</label>
+                <label for="gerencia_id">Direcciones:</label>
                 <select name="gerencia_id" id="gerencia_id" class="form-control">
                     <option value="">Todas las gerencias</option>
                     @if (isset($gerencias))
