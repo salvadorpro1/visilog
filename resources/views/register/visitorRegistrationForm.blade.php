@@ -282,9 +282,8 @@
                         <label for="">Teléfono</label>
                         <input name="telefono" value="{{ old('telefono') }}" type="text" placeholder="Ej: 04121234567">
                         <label for="numero_carnet">Número de Carnet</label>
-                        <input name="numero_carnet" id="numero_carnet" type="text" maxlength="10" minlength="10"
-                            pattern="[A-Za-z0-9]{10}" placeholder="Ingrese 10 caracteres"
-                            value="{{ old('numero_carnet') }}">
+                        <input name="numero_carnet" id="numero_carnet" type="text" value="{{ old('numero_carnet') }}">
+
                     </div>
                     <input type="hidden" id="fotoInput" name="foto">
                     <div class="form_register__container form_register__container--containerimagen">
@@ -401,8 +400,7 @@
                 <input name="telefono" value="{{ old('telefono') }}" type="text" placeholder="Ej: 04121234567">
 
                 <label for="numero_carnet">Número de Carnet</label>
-                <input name="numero_carnet" id="numero_carnet" type="text" placeholder="Ingrese 10 caracteres"
-                    value="{{ old('numero_carnet') }}">
+                <input name="numero_carnet" id="numero_carnet" type="text" value="{{ old('numero_carnet') }}">
 
                 <label for="">Filial</label>
                 <select name="filial_id" id="filial_id" onchange="updateGerencias(),quitarSeleccionInicial('filial')">
