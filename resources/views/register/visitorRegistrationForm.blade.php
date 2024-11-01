@@ -219,8 +219,6 @@
             flex-direction: column;
             justify-content: space-evenly;
             gap: 5px;
-
-
         }
 
         .separar__uni input {

@@ -99,12 +99,31 @@
                 <td>{{ $persona->gerencia->nombre }}</td>
             </tr>
             <tr>
+                <th>Telefono</th>
+                <td>{{ $persona->telefono }}</td>
+            </tr>
+            <tr>
+                <th>Clasificacion</th>
+                <td>{{ $persona->clasificacion }}</td>
+            </tr>
+            <tr>
+                <th>Numero de carnet</th>
+                <td>{{ $persona->numero_carnet }}</td>
+            </tr>
+            <tr>
                 <th>Razón de la Visita</th>
                 <td>{{ $persona->razon_visita }}</td>
             </tr>
             <tr>
                 <th>Foto</th>
-                <td><img class="foto" src="{{ route('visitor.photo', ['filename' => $persona->foto]) }}" alt="foto"></td>
+                <td>
+                    @if (!empty($persona->foto))
+                        <img class="foto" src="{{ route('visitor.photo', ['filename' => $persona->foto]) }}"
+                            alt="Foto del visitante" width="200">
+                    @else
+                        <p>No hay foto disponible.</p>
+                    @endif
+                </td>
             </tr>
             <tr>
                 <th>Fecha</th>
