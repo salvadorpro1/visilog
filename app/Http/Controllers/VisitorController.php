@@ -129,133 +129,87 @@ class VisitorController extends Controller
     
     public function saveVisitor(Request $request)
     {
+        // Esta variable determina si el visitante ya existe en la vista
         $visitorExists = $request->input('showAll') === 'false';
-
+    
+        // Reglas de validación
         $rules = [
             'filial_id' => 'required|exists:filiales,id',
             'gerencia_id' => 'required|exists:gerencias,id',
             'razon_visita' => 'required|max:255',
             'cedula' => 'required|digits_between:7,8',
-            'numero_carnet' => 'required', // 10 caracteres exactos
-            'clasificacion' => 'required|in:empresa,persona', // Validación para los valores permitidos
-            'telefono' =>  'required|digits:11', // Validación para los prefijos y formato
-            'nombre_empresa' => 'required_if:clasificacion,empresa', // Obligatorio si clasificacion es 'empresa'
+            'numero_carnet' => 'required',
+            'clasificacion' => 'required|in:empresa,persona',
+            'telefono' =>  'required|digits:11',
+            'nombre_empresa' => 'required_if:clasificacion,empresa',
+            'nombre' => 'required|regex:/^[\p{L}ñÑ\s]+$/u',
+            'apellido' => 'required|regex:/^[\p{L}ñÑ\s]+$/u',
+            'nacionalidad' => 'required|in:V,E'
         ];
-
-    // Asegurar que 'foto' sea obligatorio solo si 'no_foto' no está marcado
-    if (!$visitorExists && (!$request->has('no_foto') || $request->input('no_foto') != 'on')) {
-        $rules['foto'] = 'required';
-    }
     
-
-        if ($visitorExists) {
-            $rules['cedula'] = 'required|digits_between:7,8';
-            $rules['nombre'] = 'required|regex:/^[\p{L}ñÑ\s]+$/u';
-            $rules['apellido'] = 'required|regex:/^[\p{L}ñÑ\s]+$/u';
-            $rules['nacionalidad'] = 'required|in:V,E';
-        }
-
-        $messages = [
-            // Mensajes de error personalizados
-            'filial_id.required' => 'La filial es obligatoria.',
-            'filial_id.exists' => 'La filial seleccionada no es válida.',
-            'gerencia_id.required' => 'La gerencia es obligatoria.',
-            'gerencia_id.exists' => 'La gerencia seleccionada no es válida.',
-            'razon_visita.required' => 'La razón de visita es obligatoria.',
-            'razon_visita.max' => 'La razón de visita no puede tener más de :max caracteres.',
-            'foto.required' => 'La foto es obligatoria.',
-            'nacionalidad.required' => 'La nacionalidad es obligatoria.',
-            'nacionalidad.in' => 'La nacionalidad debe ser "V" o "E".',
-            'cedula.required' => 'La cédula es obligatoria.',
-            'cedula.digits_between' => 'La cédula debe tener entre :min y :max dígitos.',
-            'nombre.required' => 'El nombre es obligatorio.',
-            'nombre.regex' => 'El nombre solo puede contener letras y espacios.',
-            'apellido.required' => 'El apellido es obligatorio.',
-            'apellido.regex' => 'El apellido solo puede contener letras y espacios.',
-            'telefono.required' => 'El número de teléfono es obligatorio.',
-            'telefono.regex' => 'El teléfono debe comenzar con 0424, 0412, 0416, 0212 o 0414 y tener 11 dígitos en total.',
-            'nombre_empresa.required_if' => 'El nombre de la empresa es obligatorio cuando la clasificación es "empresa".',
-
-        ];
-
-        $validator = Validator::make($request->all(), $rules, $messages);
-
+        // Validar la entrada
+        $validator = Validator::make($request->all(), $rules);
+    
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
-
-        // Verificar que los datos de un visitante existente no hayan sido alterados
-        if ($visitorExists) {
-            $existingVisitor = Visitor::where('cedula', $request->input('cedula'))->first();
-
-            if ($existingVisitor) {
-                // Comprobar que los datos ingresados coincidan con los datos en la base de datos
-                $dataHasChanged = false;
-
-                if ($existingVisitor->nacionalidad !== $request->input('nacionalidad')) {
-                    $dataHasChanged = true;
-                }
-                if ($existingVisitor->nombre !== $request->input('nombre')) {
-                    $dataHasChanged = true;
-                }
-                if ($existingVisitor->apellido !== $request->input('apellido')) {
-                    $dataHasChanged = true;
-                }
-
-                if ($dataHasChanged) {
-                    return redirect()->back()->withErrors([
-                        'error' => 'No se pueden modificar los datos de nacionalidad, cédula, nombre o apellido de un visitante ya registrado.'
-                    ])->withInput();
-                }
+    
+        // Si el visitante ya existe, cargar sus datos para mostrarlos en la vista
+        $existingVisitor = Visitor::where('cedula', $request->input('cedula'))->first();
+    
+        // Si hay un visitante existente, verificar que no se hayan modificado los datos inmutables
+        if ($visitorExists && $existingVisitor) {
+            if (
+                $existingVisitor->nacionalidad !== $request->input('nacionalidad') ||
+                $existingVisitor->nombre !== $request->input('nombre') ||
+                $existingVisitor->apellido !== $request->input('apellido')
+            ) {
+                return redirect()->back()->withErrors([
+                    'error' => 'No se pueden modificar los datos de nacionalidad, cédula, nombre o apellido de un visitante ya registrado.'
+                ])->withInput();
             }
         }
-
-    // Procesamiento de imagen de la foto si se envía
-    $fileName = null;
-    if ($request->input('foto')) {
-        $foto = $request->input('foto');
-        if (strpos($foto, 'data:image') === 0) {
-            $data = explode(',', $foto);
-            $imageData = base64_decode($data[1]);
-            $fileName = 'visitor_' . Str::random(10) . '.png';
-            Storage::disk('local')->put('visitors/' . $fileName, $imageData);
+    
+        // Procesamiento de imagen de la foto si se envía
+        $fileName = null;
+        if ($request->input('foto')) {
+            $foto = $request->input('foto');
+            if (strpos($foto, 'data:image') === 0) {
+                $data = explode(',', $foto);
+                $imageData = base64_decode($data[1]);
+                $fileName = 'visitor_' . Str::random(10) . '.png';
+                Storage::disk('local')->put('visitors/' . $fileName, $imageData);
+            } else {
+                $fileName = $foto;
+            }
+        }
+    
+        // Crear un nuevo registro de visitante cada vez
+        $visitor = new Visitor();
+        $visitor->nacionalidad = $request->input('nacionalidad');
+        $visitor->cedula = $request->input('cedula');
+        $visitor->nombre = $request->input('nombre');
+        $visitor->apellido = $request->input('apellido');
+        $visitor->filial_id = $request->input('filial_id');
+        $visitor->gerencia_id = $request->input('gerencia_id');
+        $visitor->razon_visita = $request->input('razon_visita');
+        $visitor->telefono = $request->input('telefono');
+        $visitor->numero_carnet = $request->input('numero_carnet');
+        $visitor->clasificacion = $request->input('clasificacion');
+        $visitor->nombre_empresa = $request->input('clasificacion') === 'empresa' ? $request->input('nombre_empresa') : '';
+        $visitor->user_id = auth()->id();
+    
+        // Asignar foto si se envía, de lo contrario dejar en null o vacío
+        if (!$request->has('no_foto') || $request->input('no_foto') != 'on') {
+            $visitor->foto = $fileName;
         } else {
-            $fileName = $foto;
+            $visitor->foto = '';
         }
-    }
-
-        // Crear o actualizar visitante
-        $visitor = $visitorExists ? $existingVisitor : new Visitor();
-
-        // Si no es un visitante existente, se guardan todos los datos
-        if (!$visitorExists) {
-            $visitor->nacionalidad = $request->input('nacionalidad');
-            $visitor->cedula = $request->input('cedula');
-            $visitor->nombre = $request->input('nombre');
-            $visitor->apellido = $request->input('apellido');
-        }
-
-  // Datos que se pueden actualizar
-  $visitor->filial_id = $request->input('filial_id');
-  $visitor->gerencia_id = $request->input('gerencia_id');
-  $visitor->razon_visita = $request->input('razon_visita');
-  $visitor->telefono = $request->input('telefono');
-  $visitor->numero_carnet = $request->input('numero_carnet');
-  $visitor->clasificacion = $request->input('clasificacion');
-  $visitor->nombre_empresa = $request->input('clasificacion') === 'empresa' ? $request->input('nombre_empresa') : '';
-  $visitor->user_id = auth()->id();
-
-  // Asignar foto solo si no_foto no está marcado
-  if (!$request->has('no_foto') || $request->input('no_foto') != 'on') {
-      $visitor->foto = $fileName; // Asegúrate de que fileName no sea null
-  } else {
-      $visitor->foto = ''; // O puedes dejarlo en null si la base de datos lo permite
-  }
-
-  $visitor->save();
-
+    
+        $visitor->save();
+    
+        // Redireccionar con mensaje de éxito según el rol del usuario
         $user = Auth::user();
-
         if ($user->role == 'operador') {
             return redirect()->route('show_consult')->with('success', 'Los datos se han enviado correctamente.');
         } elseif ($user->role == 'administrador') {

@@ -88,7 +88,7 @@
         }
 
         .form_register__container--containerimagen {
-            height: 15rem;
+            height: 17rem;
             position: relative;
         }
 
@@ -152,6 +152,7 @@
         .divisor {
             display: flex;
             align-items: center;
+            align-items: flex-start;
         }
 
         .divisor__inputs {
@@ -273,7 +274,7 @@
                                     {{ old('clasificacion') == 'empresa' ? 'checked' : '' }} onclick="toggleEmpresaInput()">
                             </div>
                         </div>
-                        <div id="empresaInput" style="display: none;">
+                        <div id="empresaInput" style="{{ old('clasificacion') == 'empresa' ? '' : 'display: none;' }}">
                             <label for="nombre_empresa">Nombre de la empresa</label>
                             <input type="text" id="nombre_empresa" name="nombre_empresa"
                                 value="{{ old('nombre_empresa') }}">
