@@ -292,9 +292,6 @@ class VisitorController extends Controller
             'gerencia_id' => 'nullable|integer',
             'diadesde' => 'required|date',
             'diahasta' => 'required|date|after_or_equal:diadesde',
-            'numero_carnet' => 'required', // 10 caracteres exactos
-            'clasificacion' => 'required|in:empresa,persona', // Validación para los valores permitidos
-            'telefono' =>  'required|digits:11', // Validación para los prefijos y formato
 
         ];
     
@@ -307,8 +304,6 @@ class VisitorController extends Controller
             'diahasta.required' => 'La fecha de fin es obligatoria.',
             'diahasta.date' => 'La fecha de fin debe ser una fecha válida.',
             'diahasta.after_or_equal' => 'La fecha de fin debe ser igual o posterior a la fecha de inicio.',
-            'telefono.required' => 'El número de teléfono es obligatorio.',
-            'telefono.regex' => 'El teléfono debe comenzar con 0424, 0412, 0416, 0212 o 0414 y tener 11 dígitos en total.',
         ];
     
         $validator = Validator::make($request->all(), $rules, $messages);
