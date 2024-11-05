@@ -229,7 +229,7 @@
 
 @section('content')
 
-    <h1>Registro de visitas </h1>
+    <h1>Registro de visitas</h1>
     @if ($errors->any())
         <div class="alert alert-danger">
             <ul>
@@ -246,6 +246,7 @@
             <input type="hidden" name="showAll" value="{{ $showAll ? 'true' : 'false' }}">
 
             @if ($showAll)
+                {{-- true : datos de vis no registrado --}}
                 <div class="divisor">
                     <div class="divisor__inputs">
                         <label for="">Nacionalidad</label>
@@ -302,23 +303,27 @@
                         </label>
                     </div>
                 </div>
-                <label for="">Filial</label>
-                <select name="filial_id" id="filial_id" onchange="updateGerencias(),quitarSeleccionInicial('filial')">
-                    <option value="" selected disabled>Elegir filial</option>
-
+                <label for="filial_id">Filial</label>
+                <select name="filial_id" id="filial_id" onchange="updateGerencias()">
+                    <option value="">Elegir filial</option>
                     @foreach ($filials as $filial)
                         <option value="{{ $filial->id }}"
-                            {{ isset($visitor) && $visitor->filial_id == $filial->id ? 'selected' : '' }}>
+                            {{ old('filial_id', isset($visitor) ? $visitor->filial_id : '') == $filial->id ? 'selected' : '' }}>
                             {{ $filial->nombre }}
                         </option>
                     @endforeach
                 </select>
                 <label for="gerencia_id">Gerencia</label>
                 <select name="gerencia_id" id="gerencia_id">
-                    <option id="gerencia_option" value="" selected disabled>Elegir gerencia</option>
+                    <option value="" selected disabled>Elegir gerencia</option>
+                    @foreach ($gerencias as $gerencia)
+                        <option value="{{ $gerencia->id }}" {{ old('gerencia_id') == $gerencia->id ? 'selected' : '' }}>
+                            {{ $gerencia->nombre }}
+                        </option>
+                    @endforeach
                 </select>
                 <label for="">Razón de la visita</label>
-                <textarea name="razon_visita" cols="30" rows="10" maxlength="255"></textarea>
+                <textarea name="razon_visita" cols="30" rows="10" maxlength="255">{{ old('razon_visita') }}</textarea>
                 <a class="button"
                     href="{{ Auth::user()->role == 'operador' ? route('show_consult') : route('show_Dashboard') }}">
                     Volver
@@ -352,6 +357,7 @@
                             <p>{{ $visitor->cedula }}</p>
                             <input type="hidden" id="cedula" name="cedula" value="{{ $visitor->cedula }}">
                         </div>
+
                         <div class="divisor__element">
                             <label for="nombre">Nombre</label>
                             <p>{{ $visitor->nombre }}</p>
@@ -401,23 +407,27 @@
                 <label for="numero_carnet">Número de Carnet</label>
                 <input name="numero_carnet" id="numero_carnet" type="text" value="{{ old('numero_carnet') }}">
 
-                <label for="">Filial</label>
-                <select name="filial_id" id="filial_id" onchange="updateGerencias(),quitarSeleccionInicial('filial')">
-                    <option value="" selected disabled>Elegir filial</option>
-
+                <label for="filial_id">Filial</label>
+                <select name="filial_id" id="filial_id" onchange="updateGerencias()">
+                    <option value="">Elegir filial</option>
                     @foreach ($filials as $filial)
-                        <option value="{{ $filial->id }}" {{ isset($visitor) && $visitor->filial_id == $filial->id }}>
+                        <option value="{{ $filial->id }}" {{ old('filial_id') == $filial->id ? 'selected' : '' }}>
                             {{ $filial->nombre }}
                         </option>
                     @endforeach
                 </select>
-                <label for="gerencia_id">Gerencia</label>
+                <label for="gerencia_id">Direccion</label>
                 <select name="gerencia_id" id="gerencia_id">
-                    <option id="gerencia_option" value="" selected disabled>Elegir gerencia</option>
+                    <option value="" selected disabled>Elegir Direccion</option>
+                    @foreach ($gerencias as $gerencia)
+                        <option value="{{ $gerencia->id }}" {{ old('gerencia_id') == $gerencia->id ? 'selected' : '' }}>
+                            {{ $gerencia->nombre }}
+                        </option>
+                    @endforeach
                 </select>
 
                 <label for="">Razón de la visita</label>
-                <textarea name="razon_visita" cols="30" rows="10" maxlength="255"></textarea>
+                <textarea name="razon_visita" cols="30" rows="10" maxlength="255">{{ old('razon_visita') }}</textarea>
                 <input type="hidden" name="foto" value="{{ $visitor->foto }}">
 
                 <a class="button"
@@ -438,50 +448,44 @@
 
     <script>
         function updateGerencias() {
-            var filial_id = document.getElementById('filial_id').value;
-            var gerenciaSelect = document.getElementById('gerencia_id');
+            const filialId = document.getElementById('filial_id').value;
+            const gerenciaSelect = document.getElementById('gerencia_id');
 
-            // Limpiar el select de gerencias antes de llenarlo
-            gerenciaSelect.innerHTML = '<option value="" selected>Seleccione una gerencia</option>';
+            // Limpiar opciones actuales antes de cargar las nuevas
+            gerenciaSelect.innerHTML = '<option value="" selected disabled>Elegir gerencia</option>';
 
-            if (filial_id) {
-                fetch(`/get-gerencias/${filial_id}`)
+            if (filialId) {
+                // Hacer una solicitud AJAX para obtener las gerencias de la filial seleccionada
+                fetch(`/get-gerencias/${filialId}`)
                     .then(response => response.json())
                     .then(data => {
-                        if (data.length === 0) {
-                            console.log('No hay gerencias para esta filial.');
-                        } else {
-                            gerenciaSelect.disabled = false;
-                        }
+                        const oldGerenciaId = "{{ old('gerencia_id', isset($visitor) ? $visitor->gerencia_id : '') }}";
+
+                        // Cargar solo las gerencias obtenidas para la filial seleccionada
                         data.forEach(gerencia => {
-                            var option = document.createElement('option');
+                            const option = document.createElement('option');
                             option.value = gerencia.id;
                             option.text = gerencia.nombre;
+                            // Seleccionar si coincide con el valor anterior de gerencia
+                            option.selected = gerencia.id == oldGerenciaId;
                             gerenciaSelect.add(option);
                         });
                     })
-                    .catch(error => console.error('Error en la solicitud:', error));
-            }
-
-            // Agregar un event listener para deshabilitar la opción "Seleccione una gerencia" después de seleccionar una gerencia
-            gerenciaSelect.addEventListener('change', function() {
-                var selectedValue = gerenciaSelect.value;
-                if (selectedValue) {
-                    gerenciaSelect.querySelector('option[value=""]').disabled = true;
-                }
-            });
-        }
-    </script>
-
-    <script>
-        function quitarSeleccionInicial(nombreSelect) {
-            var selectElement = document.getElementsByName(nombreSelect)[0];
-            var optionElement = selectElement.querySelector("option[selected][disabled]");
-            if (optionElement) {
-                optionElement.remove();
+                    .catch(error => {
+                        console.error('Error al cargar las Gerencias:', error);
+                    });
             }
         }
+
+        // Llamar a updateGerencias() si hay una filial seleccionada al cargar la página
+        document.addEventListener("DOMContentLoaded", function() {
+            if (document.getElementById('filial_id').value) {
+                updateGerencias();
+            }
+        });
     </script>
+
+
 
     <script>
         let video = document.getElementById('video');
@@ -548,12 +552,14 @@
             }
         }
     </script>
+
     <script>
         function toggleFotoRequired() {
             const noFotoChecked = document.getElementById('no_foto').checked;
             document.getElementById('fotoInput').required = !noFotoChecked;
         }
     </script>
+
     <script>
         function toggleEmpresaInput() {
             const empresaInput = document.getElementById('empresaInput');

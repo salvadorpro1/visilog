@@ -265,10 +265,11 @@
         <!-- Formulario de filtros -->
         <form method="POST" action="{{ route('show_Account') }}" class="mb-5">
             @csrf
-            <input type="hidden" name="filial_id" value="{{ request('filial_id') }}">
-            <input type="hidden" name="gerencia_id" value="{{ request('gerencia_id') }}">
-            <input type="hidden" name="diadesde" value="{{ request('diadesde') }}">
-            <input type="hidden" name="diahasta" value="{{ request('diahasta') }}">
+            <input type="hidden" name="filial_id" value="{{ old('filial_id', request('filial_id')) }}">
+            <input type="hidden" name="gerencia_id" value="{{ old('gerencia_id', request('gerencia_id')) }}">
+            <input type="hidden" name="diadesde" value="{{ old('diadesde', request('diadesde')) }}">
+            <input type="hidden" name="diahasta" value="{{ old('diahasta', request('diahasta')) }}">
+
 
             <div class="form-group">
                 <label for="filial_id">Filial:</label>
@@ -286,8 +287,8 @@
             <div class="form-group">
                 <label for="gerencia_id">Direcciones:</label>
                 <select name="gerencia_id" id="gerencia_id" class="form-control">
-                    <option value="">Todas las gerencias</option>
-                    @if (isset($gerencias))
+                    <option value="">Todas las Direcciones</option>
+                    @if (!empty($gerencias))
                         @foreach ($gerencias as $gerencia)
                             <option value="{{ $gerencia->id }}"
                                 {{ old('gerencia_id', request('gerencia_id')) == $gerencia->id ? 'selected' : '' }}>
@@ -337,7 +338,7 @@
                             <th>Nombre</th>
                             <th>Fecha de Visita</th>
                             <th>Filial</th>
-                            <th>Gerencia</th>
+                            <th>Direccion</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -395,41 +396,54 @@
     </div>
 
     <script>
-        // Script para actualizar las gerencias cuando se seleccione una filial
-        document.getElementById('filial_id').addEventListener('change', function() {
-            var filialId = this.value;
-            console.log(filialId);
-            // Hacer la solicitud AJAX para obtener las gerencias de la filial seleccionada
-            if (filialId) {
-                fetch(`/get-gerencias/${filialId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        var gerenciaSelect = document.getElementById('gerencia_id');
-                        gerenciaSelect.innerHTML = ''; // Limpiar las opciones actuales
+        document.addEventListener("DOMContentLoaded", function() {
+            const filialSelect = document.getElementById('filial_id');
+            const gerenciaSelect = document.getElementById('gerencia_id');
 
-                        // Agregar opción para "Todas las gerencias"
-                        var defaultOption = document.createElement('option');
-                        defaultOption.value = '';
-                        defaultOption.text = 'Todas las gerencias';
-                        gerenciaSelect.add(defaultOption);
+            // Si hay un `filial_id` seleccionado, carga sus `gerencias` desde el controlador
+            if (filialSelect.value) {
+                loadGerencias(filialSelect.value);
+            }
 
-                        if (data.length > 0) {
-                            data.forEach(function(gerencia) {
-                                var option = document.createElement('option');
-                                option.value = gerencia.id;
-                                option.text = gerencia.nombre;
-                                gerenciaSelect.add(option);
-                            });
-                        } else {
-                            var option = document.createElement('option');
-                            option.value = '';
-                            option.text = 'No hay gerencias disponibles';
-                            gerenciaSelect.add(option);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
+            // Al cambiar `filial_id`, cargar `gerencias` con AJAX
+            filialSelect.addEventListener('change', function() {
+                loadGerencias(this.value);
+            });
+
+            function loadGerencias(filialId) {
+                if (filialId) {
+                    fetch(`/get-gerencias/${filialId}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            gerenciaSelect.innerHTML = ''; // Limpiar opciones actuales
+
+                            // Opción para "Todas las Direcciones"
+                            const defaultOption = document.createElement('option');
+                            defaultOption.value = '';
+                            defaultOption.text = 'Todas las Direcciones';
+                            gerenciaSelect.add(defaultOption);
+
+                            // Cargar gerencias obtenidas por AJAX
+                            if (data.length > 0) {
+                                data.forEach(gerencia => {
+                                    const option = document.createElement('option');
+                                    option.value = gerencia.id;
+                                    option.text = gerencia.nombre;
+                                    option.selected = gerencia.id ==
+                                        "{{ old('gerencia_id', request('gerencia_id')) }}"; // Mantener `gerencia_id` seleccionado
+                                    gerenciaSelect.add(option);
+                                });
+                            } else {
+                                const noDataOption = document.createElement('option');
+                                noDataOption.value = '';
+                                noDataOption.text = 'No hay Direcciones disponibles';
+                                gerenciaSelect.add(noDataOption);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error al cargar las Direcciones:', error);
+                        });
+                }
             }
         });
     </script>

@@ -129,9 +129,55 @@ class VisitorController extends Controller
     
     public function saveVisitor(Request $request)
     {
-        // Esta variable determina si el visitante ya existe en la vista
+        // Determinar si el visitante ya existe en la vista
         $visitorExists = $request->input('showAll') === 'false';
     
+        // Si el visitante existe, obtenerlo de la base de datos
+        $existingVisitor = $visitorExists ? Visitor::where('cedula', $request->input('cedula'))->first() : null;
+    
+        // Verificar que los campos inmutables coincidan con el registro existente en la base de datos
+        if ($visitorExists && $existingVisitor) {
+            // Validar que los datos inmutables no hayan cambiado, incluyendo la cédula
+            if (
+                $request->input('nacionalidad') !== $existingVisitor->nacionalidad ||
+                $request->input('nombre') !== $existingVisitor->nombre ||
+                $request->input('apellido') !== $existingVisitor->apellido
+            ) {
+                return redirect()->back()->withErrors([
+                    'cedula' => 'No es posible modificar la cédula, nacionalidad, nombre o apellido del visitante existente.'
+                ])->withInput();
+            }
+        }
+    
+        // Verificar si la cédula ya existe en la base de datos cuando $visitorExists es false
+        if (!$visitorExists) {
+            $existingVisitor = Visitor::where('cedula', $request->input('cedula'))->first();
+            if ($existingVisitor) {
+                return redirect()->back()->withErrors([
+                    'cedula' => 'Este visitante ya existe en el sistema, vuelva a consultar.'
+                ])->withInput();
+            }
+        }
+    
+
+        if ($visitorExists) {
+            // Verifica que se haya encontrado un visitante existente antes de acceder a su cedula
+            if ($existingVisitor) {
+                $originalCedula = $existingVisitor->cedula;
+        
+                if ($request->input('cedula') !== $originalCedula) {
+                    return redirect()->back()->withErrors([
+                        'cedula' => 'No es posible modificar la cédula del visitante existente.'
+                    ])->withInput();
+                }
+            } else {
+                // Si no se encontró el visitante, podrías redirigir con un error
+                return redirect()->back()->withErrors([
+                    'cedula' => 'No es posible modificar la cédula, nacionalidad, nombre o apellido del visitante existente.'
+                ])->withInput();
+            }
+        }
+
         // Reglas de validación
         $rules = [
             'filial_id' => 'required|exists:filiales,id',
@@ -140,34 +186,34 @@ class VisitorController extends Controller
             'cedula' => 'required|digits_between:7,8',
             'numero_carnet' => 'required',
             'clasificacion' => 'required|in:empresa,persona',
-            'telefono' =>  'required|digits:11',
+            'telefono' => 'required|digits:11',
             'nombre_empresa' => 'required_if:clasificacion,empresa',
             'nombre' => 'required|regex:/^[\p{L}ñÑ\s]+$/u',
             'apellido' => 'required|regex:/^[\p{L}ñÑ\s]+$/u',
             'nacionalidad' => 'required|in:V,E'
         ];
     
+        if (!$visitorExists && (!$request->has('no_foto') || $request->input('no_foto') != 'on')) {
+            $rules['foto'] = 'required';
+        }
+    
         // Validar la entrada
         $validator = Validator::make($request->all(), $rules);
     
         if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
+            $filialId = $request->input('filial_id');
+            $gerencias = [];
     
-        // Si el visitante ya existe, cargar sus datos para mostrarlos en la vista
-        $existingVisitor = Visitor::where('cedula', $request->input('cedula'))->first();
-    
-        // Si hay un visitante existente, verificar que no se hayan modificado los datos inmutables
-        if ($visitorExists && $existingVisitor) {
-            if (
-                $existingVisitor->nacionalidad !== $request->input('nacionalidad') ||
-                $existingVisitor->nombre !== $request->input('nombre') ||
-                $existingVisitor->apellido !== $request->input('apellido')
-            ) {
-                return redirect()->back()->withErrors([
-                    'error' => 'No se pueden modificar los datos de nacionalidad, cédula, nombre o apellido de un visitante ya registrado.'
-                ])->withInput();
+            // Cargar gerencias si hay una filial seleccionada
+            if ($filialId) {
+                $gerencias = Gerencia::where('filial_id', $filialId)->get();
             }
+    
+            return redirect()->back()->withErrors($validator)->withInput($request->all())->with([
+                'filials' => Filial::all(),
+                'gerencias' => $gerencias,
+                'visitor' => $existingVisitor ?? null,
+            ]);
         }
     
         // Procesamiento de imagen de la foto si se envía
@@ -184,7 +230,7 @@ class VisitorController extends Controller
             }
         }
     
-        // Crear un nuevo registro de visitante cada vez
+        // Crear un nuevo registro de visitante
         $visitor = new Visitor();
         $visitor->nacionalidad = $request->input('nacionalidad');
         $visitor->cedula = $request->input('cedula');
@@ -216,6 +262,7 @@ class VisitorController extends Controller
             return redirect()->route('show_Dashboard')->with('success', 'Los datos se han enviado correctamente.');
         }
     }
+    
     
     public function getVisitorPhoto($filename)
     {
@@ -292,7 +339,6 @@ class VisitorController extends Controller
             'gerencia_id' => 'nullable|integer',
             'diadesde' => 'required|date',
             'diahasta' => 'required|date|after_or_equal:diadesde',
-
         ];
     
         $messages = [
@@ -300,39 +346,42 @@ class VisitorController extends Controller
             'filial_id.integer' => 'La filial debe ser un valor numérico.',
             'gerencia_id.integer' => 'La gerencia debe ser un valor numérico.',
             'diadesde.required' => 'La fecha de inicio es obligatoria.',
-            'diadesde.date' => 'La fecha de inicio debe ser una fecha válida.',
-            'diahasta.required' => 'La fecha de fin es obligatoria.',
-            'diahasta.date' => 'La fecha de fin debe ser una fecha válida.',
             'diahasta.after_or_equal' => 'La fecha de fin debe ser igual o posterior a la fecha de inicio.',
         ];
     
-        $validator = Validator::make($request->all(), $rules, $messages);
-    
+        $validator = Validator::make($request->all(), $rules);
+
         if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
+            $filialId = $request->input('filial_id');
+            // Cargar gerencias basadas en el último valor de filial_id para recarga
+            $gerencias = !empty($filialId) ? Gerencia::where('filial_id', $filialId)->get() : [];
+    
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput($request->all())
+                ->with([
+                    'filials' => Filial::all(),
+                    'gerencias' => $gerencias,
+                ]);
         }
     
+        // Procedimiento de consulta y variables para la vista
         $validated = $validator->validated();
         $filialId = $validated['filial_id'];
         $gerenciaId = $validated['gerencia_id'];
         $diadesde = $validated['diadesde'];
         $diahasta = $validated['diahasta'];
     
-        // Consulta principal
         $visitorQuery = Visitor::query()
-            ->where('filial_id', $filialId) // Aplicar filtro por filial siempre
+            ->where('filial_id', $filialId)
             ->whereBetween('created_at', [Carbon::parse($diadesde)->startOfDay(), Carbon::parse($diahasta)->endOfDay()]);
     
-        // Si la gerencia no es nula, aplicamos el filtro de gerencia
         if (!is_null($gerenciaId)) {
             $visitorQuery->where('gerencia_id', $gerenciaId);
         }
     
-        // Paginación y total
         $visitors = $visitorQuery->paginate(10)->appends($request->all());
         $visitorCount = $visitors->total();
-    
-        // Obtener las gerencias correspondientes a la filial seleccionada
         $gerencias = Gerencia::where('filial_id', $filialId)->get();
     
         return view('account.index', [
@@ -344,7 +393,7 @@ class VisitorController extends Controller
             'diahasta' => $diahasta,
             'fechaMinima' => $this->getFechaMinima(),
             'filials' => Filial::all(),
-            'gerencias' => $gerencias, // Pasar las gerencias a la vista
+            'gerencias' => $gerencias,
         ]);
     }
     
