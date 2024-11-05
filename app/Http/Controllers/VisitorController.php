@@ -418,19 +418,19 @@ class VisitorController extends Controller
     }
 
     public function getGerencias($filialId)
-{
+    {
     $gerencias = Gerencia::where('filial_id', $filialId)->get();
     return response()->json($gerencias);
-}
+    }
 
 public function downloadReport(Request $request)
-{
+    {
     $filial_id = $request->input('filial_id');
     $gerencia_id = $request->input('gerencia_id');
     $diadesde = $request->input('diadesde');
     $diahasta = $request->input('diahasta');
 
     return Excel::download(new VisitorsExport($filial_id, $gerencia_id, $diadesde, $diahasta), 'reporte_visitantes.xlsx');
-}
+    }
 
 }

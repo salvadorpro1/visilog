@@ -23,7 +23,7 @@ class FilialController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nombre' => 'required|string|max:255|regex:/^[\p{L}ñÑ\s]+$/u',
+            'nombre' => 'required|string|max:255|regex:/^[\p{L}ñÑ\s.]+$/u',
         ],[
             'nombre.regex' => 'El  nombre de la filial solo puede contener letras y espacios.',
         ]);
@@ -39,7 +39,7 @@ class FilialController extends Controller
     public function update(Request $request, Filial $filial)
     {
         $request->validate([
-            'nombre' => 'required|string|max:255|regex:/^[\p{L}ñÑ\s]+$/u',
+            'nombre' => 'required|string|max:255|regex:/^[\p{L}ñÑ\s.]+$/u',
         ],[
             'nombre.regex' => 'El nombre de la filial solo puede contener letras y espacios.',
         ]);

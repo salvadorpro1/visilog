@@ -42,7 +42,7 @@ return [
     'declined' => 'The :attribute field must be declined.',
     'declined_if' => 'The :attribute field must be declined when :other is :value.',
     'different' => 'The :attribute field and :other must be different.',
-    'digits' => 'The :attribute field must be :digits digits.',
+    'digits' => 'El campo :attribute debe tener :digits digitos.',
     'digits_between' => 'The :attribute field must be between :min and :max digits.',
     'dimensions' => 'The :attribute field has invalid image dimensions.',
     'distinct' => 'The :attribute field has a duplicate value.',
