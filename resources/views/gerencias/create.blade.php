@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Crear Gerencia')
+@section('title', 'Crear Dirección')
 
 @section('style')
     <style>
@@ -133,14 +133,14 @@
         </div>
     @endif
     <div class="container">
-        <h1>Crear Direccion</h1>
+        <h1>Crear Dirección</h1>
         <form action="{{ route('gerencias.store') }}" method="POST">
             @csrf
             <!-- Campo de nombre de la gerencia -->
             <div class="form-group">
                 <label for="nombre">Nombre</label>
                 <input type="text" name="nombre" id="nombre" class="form-control"
-                    placeholder="Ingrese el nombre de la gerencia">
+                    placeholder="Ingrese el nombre de la dirección">
             </div>
 
             <!-- Campo de selección de la filial -->

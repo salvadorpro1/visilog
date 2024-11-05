@@ -338,7 +338,7 @@
                             <th>Nombre</th>
                             <th>Fecha de Visita</th>
                             <th>Filial</th>
-                            <th>Direccion</th>
+                            <th>Dirección</th>
                         </tr>
                     </thead>
                     <tbody>

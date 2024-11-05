@@ -287,11 +287,11 @@
                 </div>
 
                 <div class="container-table">
-                    <h2>Visitantes por Gerencia</h2>
+                    <h2>Visitantes por Dirección</h2>
                     <table class="results-table">
                         <thead>
                             <tr>
-                                <th>Gerencia</th>
+                                <th>Dirección</th>
                                 <th>Filial</th>
                                 <th>Cantidad de Visitantes</th>
                             </tr>

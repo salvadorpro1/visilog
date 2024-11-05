@@ -134,7 +134,7 @@
                 <th>Apellido</th>
                 <th>Nacionalidad</th>
                 <th>Cédula</th>
-                <th>Gerencia</th>
+                <th>Dirección</th>
                 <th>Razón de la Visita</th>
                 <th>Fecha</th>
             </tr>

@@ -313,15 +313,11 @@
                         </option>
                     @endforeach
                 </select>
-                <label for="gerencia_id">Gerencia</label>
+                <label for="gerencia_id">Dirección</label>
                 <select name="gerencia_id" id="gerencia_id">
-                    <option value="" selected disabled>Elegir gerencia</option>
-                    @foreach ($gerencias as $gerencia)
-                        <option value="{{ $gerencia->id }}" {{ old('gerencia_id') == $gerencia->id ? 'selected' : '' }}>
-                            {{ $gerencia->nombre }}
-                        </option>
-                    @endforeach
+                    <option value="" selected disabled>Elegir Dirección</option>
                 </select>
+
                 <label for="">Razón de la visita</label>
                 <textarea name="razon_visita" cols="30" rows="10" maxlength="255">{{ old('razon_visita') }}</textarea>
                 <a class="button"
@@ -416,14 +412,9 @@
                         </option>
                     @endforeach
                 </select>
-                <label for="gerencia_id">Direccion</label>
+                <label for="gerencia_id">Dirección</label>
                 <select name="gerencia_id" id="gerencia_id">
-                    <option value="" selected disabled>Elegir Direccion</option>
-                    @foreach ($gerencias as $gerencia)
-                        <option value="{{ $gerencia->id }}" {{ old('gerencia_id') == $gerencia->id ? 'selected' : '' }}>
-                            {{ $gerencia->nombre }}
-                        </option>
-                    @endforeach
+                    <option value="" selected disabled>Elegir Dirección</option>
                 </select>
 
                 <label for="">Razón de la visita</label>
@@ -452,34 +443,35 @@
             const gerenciaSelect = document.getElementById('gerencia_id');
 
             // Limpiar opciones actuales antes de cargar las nuevas
-            gerenciaSelect.innerHTML = '<option value="" selected disabled>Elegir gerencia</option>';
+            gerenciaSelect.innerHTML = '<option value="" selected disabled>Elegir dirección</option>';
 
             if (filialId) {
-                // Hacer una solicitud AJAX para obtener las gerencias de la filial seleccionada
                 fetch(`/get-gerencias/${filialId}`)
                     .then(response => response.json())
                     .then(data => {
-                        const oldGerenciaId = "{{ old('gerencia_id', isset($visitor) ? $visitor->gerencia_id : '') }}";
+                        const oldGerenciaId = "{{ $oldGerenciaId }}"; // Usar el valor pasado desde el controlador
 
-                        // Cargar solo las gerencias obtenidas para la filial seleccionada
                         data.forEach(gerencia => {
                             const option = document.createElement('option');
                             option.value = gerencia.id;
                             option.text = gerencia.nombre;
-                            // Seleccionar si coincide con el valor anterior de gerencia
-                            option.selected = gerencia.id == oldGerenciaId;
+
+                            // Selecciona la opción si coincide con el valor de old('gerencia_id')
+                            if (gerencia.id == oldGerenciaId) {
+                                option.selected = true;
+                            }
                             gerenciaSelect.add(option);
                         });
                     })
                     .catch(error => {
-                        console.error('Error al cargar las Gerencias:', error);
+                        console.error('Error al cargar las Direcciones:', error);
                     });
             }
         }
 
-        // Llamar a updateGerencias() si hay una filial seleccionada al cargar la página
         document.addEventListener("DOMContentLoaded", function() {
-            if (document.getElementById('filial_id').value) {
+            const filialId = document.getElementById('filial_id').value;
+            if (filialId) {
                 updateGerencias();
             }
         });

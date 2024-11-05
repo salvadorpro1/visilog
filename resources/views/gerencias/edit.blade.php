@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Editar Gerencia')
+@section('title', 'Editar Dirección')
 
 @section('style')
     <style>
@@ -130,7 +130,7 @@
         </div>
     @endif
     <div class="container">
-        <h1>Editar Direccion</h1>
+        <h1>Editar Dirección</h1>
         <form action="{{ route('gerencias.update', $gerencia->id) }}" method="POST">
             @csrf
             @method('PUT')
@@ -138,7 +138,7 @@
             <div class="form-group">
                 <label for="nombre">Nombre</label>
                 <input type="text" name="nombre" id="nombre" class="form-control" value="{{ $gerencia->nombre }}"
-                    placeholder="Ingrese el nombre de la gerencia">
+                    placeholder="Ingrese el nombre de la dirección">
             </div>
 
             <!-- Campo de selección de la filial -->

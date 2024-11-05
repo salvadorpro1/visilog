@@ -95,7 +95,7 @@
                 <td>{{ $persona->filial->nombre }}</td>
             </tr>
             <tr>
-                <th>Gerencia</th>
+                <th>Dirección</th>
                 <td>{{ $persona->gerencia->nombre }}</td>
             </tr>
             <tr>

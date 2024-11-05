@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Gerencias')
+@section('title', 'Dirección')
 
 @section('style')
     <style>
@@ -290,7 +290,7 @@
 
             // Cambiar el mensaje dentro del modal
             document.getElementById('confirmMessage').innerText =
-                `¿Está seguro de que desea eliminar la direccion ${gerenciaName}?`;
+                `¿Está seguro de que desea eliminar la dirección ${gerenciaName}?`;
 
             // Mostrar el modal
             document.getElementById('confirmModal').style.display = 'block';

@@ -32,6 +32,11 @@ class VisitorController extends Controller
         $filials = Filial::all();
         $gerencias = Gerencia::all();
     
+        $oldFilialId = old('filial_id', $visitor ? $visitor->filial_id : null);
+        $oldGerenciaId = old('gerencia_id', $visitor ? $visitor->gerencia_id : null);
+
+        $gerencias = $oldFilialId ? Gerencia::where('filial_id', $oldFilialId)->get() : collect([]);
+
         if ($visitor) {
             return view('register.visitorRegistrationForm', [
                 'showAll' => false,
@@ -39,7 +44,9 @@ class VisitorController extends Controller
                 'nacionalidad' => $visitor->nacionalidad,
                 'cedula' => $visitor->cedula,
                 'filials' => $filials,
-                'gerencias' => $gerencias
+                'gerencias' => $gerencias,
+                'oldGerenciaId' => $oldGerenciaId, // Pasar el valor antiguo de gerencia
+
             ]);
         } else {
             return view('register.visitorRegistrationForm', [
@@ -47,18 +54,16 @@ class VisitorController extends Controller
                 'nacionalidad' => $nacionalidad,
                 'cedula' => $cedula,
                 'filials' => $filials,
-                'gerencias' => $gerencias
+                'gerencias' => $gerencias,
+                'oldGerenciaId' => $oldGerenciaId, // Pasar el valor antiguo de gerencia
+
             ]);
         }
     }
     
     public function getGerenciasByFilial($filial_id)
     {
-        $gerencias = Gerencia::where('filial_id', $filial_id)->get();
-        
-        // Imprimir para debugging
-        \Log::info($gerencias);
-    
+        $gerencias = Gerencia::where('filial_id', $filial_id)->get();    
         return response()->json($gerencias);
     }
 
@@ -192,13 +197,21 @@ class VisitorController extends Controller
             'apellido' => 'required|regex:/^[\p{L}ñÑ\s]+$/u',
             'nacionalidad' => 'required|in:V,E'
         ];
+
+        $messages = [
+            'filial_id.required' => 'La filial es requerido.',
+            'filial_id.exists' => 'La filial seleccionada no es válida.',
+            'gerencia_id.required' => 'La dirección es requerido.',
+            'gerencia_id.exists' => 'La dirección seleccionada no es válida.',
+        ];
+
     
         if (!$visitorExists && (!$request->has('no_foto') || $request->input('no_foto') != 'on')) {
             $rules['foto'] = 'required';
         }
     
         // Validar la entrada
-        $validator = Validator::make($request->all(), $rules);
+        $validator = Validator::make($request->all(), $rules, $messages);
     
         if ($validator->fails()) {
             $filialId = $request->input('filial_id');
@@ -344,7 +357,7 @@ class VisitorController extends Controller
         $messages = [
             'filial_id.required' => 'La filial es obligatoria.',
             'filial_id.integer' => 'La filial debe ser un valor numérico.',
-            'gerencia_id.integer' => 'La gerencia debe ser un valor numérico.',
+            'gerencia_id.integer' => 'La Dirección debe ser un valor numérico.',
             'diadesde.required' => 'La fecha de inicio es obligatoria.',
             'diahasta.after_or_equal' => 'La fecha de fin debe ser igual o posterior a la fecha de inicio.',
         ];

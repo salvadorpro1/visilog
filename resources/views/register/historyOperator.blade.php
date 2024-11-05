@@ -114,7 +114,7 @@
                             <th>Nacionalidad</th>
                             <th>Cédula</th>
                             <th>Filial</th>
-                            <th>Gerencia</th>
+                            <th>Dirección</th>
                             <th>Razón de Visita</th>
                             <th>Fecha de Registro</th>
                         </tr>
