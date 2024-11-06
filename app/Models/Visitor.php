@@ -23,6 +23,6 @@ class Visitor extends Model
 
     public function gerencia()
     {
-        return $this->belongsTo(Gerencia::class);
+        return $this->belongsTo(Gerencia::class)->withTrashed();
     }
 }

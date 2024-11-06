@@ -12,6 +12,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('gerencias', function (Blueprint $table) {
+            $table->softDeletes();
             $table->id();
             $table->string('nombre');
             $table->unsignedBigInteger('filial_id');
