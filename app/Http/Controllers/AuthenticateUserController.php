@@ -142,14 +142,17 @@ class AuthenticateUserController extends Controller
 
     public function deactivateOperator($id)
     {
-     $operador = User::findOrFail($id);
-      if ($operador->role == 'operador') {
-        $operador->estatus = 'desactivado';
-        $operador->save();
-      }
-
+        $operador = User::findOrFail($id);
+        if ($operador->role == 'operador') {
+            $currentDateTime = now()->format('Y-m-d_H:i:s'); // Formato de fecha y hora: Año-Mes-Día_Hora:Minuto:Segundo
+            $operador->username .= '_' . $currentDateTime; // Concatenar la fecha y hora al nombre
+            $operador->estatus = 'desactivado';
+            $operador->save();
+        }
+    
         return redirect()->route('showRegisterCreate')->with('success', 'Operador desactivado exitosamente.');
     }
+    
 
     public function showHistory($operador_id)
     {
