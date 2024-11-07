@@ -150,7 +150,7 @@
                 <select name="filial_id" id="filial_id" class="form-control">
                     <option value="">Seleccione una filial</option>
                     @foreach ($filiales as $filial)
-                        <option value="{{ $filial->id }}">{{ $filial->nombre }}</option>
+                        <option value="{{ $filial->id }}">{{ $filial->siglas }}</option>
                     @endforeach
                 </select>
             </div>

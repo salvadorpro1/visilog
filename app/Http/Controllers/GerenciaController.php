@@ -31,7 +31,8 @@ class GerenciaController extends Controller
             'filial_id.required'=> 'Necesita seleccionar una filial ',
         ]);
         $data = $request->all();
-        $data['nombre'] = strtoupper($data['nombre']);
+        $data['nombre'] = mb_strtoupper($data['nombre'], 'UTF-8');
+
         Gerencia::create($data);
         return redirect()->route('gerencias.index')->with('success', 'Dirección registrada exitosamente.');
     }
@@ -55,7 +56,8 @@ class GerenciaController extends Controller
         ]);
             // Convertir el nombre a mayúsculas
         $data = $request->all();
-        $data['nombre'] = strtoupper($data['nombre']);
+        $data['nombre'] = mb_strtoupper($data['nombre'], 'UTF-8');
+
 
         $gerencia->update($data);
         

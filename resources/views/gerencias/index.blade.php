@@ -245,7 +245,7 @@
                     <tr>
                         <td>{{ $gerencia->id }}</td>
                         <td class="truncate">{{ $gerencia->nombre }}</td>
-                        <td class="truncate">{{ $gerencia->filial->nombre }}</td>
+                        <td class="truncate">{{ $gerencia->filial->siglas }}</td>
                         <td class="actions">
                             <a href="{{ route('gerencias.edit', $gerencia->id) }}" class="btn btn-warning">Editar</a>
                             <form action="{{ route('gerencias.destroy', $gerencia->id) }}" method="POST"

@@ -149,7 +149,7 @@
                     <option value="">Seleccione una filial</option>
                     @foreach ($filiales as $filial)
                         <option value="{{ $filial->id }}" {{ $filial->id == $gerencia->filial_id ? 'selected' : '' }}>
-                            {{ $filial->nombre }}
+                            {{ $filial->siglas }}
                         </option>
                     @endforeach
                 </select>

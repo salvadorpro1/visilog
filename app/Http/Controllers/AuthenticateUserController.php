@@ -73,10 +73,15 @@ class AuthenticateUserController extends Controller
     
         // Define los mensajes de error personalizados
         $messages = [
+            'name.required' => 'El campo nombre es obligatorio.',
             'name.regex' => 'El nombre solo puede contener letras y espacios.',
+            
+            'username.required' => 'El campo nombre de usuario es obligatorio.',
             'username.alpha_num' => 'El nombre de usuario solo puede contener letras y números.',
             'username.unique' => 'El nombre de usuario ya está en uso.', // Mensaje personalizado
-            'password.min' => 'La contraseña debe tener al menos :min letras o numeros.',
+            
+            'password.required' => 'El campo contraseña es obligatorio.',
+            'password.min' => 'La contraseña debe tener al menos :min caracteres.',
             'password.confirmed' => 'La confirmación de la contraseña no coincide.',
         ];
     
