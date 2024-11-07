@@ -257,9 +257,11 @@
                         <label for="">Cédula</label>
                         <input name="cedula" value="{{ old('cedula', $cedula) }}" type="number">
                         <label for="">Nombre</label>
-                        <input name="nombre" value="{{ old('nombre') }}" type="text">
+                        <input name="nombre" value="{{ old('nombre') }}" type="text"
+                            style="text-transform: capitalize;">
                         <label for="">Apellido</label>
-                        <input name="apellido" value="{{ old('apellido') }}" type="text">
+                        <input name="apellido" value="{{ old('apellido') }}" type="text"
+                            style="text-transform: capitalize;">
                         <label for="">Clasificación</label>
                         <div class="separar">
                             <div class="separar__uni">
@@ -275,8 +277,8 @@
                         </div>
                         <div id="empresaInput" style="{{ old('clasificacion') == 'empresa' ? '' : 'display: none;' }}">
                             <label for="nombre_empresa">Nombre de la empresa</label>
-                            <input type="text" id="nombre_empresa" name="nombre_empresa"
-                                value="{{ old('nombre_empresa') }}">
+                            <input style="text-transform: capitalize;" type="text" id="nombre_empresa"
+                                name="nombre_empresa" value="{{ old('nombre_empresa') }}">
                         </div>
 
                         <label for="">Teléfono</label>
@@ -309,13 +311,13 @@
                     @foreach ($filials as $filial)
                         <option value="{{ $filial->id }}"
                             {{ old('filial_id', isset($visitor) ? $visitor->filial_id : '') == $filial->id ? 'selected' : '' }}>
-                            {{ $filial->nombre }}
+                            {{ $filial->siglas }}
                         </option>
                     @endforeach
                 </select>
                 <label for="gerencia_id">Dirección</label>
                 <select name="gerencia_id" id="gerencia_id">
-                    <option value="" selected disabled>Elegir Dirección</option>
+                    <option value="" selected disabled>Elegir dirección</option>
                 </select>
 
                 <label for="">Razón de la visita</label>
@@ -408,13 +410,13 @@
                     <option value="">Elegir filial</option>
                     @foreach ($filials as $filial)
                         <option value="{{ $filial->id }}" {{ old('filial_id') == $filial->id ? 'selected' : '' }}>
-                            {{ $filial->nombre }}
+                            {{ $filial->siglas }}
                         </option>
                     @endforeach
                 </select>
                 <label for="gerencia_id">Dirección</label>
                 <select name="gerencia_id" id="gerencia_id">
-                    <option value="" selected disabled>Elegir Dirección</option>
+                    <option value="" selected disabled>Elegir dirección</option>
                 </select>
 
                 <label for="">Razón de la visita</label>

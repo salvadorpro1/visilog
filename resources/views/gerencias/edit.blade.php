@@ -39,6 +39,7 @@
             border: 1px solid #ced4da;
             border-radius: 5px;
             transition: border-color 0.3s ease-in-out;
+            text-transform: uppercase;
         }
 
         .form-control:focus {

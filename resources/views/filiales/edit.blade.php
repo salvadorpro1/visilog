@@ -40,6 +40,8 @@
             border: 1px solid #ced4da;
             border-radius: 8px;
             transition: border-color 0.3s ease-in-out;
+            text-transform: uppercase;
+
         }
 
         .form-control:focus {
@@ -127,6 +129,11 @@
                 <label for="nombre">Nombre</label>
                 <input type="text" name="nombre" id="nombre" class="form-control" value="{{ $filial->nombre }}"
                     placeholder="Ingrese el nombre de la filial">
+            </div>
+            <div class="form-group">
+                <label for="nombre">Siglas</label>
+                <input type="text" name="siglas" id="siglas" class="form-control" value="{{ $filial->siglas }}"
+                    placeholder="Ingrese las siglas de la filial">
             </div>
 
             <!-- Botón de "Volver" y de "Actualizar" -->

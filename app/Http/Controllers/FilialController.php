@@ -24,11 +24,21 @@ class FilialController extends Controller
     {
         $request->validate([
             'nombre' => 'required|string|max:255|regex:/^[\p{L}ñÑ\s.,]+$/u',
-        ],[
-            'nombre.regex' => 'El  nombre de la filial solo puede contener letras y espacios.',
+            'siglas' => 'required|string|max:10|regex:/^[A-ZÑ]+$/u',
+        ], [
+            'nombre.regex' => 'El nombre de la filial solo puede contener letras, espacios, puntos y comas.',
+            'siglas.required' => 'Las siglas son obligatorias.',
+            'siglas.regex' => 'Las siglas solo pueden contener letras mayúsculas.',
+            'siglas.max' => 'Las siglas no pueden tener más de 10 caracteres.',
         ]);
-        Filial::create($request->all());
-        return redirect()->route('filiales.index')->with('success', 'Filial registrada exitosamente.');
+
+            // Convertir en mayúsculas
+            $data = $request->all();
+            $data['nombre'] = strtoupper($data['nombre']);
+            $data['siglas'] = strtoupper($data['siglas']);
+
+            Filial::create($data);
+            return redirect()->route('filiales.index')->with('success', 'Filial registrada exitosamente.');
     }
 
     public function edit(Filial $filial)
@@ -40,10 +50,20 @@ class FilialController extends Controller
     {
         $request->validate([
             'nombre' => 'required|string|max:255|regex:/^[\p{L}ñÑ\s.,]+$/u',
-        ],[
-            'nombre.regex' => 'El nombre de la filial solo puede contener letras y espacios.',
+            'siglas' => 'required|string|max:10|regex:/^[A-ZÑ]+$/u',
+        ], [
+            'nombre.regex' => 'El nombre de la filial solo puede contener letras, espacios, puntos y comas.',
+            'siglas.required' => 'Las siglas son obligatorias.',
+            'siglas.regex' => 'Las siglas solo pueden contener letras mayúsculas.',
+            'siglas.max' => 'Las siglas no pueden tener más de 10 caracteres.',
         ]);
-        $filial->update($request->all());
+        // Convertir en mayúsculas
+        $data = $request->all();
+        $data['nombre'] = strtoupper($data['nombre']);
+        $data['siglas'] = strtoupper($data['siglas']);
+    
+
+        $filial->update($data);
         return redirect()->route('filiales.index')->with('success', 'Filial actualizada exitosamente.');
     }
 

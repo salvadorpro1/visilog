@@ -23,15 +23,17 @@ class GerenciaController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nombre' => 'required|string|max:255|regex:/^[\p{L}ñÑ\s]+$/u',
+            'nombre' => 'required|string|max:255|regex:/^[\p{L}ñÑ\s.,]+$/u',
             'filial_id' => 'required|exists:filiales,id',
         ], [
             'nombre.regex' => 'El nombre de la direccion solo puede contener letras y espacios.',
             'filial_id.exists' => 'La filial seleccionada no es válida.',
             'filial_id.required'=> 'Necesita seleccionar una filial ',
         ]);
-        Gerencia::create($request->all());
-        return redirect()->route('gerencias.index')->with('success', 'Gerencia registrada exitosamente.');
+        $data = $request->all();
+        $data['nombre'] = strtoupper($data['nombre']);
+        Gerencia::create($data);
+        return redirect()->route('gerencias.index')->with('success', 'Dirección registrada exitosamente.');
     }
 
     public function edit(Gerencia $gerencia)
@@ -43,7 +45,7 @@ class GerenciaController extends Controller
     public function update(Request $request, Gerencia $gerencia)
     {
         $request->validate([
-            'nombre' => 'required|string|max:255|regex:/^[\p{L}ñÑ\s]+$/u',
+            'nombre' => 'required|string|max:255|regex:/^[\p{L}ñÑ\s.,]+$/u',
             'filial_id' => 'required|exists:filiales,id',
         ],[
             'nombre.regex' => 'El nombre de la direccion solo puede contener letras y espacios.',
@@ -51,13 +53,18 @@ class GerenciaController extends Controller
             'filial_id.exists' => 'La filial seleccionada no es válida.',
 
         ]);
-        $gerencia->update($request->all());
-        return redirect()->route('gerencias.index')->with('success', 'Gerencia actualizada exitosamente.');
+            // Convertir el nombre a mayúsculas
+        $data = $request->all();
+        $data['nombre'] = strtoupper($data['nombre']);
+
+        $gerencia->update($data);
+        
+        return redirect()->route('gerencias.index')->with('success', 'Dirección actualizada exitosamente.');
     }
 
     public function destroy(Gerencia $gerencia)
     {
         $gerencia->delete();
-        return redirect()->route('gerencias.index')->with('success', 'Gerencia eliminada exitosamente.');
+        return redirect()->route('gerencias.index')->with('success', 'Dirección eliminada exitosamente.');
     }
 }

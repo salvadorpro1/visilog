@@ -38,8 +38,8 @@ class VisitorsExport implements FromCollection, WithHeadings
                 'cedula' => $visitor->cedula,
                 'nombre' => $visitor->nombre,
                 'created_at' => Carbon::parse($visitor->created_at)->format('d/m/Y'), // Formato DD/MM/AAAA
-                'filial_id' => $visitor->filial_id,
-                'gerencia_id' => $visitor->gerencia_id,
+                'filial_id' => $visitor->filial->siglas,
+                'gerencia_id' => $visitor->gerencia->nombre,
             ];
         });
     }

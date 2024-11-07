@@ -9,7 +9,7 @@ class Filial extends Model
 {
     use HasFactory;
     protected $table = 'filiales';
-    protected $fillable = ['nombre'];
+    protected $fillable = ['nombre','siglas'];
 
     public function gerencias()
     {

@@ -61,6 +61,11 @@
             font-size: 14px;
             margin-top: 5px;
         }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
     </style>
 </head>
 
@@ -72,7 +77,11 @@
         <label for="password">Contraseña</label>
         <input type="password" id="password" name="password">
         <input type="submit" value="Iniciar Sesión">
-
+        @if (session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
         @error('username')
             <div class="error">{{ $message }}</div>
         @enderror

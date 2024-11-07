@@ -95,6 +95,10 @@
                 <td>{{ $persona->filial->nombre }}</td>
             </tr>
             <tr>
+                <th>Siglas</th>
+                <td>{{ $persona->filial->siglas }}</td>
+            </tr>
+            <tr>
                 <th>Dirección</th>
                 <td>{{ $persona->gerencia->nombre }}</td>
             </tr>

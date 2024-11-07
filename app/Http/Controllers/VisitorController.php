@@ -247,15 +247,15 @@ class VisitorController extends Controller
         $visitor = new Visitor();
         $visitor->nacionalidad = $request->input('nacionalidad');
         $visitor->cedula = $request->input('cedula');
-        $visitor->nombre = $request->input('nombre');
-        $visitor->apellido = $request->input('apellido');
+        $visitor->nombre = ucwords(strtolower($request->input('nombre')));
+        $visitor->apellido = ucwords(strtolower($request->input('apellido')));
         $visitor->filial_id = $request->input('filial_id');
         $visitor->gerencia_id = $request->input('gerencia_id');
         $visitor->razon_visita = $request->input('razon_visita');
         $visitor->telefono = $request->input('telefono');
         $visitor->numero_carnet = $request->input('numero_carnet');
         $visitor->clasificacion = $request->input('clasificacion');
-        $visitor->nombre_empresa = $request->input('clasificacion') === 'empresa' ? $request->input('nombre_empresa') : '';
+        $visitor->nombre_empresa = $request->input('clasificacion') === 'empresa' ? ucwords(strtolower($request->input('nombre_empresa'))) : '';
         $visitor->user_id = auth()->id();
     
         // Asignar foto si se envía, de lo contrario dejar en null o vacío

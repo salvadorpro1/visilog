@@ -76,7 +76,7 @@ class AuthenticateUserController extends Controller
             'name.regex' => 'El nombre solo puede contener letras y espacios.',
             'username.alpha_num' => 'El nombre de usuario solo puede contener letras y números.',
             'username.unique' => 'El nombre de usuario ya está en uso.', // Mensaje personalizado
-            'password.min' => 'La contraseña debe tener al menos :min caracteres.',
+            'password.min' => 'La contraseña debe tener al menos :min letras o numeros.',
             'password.confirmed' => 'La confirmación de la contraseña no coincide.',
         ];
     
@@ -111,9 +111,14 @@ class AuthenticateUserController extends Controller
             'current_password.required' => 'La contraseña actual es obligatoria.',
             'new_password.required' => 'La nueva contraseña es obligatoria.',
             'new_password.string' => 'La nueva contraseña debe ser una cadena de texto.',
-            'new_password.min' => 'La nueva contraseña debe tener al menos 8 caracteres.',
+            'new_password.min' => 'La nueva contraseña debe tener al menos 8 numeros o letras.',
             'new_password.confirmed' => 'La confirmación de la nueva contraseña no coincide.',
         ];
+        $user = Auth::user();
+
+        if (!Hash::check($request->current_password, $user->password)) {
+            return back()->withErrors(['current_password' => 'La contraseña actual no es correcta']);
+        }
     
         // Validar el request con mensajes personalizados
         $request->validate([
@@ -121,16 +126,13 @@ class AuthenticateUserController extends Controller
             'new_password' => 'required|string|min:8|confirmed',
         ], $messages);
     
-        $user = Auth::user();
     
-        if (!Hash::check($request->current_password, $user->password)) {
-            return back()->withErrors(['current_password' => 'La contraseña actual no es correcta']);
-        }
-    
+ 
         $user->password = $request->new_password; // Asegúrate de hashear la nueva contraseña
         $user->save();
     
-        return redirect()->route('logout')->with('success', 'Contraseña cambiada exitosamente');
+        Auth::logout();
+        return redirect('/')->with('success', 'Contraseña cambiada exitosamente');
     }
 
     public function deactivateOperator($id)

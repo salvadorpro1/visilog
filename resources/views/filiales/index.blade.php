@@ -215,6 +215,7 @@
                 <tr>
                     <th>ID</th>
                     <th>Nombre</th>
+                    <th>Siglas</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -223,6 +224,7 @@
                     <tr>
                         <td>{{ $filial->id }}</td>
                         <td class="truncate">{{ $filial->nombre }}</td>
+                        <td>{{ $filial->siglas }}</td>
                         <td class="actions">
                             <a href="{{ route('filiales.edit', $filial->id) }}" class="btn btn-warning">Editar</a>
                         </td>

@@ -248,6 +248,7 @@
             </ul>
         </div>
     @endif
+
     <div class="container">
         <h1>Reporte de Visitantes</h1>
         @if (isset($visitors) && $visitors->count() > 0)
@@ -278,7 +279,7 @@
                     @foreach ($filials as $filial)
                         <option value="{{ $filial->id }}"
                             {{ old('filial_id', request('filial_id')) == $filial->id ? 'selected' : '' }}>
-                            {{ $filial->nombre }}
+                            {{ $filial->siglas }}
                         </option>
                     @endforeach
                 </select>
@@ -349,7 +350,7 @@
                                 </td>
                                 <td>{{ $visitor->nombre }}</td>
                                 <td>{{ \Carbon\Carbon::parse($diahasta)->format('d/m/Y') }}</td>
-                                <td>{{ $visitor->filial->nombre }}</td>
+                                <td>{{ $visitor->filial->siglas }}</td>
                                 <td>{{ $visitor->gerencia->nombre }}</td>
                             </tr>
                         @endforeach
@@ -385,7 +386,7 @@
                     <tbody>
                         @foreach ($visitorCountsByFilial as $filial)
                             <tr>
-                                <td>{{ $filial->nombre }}</td>
+                                <td>{{ $filial->siglas }}</td>
                                 <td>{{ $filial->visitante_count }}</td>
                             </tr>
                         @endforeach
