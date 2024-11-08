@@ -6,137 +6,204 @@
 
 @section('style')
     <style>
-        table {
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .details-container {
+            max-width: 500px;
+            margin: 30px auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            text-transform: uppercase;
+
+        }
+
+        .details-header {
+            background-color: #4A90E2;
+            color: #fff;
+            padding: 15px;
+            text-transform: uppercase;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .details-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .details-item:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .details-label {
+            font-weight: 600;
+            color: #555;
+        }
+
+        .details-value {
+            color: #333;
+            flex: 1;
+            text-align: right;
+        }
+
+        .details-item-img {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .foto {
             width: 100%;
-            border-collapse: collapse;
-        }
-
-        th,
-        td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f2f2f2;
+            max-width: 250px;
+            height: auto;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
         }
 
         .button {
             display: inline-block;
-            padding: 10px 20px;
-            margin: 10px;
-            background-color: #007bff;
-            color: #fff;
+            padding: 12px 24px;
+            margin: 20px 0 0 30px;
+            background-color: #6C757D;
+            color: #ffffff;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             text-decoration: none;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .foto {
-            width: 150px;
-            height: 150px;
-            object-fit: cover;
-            transform: rotatey(180deg);
-
-        }
 
         .desactivate {
-            color: rgb(255, 0, 0);
-            font-weight: 600
+            color: #d9534f;
+            font-weight: bold;
+        }
+
+        .icono {
+            width: 40%;
+
         }
     </style>
 @endsection
 
 @section('content')
-    <h1>Detalle De Visitantes</h1>
+    <h1 style="text-align: center; margin-bottom: 20px;">Detalle De Visitantes</h1>
     <a class="button" href="{{ url()->previous() }}">Volver</a>
-    <table>
-        <thead>
-            <tr>
-                <th>Operador</th>
-                @if ($persona->user->estatus == 'desactivado')
-                    <td>{{ $persona->user->name }} (<span class="desactivate">Desactivado</span>)</td>
+    <div class="details-container">
+        <div class="details-header">Detalles del Visitante</div>
+        <div class="details-item details-item-img">
+            <span class="details-value details-item-img">
+                @if (!empty($persona->foto))
+                    <img class="foto" src="{{ route('visitor.photo', ['filename' => $persona->foto]) }}"
+                        alt="Foto del visitante">
                 @else
-                    <td>{{ $persona->user->name }}</td>
+                    <img class="icono" src="{{ asset('img/sinfoto.png') }}" alt="">
                 @endif
-            </tr>
-            <tr>
-                <th>Nombre</th>
-                <td>{{ $persona->nombre }}</td>
-            </tr>
-            <tr>
-                <th>Apellido</th>
-                <td>{{ $persona->apellido }}</td>
-            </tr>
-            <tr>
-                <th>Nacionalidad</th>
+            </span>
+        </div>
+        <div class="details-item">
+            <span class="details-label">Operador:</span>
+            <span class="details-value">
+                @if ($persona->user->estatus == 'desactivado')
+                    {{ $persona->user->name }} (<span class="desactivate">Desactivado</span>)
+                @else
+                    {{ $persona->user->name }}
+                @endif
+            </span>
+        </div>
+
+        <div class="details-item">
+            <span class="details-label">Nombre:</span>
+            <span class="details-value">{{ $persona->nombre }}</span>
+        </div>
+
+        <div class="details-item">
+            <span class="details-label">Apellido:</span>
+            <span class="details-value">{{ $persona->apellido }}</span>
+        </div>
+
+        <div class="details-item">
+            <span class="details-label">Nacionalidad:</span>
+            <span class="details-value">
                 @switch($persona->nacionalidad)
                     @case('V')
-                        <td>Venezolana</td>
+                        Venezolana
                     @break
 
                     @case('E')
-                        <td>Extranjero</td>
+                        Extranjero
                     @break
 
                     @default
-                        <td>Dato no valido</td>
+                        Dato no válido
                 @endswitch
-            </tr>
-            <tr>
-                <th>Cédula</th>
-                <td>{{ $persona->cedula }}</td>
-            </tr>
-            <tr>
-                <th>Filial</th>
-                <td>{{ $persona->filial->nombre }}</td>
-            </tr>
-            <tr>
-                <th>Siglas</th>
-                <td>{{ $persona->filial->siglas }}</td>
-            </tr>
-            <tr>
-                <th>Dirección</th>
-                <td>{{ $persona->gerencia->nombre }}</td>
-            </tr>
-            <tr>
-                <th>Telefono</th>
-                <td>{{ $persona->telefono }}</td>
-            </tr>
-            <tr>
-                <th>Clasificacion</th>
-                <td>{{ $persona->clasificacion }}</td>
-            </tr>
-            <tr>
-                <th>Numero de carnet</th>
-                <td>{{ $persona->numero_carnet }}</td>
-            </tr>
-            <tr>
-                <th>Razón de la Visita</th>
-                <td>{{ $persona->razon_visita }}</td>
-            </tr>
-            <tr>
-                <th>Foto</th>
-                <td>
-                    @if (!empty($persona->foto))
-                        <img class="foto" src="{{ route('visitor.photo', ['filename' => $persona->foto]) }}"
-                            alt="Foto del visitante" width="200">
-                    @else
-                        <p>No hay foto disponible.</p>
-                    @endif
-                </td>
-            </tr>
-            <tr>
-                <th>Fecha</th>
-                <td>{{ \Carbon\Carbon::parse($persona->created_at)->format('d/m/Y') }}</td>
-            </tr>
-            <tr>
-                <th>Hora</th>
-                <td>{{ \Carbon\Carbon::parse($persona->created_at)->toTimeString() }}</td>
-            </tr>
-        </thead>
-    </table>
+            </span>
+        </div>
+
+        <div class="details-item">
+            <span class="details-label">Cédula:</span>
+            <span class="details-value">{{ $persona->cedula }}</span>
+        </div>
+
+        <div class="details-item">
+            <span class="details-label">Filial:</span>
+            <span class="details-value">{{ $persona->filial->nombre }}</span>
+        </div>
+
+        <div class="details-item">
+            <span class="details-label">Siglas:</span>
+            <span class="details-value">{{ $persona->filial->siglas }}</span>
+        </div>
+
+        <div class="details-item">
+            <span class="details-label">Dirección:</span>
+            <span class="details-value">{{ $persona->gerencia->nombre }}</span>
+        </div>
+
+        <div class="details-item">
+            <span class="details-label">Teléfono:</span>
+            <span class="details-value">{{ $persona->telefono }}</span>
+        </div>
+
+        <div class="details-item">
+            <span class="details-label">Clasificación:</span>
+            <span class="details-value">{{ $persona->clasificacion }}</span>
+        </div>
+
+        <div class="details-item">
+            <span class="details-label">Nombre de la Empresa:</span>
+            <span class="details-value">{{ $persona->nombre_empresa }}</span>
+        </div>
+
+        <div class="details-item">
+            <span class="details-label">Número de Carnet:</span>
+            <span class="details-value">{{ $persona->numero_carnet }}</span>
+        </div>
+
+        <div class="details-item">
+            <span class="details-label">Motivo de la Visita:</span>
+            <span class="details-value">{{ $persona->razon_visita }}</span>
+        </div>
+
+
+        <div class="details-item">
+            <span class="details-label">Fecha:</span>
+            <span class="details-value">{{ \Carbon\Carbon::parse($persona->created_at)->format('d/m/Y') }}</span>
+        </div>
+
+        <div class="details-item">
+            <span class="details-label">Hora:</span>
+            <span class="details-value">{{ \Carbon\Carbon::parse($persona->created_at)->format('h:i A') }}</span>
+        </div>
+    </div>
 @endsection

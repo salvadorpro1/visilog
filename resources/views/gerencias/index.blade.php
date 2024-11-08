@@ -189,7 +189,6 @@
         }
 
         .truncate {
-            white-space: nowrap;
             /* Evita que el texto se envuelva */
             overflow: hidden;
             /* Oculta el texto que se desborda */

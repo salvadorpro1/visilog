@@ -15,6 +15,7 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
+            flex-direction: column;
         }
 
         form {
@@ -69,7 +70,17 @@
     </style>
 </head>
 
+
+
 <body>
+    @if (session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
+    @error('username')
+        <div class="error">{{ $message }}</div>
+    @enderror
     <form action="/login" method="POST">
         @csrf
         <label for="username">Usuario</label>
@@ -77,14 +88,6 @@
         <label for="password">Contraseña</label>
         <input type="password" id="password" name="password">
         <input type="submit" value="Iniciar Sesión">
-        @if (session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
-            </div>
-        @endif
-        @error('username')
-            <div class="error">{{ $message }}</div>
-        @enderror
     </form>
 
 </body>

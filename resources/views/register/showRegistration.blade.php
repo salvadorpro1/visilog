@@ -135,7 +135,7 @@
                 <th>Nacionalidad</th>
                 <th>Cédula</th>
                 <th>Dirección</th>
-                <th>Razón de la Visita</th>
+                <th>motivo de la visita</th>
                 <th>Fecha</th>
             </tr>
         </thead>

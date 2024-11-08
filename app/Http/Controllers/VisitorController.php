@@ -199,12 +199,28 @@ class VisitorController extends Controller
         ];
 
         $messages = [
-            'filial_id.required' => 'La filial es requerido.',
+            'filial_id.required' => 'La filial es requerida.',
             'filial_id.exists' => 'La filial seleccionada no es válida.',
-            'gerencia_id.required' => 'La dirección es requerido.',
+            'gerencia_id.required' => 'La dirección es requerida.',
             'gerencia_id.exists' => 'La dirección seleccionada no es válida.',
+            'razon_visita.required' => 'el motivo de visita es requerido.',
+            'razon_visita.max' => 'el motivo de visita no puede tener más de 255 caracteres.',
+            'foto.required' => 'La foto es requerida.',
+            'cedula.required' => 'La cédula es requerida.',
+            'cedula.digits_between' => 'La cédula debe tener entre 7 y 8 dígitos.',
+            'numero_carnet.required' => 'El número de carnet es requerido.',
+            'clasificacion.required' => 'La clasificación es requerida.',
+            'clasificacion.in' => 'La clasificación debe ser empresa o persona.',
+            'telefono.required' => 'El teléfono es requerido.',
+            'telefono.digits' => 'El teléfono debe tener exactamente 11 dígitos.',
+            'nombre_empresa.required_if' => 'El nombre de la empresa es requerido cuando la clasificación es empresa.',
+            'nombre.required' => 'El nombre es requerido.',
+            'nombre.regex' => 'El nombre solo debe contener letras y espacios.',
+            'apellido.required' => 'El apellido es requerido.',
+            'apellido.regex' => 'El apellido solo debe contener letras y espacios.',
+            'nacionalidad.required' => 'La nacionalidad es requerida.',
+            'nacionalidad.in' => 'La nacionalidad debe ser V o E.'
         ];
-
     
         if (!$visitorExists && (!$request->has('no_foto') || $request->input('no_foto') != 'on')) {
             $rules['foto'] = 'required';

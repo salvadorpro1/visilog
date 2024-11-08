@@ -299,7 +299,7 @@
                             <button type="button" id="capture" onclick="takePhoto()">Tomar Foto</button>
                             <button type="button" id="reset" onclick="resetPhoto()">Reiniciar Foto</button>
                         </div>
-                        <label>
+                        <label id="no_foto_label">
                             <input type="checkbox" name="no_foto" id="no_foto" onchange="toggleFotoRequired()"> No tomar
                             foto
                         </label>
@@ -320,7 +320,7 @@
                     <option value="" selected disabled>Elegir dirección</option>
                 </select>
 
-                <label for="">Razón de la visita</label>
+                <label for="">motivo de la visita</label>
                 <textarea name="razon_visita" cols="30" rows="10" maxlength="255">{{ old('razon_visita') }}</textarea>
                 <a class="button"
                     href="{{ Auth::user()->role == 'operador' ? route('show_consult') : route('show_Dashboard') }}">
@@ -419,7 +419,7 @@
                     <option value="" selected disabled>Elegir dirección</option>
                 </select>
 
-                <label for="">Razón de la visita</label>
+                <label for="">motivo de la visita</label>
                 <textarea name="razon_visita" cols="30" rows="10" maxlength="255">{{ old('razon_visita') }}</textarea>
                 <input type="hidden" name="foto" value="{{ $visitor->foto }}">
 
@@ -526,6 +526,17 @@
             let stream = video.srcObject;
             let tracks = stream.getTracks();
             tracks.forEach(track => track.stop());
+
+            var checkbox = document.getElementById("no_foto");
+            if (checkbox.checked) {
+                checkbox.checked = false;
+            }
+
+            var label = document.getElementById("no_foto_label");
+            label.style.display = "none"; // Esto hace que el label con el checkbox desaparezca
+
+
+            checkbox.style.display = "none"
         }
 
         function resetPhoto() {
@@ -537,6 +548,11 @@
 
             // Reiniciar la cámara
             initCamera();
+
+            var checkbox = document.getElementById("no_foto");
+            checkbox.style.display = "inline"; // Esto hace que el checkbox vuelva a aparecer
+            var label = document.getElementById("no_foto_label");
+            label.style.display = "inline"; // E
         }
 
         function hideIcon() {
