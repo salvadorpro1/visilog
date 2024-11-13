@@ -255,10 +255,10 @@
             <!-- Mostrar el botón de descarga si hay visitantes -->
             <form method="GET" action="{{ route('download_report') }}">
                 @csrf
-                <input type="hidden" name="filial_id" value="{{ request('filial_id') }}">
-                <input type="hidden" name="gerencia_id" value="{{ request('gerencia_id') }}">
-                <input type="hidden" name="diadesde" value="{{ request('diadesde') }}">
-                <input type="hidden" name="diahasta" value="{{ request('diahasta') }}">
+                <input type="hidden" name="filial_id" value="{{ old('filial_id', request('filial_id')) }}">
+                <input type="hidden" name="gerencia_id" value="{{ old('gerencia_id', request('gerencia_id')) }}">
+                <input type="hidden" name="diadesde" value="{{ old('diadesde', request('diadesde')) }}">
+                <input type="hidden" name="diahasta" value="{{ old('diahasta', request('diahasta')) }}">
                 <button type="submit" class="btn btn-secondary">Descargar Excel</button>
             </form>
         @endif
@@ -266,10 +266,18 @@
         <!-- Formulario de filtros -->
         <form method="POST" action="{{ route('show_Account') }}" class="mb-5">
             @csrf
+            <div class="form-group">
+                <label for="show_deleted">
+                    <input type="checkbox" id="show_deleted" name="show_deleted"
+                        {{ old('show_deleted', $showDeleted) === 'on' ? 'checked' : '' }}>
+                    Direcciones eliminadas
+                </label>
+            </div>
             <input type="hidden" name="filial_id" value="{{ old('filial_id', request('filial_id')) }}">
             <input type="hidden" name="gerencia_id" value="{{ old('gerencia_id', request('gerencia_id')) }}">
             <input type="hidden" name="diadesde" value="{{ old('diadesde', request('diadesde')) }}">
             <input type="hidden" name="diahasta" value="{{ old('diahasta', request('diahasta')) }}">
+            <input type="hidden" name="show_deleted" value="{{ old('show_deleted', request('show_deleted', 'off')) }}">
 
 
             <div class="form-group">
@@ -400,7 +408,11 @@
         document.addEventListener("DOMContentLoaded", function() {
             const filialSelect = document.getElementById('filial_id');
             const gerenciaSelect = document.getElementById('gerencia_id');
+            const showDeletedCheckbox = document.getElementById('show_deleted');
 
+            if ("{{ request('show_deleted') }}" === 'on') {
+                showDeletedCheckbox.checked = true;
+            }
             // Si hay un `filial_id` seleccionado, carga sus `gerencias` desde el controlador
             if (filialSelect.value) {
                 loadGerencias(filialSelect.value);
@@ -411,9 +423,15 @@
                 loadGerencias(this.value);
             });
 
+            // Al cambiar el estado del checkbox, recargar las gerencias
+            showDeletedCheckbox.addEventListener('change', function() {
+                loadGerencias(filialSelect.value);
+            });
+
             function loadGerencias(filialId) {
                 if (filialId) {
-                    fetch(`/get-gerencias/${filialId}`)
+                    // Enviar el estado del checkbox para incluir o no las direcciones eliminadas
+                    fetch(`/get-gerencias/${filialId}?show_deleted=${showDeletedCheckbox.checked ? 'on' : ''}`)
                         .then(response => response.json())
                         .then(data => {
                             gerenciaSelect.innerHTML = ''; // Limpiar opciones actuales
@@ -430,6 +448,12 @@
                                     const option = document.createElement('option');
                                     option.value = gerencia.id;
                                     option.text = gerencia.nombre;
+
+                                    // Si la gerencia está eliminada, añadir "(eliminada)" al nombre
+                                    if (gerencia.is_deleted) {
+                                        option.text += ' (eliminada)';
+                                    }
+
                                     option.selected = gerencia.id ==
                                         "{{ old('gerencia_id', request('gerencia_id')) }}"; // Mantener `gerencia_id` seleccionado
                                     gerenciaSelect.add(option);
