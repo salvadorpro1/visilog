@@ -266,10 +266,11 @@
         <!-- Formulario de filtros -->
         <form method="POST" action="{{ route('show_Account') }}" class="mb-5">
             @csrf
+
             <div class="form-group">
                 <label for="show_deleted">
-                    <input type="checkbox" id="show_deleted" name="show_deleted"
-                        {{ old('show_deleted', $showDeleted) === 'on' ? 'checked' : '' }}>
+                    <input type="checkbox" id="show_deleted" name="show_deleted" value="on"
+                        {{ old('show_deleted', request('show_deleted', 'off')) === 'on' ? 'checked' : '' }}>
                     Direcciones eliminadas
                 </label>
             </div>
@@ -277,7 +278,7 @@
             <input type="hidden" name="gerencia_id" value="{{ old('gerencia_id', request('gerencia_id')) }}">
             <input type="hidden" name="diadesde" value="{{ old('diadesde', request('diadesde')) }}">
             <input type="hidden" name="diahasta" value="{{ old('diahasta', request('diahasta')) }}">
-            <input type="hidden" name="show_deleted" value="{{ old('show_deleted', request('show_deleted', 'off')) }}">
+            {{-- <input type="hidden" name="show_deleted" value="off"> --}}
 
 
             <div class="form-group">
@@ -409,11 +410,15 @@
             const filialSelect = document.getElementById('filial_id');
             const gerenciaSelect = document.getElementById('gerencia_id');
             const showDeletedCheckbox = document.getElementById('show_deleted');
+            const csrfToken = "{{ csrf_token() }}"; // Obtener el token CSRF desde Laravel
 
-            if ("{{ request('show_deleted') }}" === 'on') {
+            // Mantener el estado del checkbox `show_deleted` basado en la URL
+            if ("{{ old('show_deleted', request('show_deleted')) }}" === 'on') {
                 showDeletedCheckbox.checked = true;
+            } else {
+                showDeletedCheckbox.checked = false;
             }
-            // Si hay un `filial_id` seleccionado, carga sus `gerencias` desde el controlador
+            // Si hay un `filial_id` seleccionado, cargar sus `gerencias` desde el controlador
             if (filialSelect.value) {
                 loadGerencias(filialSelect.value);
             }
@@ -430,8 +435,16 @@
 
             function loadGerencias(filialId) {
                 if (filialId) {
-                    // Enviar el estado del checkbox para incluir o no las direcciones eliminadas
-                    fetch(`/get-gerencias/${filialId}?show_deleted=${showDeletedCheckbox.checked ? 'on' : ''}`)
+                    const formData = new FormData();
+                    formData.append('show_deleted', showDeletedCheckbox.checked ? 'on' :
+                        'off'); // Agregar `show_deleted`
+                    formData.append('_token', csrfToken); // Incluir el token CSRF en la solicitud POST
+
+                    // Realizar la solicitud POST para obtener las gerencias, usando el `filial_id` en la URL
+                    fetch(`/get-gerencias/${filialId}`, {
+                            method: "POST",
+                            body: formData
+                        })
                         .then(response => response.json())
                         .then(data => {
                             gerenciaSelect.innerHTML = ''; // Limpiar opciones actuales
@@ -454,8 +467,9 @@
                                         option.text += ' (eliminada)';
                                     }
 
+                                    // Mantener `gerencia_id` seleccionado
                                     option.selected = gerencia.id ==
-                                        "{{ old('gerencia_id', request('gerencia_id')) }}"; // Mantener `gerencia_id` seleccionado
+                                        "{{ old('gerencia_id', request('gerencia_id')) }}";
                                     gerenciaSelect.add(option);
                                 });
                             } else {
@@ -466,7 +480,7 @@
                             }
                         })
                         .catch(error => {
-                            console.error('Error al cargar las Direcciones:', error);
+                            console.error('Error al cargar las Gerencias:', error);
                         });
                 }
             }

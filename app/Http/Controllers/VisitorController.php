@@ -63,20 +63,26 @@ class VisitorController extends Controller
     
     public function getGerenciasByFilial($filial_id)
     {
+        // Obtener el valor de show_deleted (por defecto 'off')
+        $showDeleted = request('show_deleted', 'off');
+        
+        // Iniciar la consulta para obtener las gerencias por filial_id
         $query = Gerencia::where('filial_id', $filial_id);
-    
-        // Verifica si se deben incluir las direcciones eliminadas
-        if (request()->has('show_deleted') && request()->get('show_deleted') == 'on') {
-            $query->withTrashed(); // Incluir direcciones eliminadas
+        
+        // Si show_deleted es 'on', incluir las direcciones eliminadas
+        if ($showDeleted === 'on') {
+            $query->withTrashed(); // Incluir las gerencias eliminadas
         }
-    
+        
+        // Obtener las gerencias
         $gerencias = $query->get();
-    
-        // Agregar un campo para marcar si la gerencia está eliminada
+        
+        // Marcar si una gerencia está eliminada
         foreach ($gerencias as $gerencia) {
-            $gerencia->is_deleted = $gerencia->trashed();
+            $gerencia->is_deleted = $gerencia->trashed(); // Esto agrega el campo 'is_deleted'
         }
-    
+        
+        // Devolver las gerencias como una respuesta JSON
         return response()->json($gerencias);
     }
 
@@ -331,7 +337,7 @@ class VisitorController extends Controller
         $gerencia_id = $request->input('gerencia_id');
         $diadesde = $request->input('diadesde');
         $diahasta = $request->input('diahasta');
-        $showDeleted = $request->input('show_deleted', 'off'); // Se asegura de que tenga un valor predeterminado
+        $showDeleted = $request->input('show_deleted', 'off');  // Valor por defecto 'off'
     
         // Verifica que se haya seleccionado Filial y las fechas
         if ($filial_id && $diadesde && $diahasta) {
@@ -384,12 +390,12 @@ class VisitorController extends Controller
         }
     }
     
-    
     public function accountConsul(Request $request)
     {
-        // Captura el valor de show_deleted desde el request
+
+        // Captura el valor de show_deleted desde el request, por defecto 'off' si no está marcado
         $showDeleted = $request->input('show_deleted', 'off');
-    
+
         // Validación de datos
         $rules = [
             'filial_id' => 'required|integer',
@@ -397,7 +403,7 @@ class VisitorController extends Controller
             'diadesde' => 'required|date',
             'diahasta' => 'required|date|after_or_equal:diadesde',
         ];
-    
+        
         // Mensajes personalizados para cada error
         $messages = [
             'filial_id.required' => 'La selección de filial es obligatoria.',
@@ -409,15 +415,15 @@ class VisitorController extends Controller
             'diahasta.date' => 'La fecha de fin no es válida.',
             'diahasta.after_or_equal' => 'La fecha de fin debe ser igual o posterior a la fecha de inicio.',
         ];
-    
+        
         // Crear validador con reglas y mensajes
         $validator = Validator::make($request->all(), $rules, $messages);
-    
+        
         if ($validator->fails()) {
             // Si la validación falla, obtener las gerencias para la filial seleccionada
             $filialId = $request->input('filial_id');
             $gerencias = !empty($filialId) ? Gerencia::where('filial_id', $filialId)->get() : [];
-    
+            
             // Redirigir de nuevo con los errores de validación y los datos necesarios
             return redirect()->back()
                 ->withErrors($validator)
@@ -425,28 +431,35 @@ class VisitorController extends Controller
                 ->with([
                     'filials' => Filial::all(),
                     'gerencias' => $gerencias,
-                    'showDeleted' => $showDeleted,
+                    'showDeleted' => $showDeleted, // Aseguramos que el checkbox se mantenga
                 ]);
         }
-    
+        
         // Procedimiento de consulta
         $filialId = $request->input('filial_id');
         $gerenciaId = $request->input('gerencia_id');
         $diadesde = $request->input('diadesde');
         $diahasta = $request->input('diahasta');
-    
+        
+        // Crear la consulta de visitantes
         $visitorQuery = Visitor::query()
             ->where('filial_id', $filialId)
             ->whereBetween('created_at', [Carbon::parse($diadesde)->startOfDay(), Carbon::parse($diahasta)->endOfDay()]);
-    
+        
+        // Si se ha seleccionado una gerencia específica, agregarla a la consulta
         if (!is_null($gerenciaId)) {
             $visitorQuery->where('gerencia_id', $gerenciaId);
         }
-    
+        
+        
+        // Obtener los visitantes paginados
         $visitors = $visitorQuery->paginate(10)->appends($request->all());
         $visitorCount = $visitors->total();
+        
+        // Obtener las gerencias para la filial seleccionada
         $gerencias = Gerencia::where('filial_id', $filialId)->get();
-    
+
+        // Devolver la vista con los datos necesarios
         return view('account.index', [
             'visitors' => $visitors,
             'visitorCount' => $visitorCount,
@@ -461,7 +474,7 @@ class VisitorController extends Controller
         ]);
     }
     
-            
+          
     // Método auxiliar para obtener la fecha mínima
     private function getFechaMinima()
     {
