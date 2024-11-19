@@ -61,96 +61,6 @@ class VisitorController extends Controller
         }
     }
     
-    public function getGerenciasByFilial($filial_id)
-    {
-        // Obtener el valor de show_deleted (por defecto 'off')
-        $showDeleted = request('show_deleted', 'off');
-        
-        // Iniciar la consulta para obtener las gerencias por filial_id
-        $query = Gerencia::where('filial_id', $filial_id);
-        
-        // Si show_deleted es 'on', incluir las direcciones eliminadas
-        if ($showDeleted === 'on') {
-            $query->withTrashed(); // Incluir las gerencias eliminadas
-        }
-        
-        // Obtener las gerencias
-        $gerencias = $query->get();
-        
-        // Marcar si una gerencia está eliminada
-        foreach ($gerencias as $gerencia) {
-            $gerencia->is_deleted = $gerencia->trashed(); // Esto agrega el campo 'is_deleted'
-        }
-        
-        // Devolver las gerencias como una respuesta JSON
-        return response()->json($gerencias);
-    }
-
-    public function showRegister(Request $request)
-    {
-        $query = Visitor::query();
-    
-        if ($request->has('search')) {
-            $search = $request->input('search');
-            $query->where('nombre', 'like', '%' . $search . '%')
-                  ->orWhere('cedula', 'like', '%' . $search . '%');
-        }
-    
-        $registros = $query->orderBy('created_at', 'desc')->paginate(10);
-    
-        return view('register.showRegistration', compact('registros'));
-    }
-    
-    public function showRegisterDetail($id)
-    {
-        $persona = Visitor::where('id', $id)->first();
-        return view('register.showRegistrationDetail', ['persona' => $persona]);
-    }
-
-    public function consulDate(Request $request)
-    {
-        $rules = [
-            'nacionalidad' => 'required|in:V,E',
-            'cedula' => 'required|digits_between:7,8',
-        ];
-    
-        $messages = [
-            'nacionalidad.required' => 'La nacionalidad es obligatoria.',
-            'nacionalidad.in' => 'La nacionalidad debe ser "V" o "E".',
-            'cedula.required' => 'La cédula es obligatoria.',
-            'cedula.digits_between' => 'La cédula debe tener entre :min y :max dígitos.',
-        ];
-    
-        $validator = Validator::make($request->all(), $rules, $messages);
-    
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
-    
-        $nacionalidad = $request->input('nacionalidad');
-        $cedula = $request->input('cedula');
-    
-        // Buscar al visitante con la combinación de nacionalidad y cédula
-        $visitor = Visitor::where('nacionalidad', $nacionalidad)
-                            ->where('cedula', $cedula)
-                            ->first();
-    
-        // Redirigir al formulario de registro del visitante con los datos encontrados o sin ellos
-        return $this->redirectToVisitorRegistrationForm($visitor, $nacionalidad, $cedula);
-    }
-    
-    private function redirectToVisitorRegistrationForm($visitor, $nacionalidad, $cedula)
-    {
-        $showAll = !$visitor;
-    
-        return redirect()->route('show_register', [
-            'showAll' => $showAll,
-            'nacionalidad' => $nacionalidad,
-            'cedula' => $cedula,
-            'visitor' => $visitor,
-        ]);
-    }
-    
     public function saveVisitor(Request $request)
     {
         // Determinar si el visitante ya existe en la vista
@@ -310,6 +220,98 @@ class VisitorController extends Controller
             return redirect()->route('show_Dashboard')->with('success', 'Los datos se han enviado correctamente.');
         }
     }
+    
+    public function getGerenciasByFilial($filial_id)
+    {
+        // Obtener el valor de show_deleted (por defecto 'off')
+        $showDeleted = request('show_deleted', 'off');
+        
+        // Iniciar la consulta para obtener las gerencias por filial_id
+        $query = Gerencia::where('filial_id', $filial_id);
+        
+        // Si show_deleted es 'on', incluir las direcciones eliminadas
+        if ($showDeleted === 'on') {
+            $query->withTrashed(); // Incluir las gerencias eliminadas
+        }
+        
+        // Obtener las gerencias
+        $gerencias = $query->get();
+        
+        // Marcar si una gerencia está eliminada
+        foreach ($gerencias as $gerencia) {
+            $gerencia->is_deleted = $gerencia->trashed(); // Esto agrega el campo 'is_deleted'
+        }
+        
+        // Devolver las gerencias como una respuesta JSON
+        return response()->json($gerencias);
+    }
+
+    public function showRegister(Request $request)
+    {
+        $query = Visitor::query();
+    
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $query->where('nombre', 'like', '%' . $search . '%')
+                  ->orWhere('cedula', 'like', '%' . $search . '%');
+        }
+    
+        $registros = $query->orderBy('created_at', 'desc')->paginate(10);
+    
+        return view('register.showRegistration', compact('registros'));
+    }
+    
+    public function showRegisterDetail($id)
+    {
+        $persona = Visitor::where('id', $id)->first();
+        return view('register.showRegistrationDetail', ['persona' => $persona]);
+    }
+
+    public function consulDate(Request $request)
+    {
+        $rules = [
+            'nacionalidad' => 'required|in:V,E',
+            'cedula' => 'required|digits_between:7,8',
+        ];
+    
+        $messages = [
+            'nacionalidad.required' => 'La nacionalidad es obligatoria.',
+            'nacionalidad.in' => 'La nacionalidad debe ser "V" o "E".',
+            'cedula.required' => 'La cédula es obligatoria.',
+            'cedula.digits_between' => 'La cédula debe tener entre :min y :max dígitos.',
+        ];
+    
+        $validator = Validator::make($request->all(), $rules, $messages);
+    
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+    
+        $nacionalidad = $request->input('nacionalidad');
+        $cedula = $request->input('cedula');
+    
+        // Buscar al visitante con la combinación de nacionalidad y cédula
+        $visitor = Visitor::where('nacionalidad', $nacionalidad)
+                            ->where('cedula', $cedula)
+                            ->first();
+    
+        // Redirigir al formulario de registro del visitante con los datos encontrados o sin ellos
+        return $this->redirectToVisitorRegistrationForm($visitor, $nacionalidad, $cedula);
+    }
+    
+    private function redirectToVisitorRegistrationForm($visitor, $nacionalidad, $cedula)
+    {
+        $showAll = !$visitor;
+    
+        return redirect()->route('show_register', [
+            'showAll' => $showAll,
+            'nacionalidad' => $nacionalidad,
+            'cedula' => $cedula,
+            'visitor' => $visitor,
+        ]);
+    }
+    
+
     
     
     public function getVisitorPhoto($filename)
@@ -473,22 +475,21 @@ class VisitorController extends Controller
             'showDeleted' => $showDeleted,
         ]);
     }
-    
-          
+
     // Método auxiliar para obtener la fecha mínima
     private function getFechaMinima()
     {
         return Visitor::min('created_at');
     }
 
-public function downloadReport(Request $request)
+    public function downloadReport(Request $request)
     {
-    $filial_id = $request->input('filial_id');
-    $gerencia_id = $request->input('gerencia_id');
-    $diadesde = $request->input('diadesde');
-    $diahasta = $request->input('diahasta');
+        $filial_id = $request->input('filial_id');
+        $gerencia_id = $request->input('gerencia_id');
+        $diadesde = $request->input('diadesde');
+        $diahasta = $request->input('diahasta');
 
-    return Excel::download(new VisitorsExport($filial_id, $gerencia_id, $diadesde, $diahasta), 'reporte_visitantes.xlsx');
+        return Excel::download(new VisitorsExport($filial_id, $gerencia_id, $diadesde, $diahasta), 'reporte_visitantes.xlsx');
     }
 
 }

@@ -435,39 +435,52 @@
 
     </div>
 
-
-
-
-
     <script>
         function updateGerencias() {
             const filialId = document.getElementById('filial_id').value;
             const gerenciaSelect = document.getElementById('gerencia_id');
+            const csrfToken = "{{ csrf_token() }}"; // Token CSRF desde Laravel
 
             // Limpiar opciones actuales antes de cargar las nuevas
             gerenciaSelect.innerHTML = '<option value="" selected disabled>Elegir dirección</option>';
 
             if (filialId) {
-                fetch(`/get-gerencias/${filialId}`)
-                    .then(response => response.json())
+                console.log('Cargando gerencias para filial_id:', filialId);
+
+                const formData = new FormData();
+                formData.append('_token', csrfToken);
+
+                fetch(`/get-gerencias/${filialId}`, {
+                        method: "POST",
+                        body: formData
+                    })
+                    .then(response => {
+                        console.log('Respuesta recibida:', response);
+                        if (!response.ok) {
+                            throw new Error('Error en la respuesta del servidor');
+                        }
+                        return response.json();
+                    })
                     .then(data => {
-                        const oldGerenciaId = "{{ $oldGerenciaId }}"; // Usar el valor pasado desde el controlador
+                        console.log('Datos de gerencias recibidos:', data);
 
                         data.forEach(gerencia => {
                             const option = document.createElement('option');
                             option.value = gerencia.id;
                             option.text = gerencia.nombre;
 
-                            // Selecciona la opción si coincide con el valor de old('gerencia_id')
-                            if (gerencia.id == oldGerenciaId) {
+                            // Mantener `gerencia_id` seleccionado si coincide
+                            if (gerencia.id == "{{ old('gerencia_id', request('gerencia_id')) }}") {
                                 option.selected = true;
                             }
                             gerenciaSelect.add(option);
                         });
                     })
                     .catch(error => {
-                        console.error('Error al cargar las Direcciones:', error);
+                        console.error('Error al cargar las gerencias:', error);
                     });
+            } else {
+                console.log('No se ha seleccionado ningún filial_id');
             }
         }
 
@@ -478,8 +491,6 @@
             }
         });
     </script>
-
-
 
     <script>
         let video = document.getElementById('video');
