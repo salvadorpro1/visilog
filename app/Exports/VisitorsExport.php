@@ -25,14 +25,14 @@ class VisitorsExport implements FromCollection, WithHeadings
     public function collection()
     {
         // Consulta los visitantes según los filtros
-        $query = Visitor::query()
+        $query = Visitor::with('filial', 'gerencia', 'user') // Asegura la carga de relaciones
             ->where('filial_id', $this->filial_id)
             ->whereBetween('created_at', [Carbon::parse($this->diadesde)->startOfDay(), Carbon::parse($this->diahasta)->endOfDay()]);
-
+    
         if ($this->gerencia_id) {
             $query->where('gerencia_id', $this->gerencia_id);
         }
-
+    
         return $query->get()->map(function ($visitor) {
             return [
                 'cedula' => $visitor->cedula,
@@ -40,6 +40,7 @@ class VisitorsExport implements FromCollection, WithHeadings
                 'created_at' => Carbon::parse($visitor->created_at)->format('d/m/Y'), // Formato DD/MM/AAAA
                 'filial_id' => $visitor->filial->siglas,
                 'gerencia_id' => $visitor->gerencia->nombre,
+                'operador' => $visitor->user ? $visitor->user->name : 'Desconocido', // Asegura que el nombre del usuario se incluya
             ];
         });
     }
@@ -52,6 +53,7 @@ class VisitorsExport implements FromCollection, WithHeadings
             'Fecha de Visita',
             'Filial',
             'Gerencia',
+            'Operador', // Encabezado para el operador
         ];
     }
 }
