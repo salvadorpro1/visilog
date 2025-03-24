@@ -36,11 +36,13 @@ class VisitorsExport implements FromCollection, WithHeadings
         return $query->get()->map(function ($visitor) {
             return [
                 'cedula' => $visitor->cedula,
-                'nombre' => $visitor->nombre,
-                'created_at' => Carbon::parse($visitor->created_at)->format('d/m/Y'), // Formato DD/MM/AAAA
-                'filial_id' => $visitor->filial->siglas,
-                'gerencia_id' => $visitor->gerencia->nombre,
-                'operador' => $visitor->user ? $visitor->user->name : 'Desconocido', // Asegura que el nombre del usuario se incluya
+                'nombre' => $visitor->nombre . ' ' . $visitor->apellido, // Se une nombre y apellido
+                'created_at' => Carbon::parse($visitor->created_at)->format('d/m/Y H:i:s'), // Fecha detallada
+                'filial_id' => $visitor->filial->siglas, // Filial
+                'direccion' => $visitor->gerencia->nombre, // Cambiar "Gerencia" a "Dirección"
+                'operador' => $visitor->user ? $visitor->user->name : 'Desconocido', // Operador
+                'telefono' => $visitor->telefono, // Teléfono
+                'razon_visita' => $visitor->razon_visita, // Motivo de la visita (razón_visita)
             ];
         });
     }
@@ -49,11 +51,13 @@ class VisitorsExport implements FromCollection, WithHeadings
     {
         return [
             'Cédula',
-            'Nombre',
-            'Fecha de Visita',
+            'Nombre Completo',
+            'Fecha de Visita', // Modificado para reflejar la fecha detallada
             'Filial',
-            'Gerencia',
-            'Operador', // Encabezado para el operador
+            'Dirección', // Cambio de "Gerencia" a "Dirección"
+            'Operador',
+            'Teléfono', // Nuevo encabezado
+            'Motivo de la Visita', // Nuevo encabezado
         ];
     }
 }
