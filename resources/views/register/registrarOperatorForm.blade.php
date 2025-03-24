@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-    Operadores
+    Recepcionistas
 @endsection
 
 @section('style')
@@ -221,7 +221,7 @@
     @endif
     <div class="dividir">
         <div class="container">
-            <h1>Crear Operador</h1>
+            <h1>Crear Recepcionista</h1>
             @if ($errors->any())
                 <div class="alert alert-danger">
                     <ul>
@@ -262,10 +262,10 @@
             </form>
         </div>
         <div class="container">
-            <h1>Operadores Activos</h1>
+            <h1>Recepcionistas Activos</h1>
             <div class="operator-cards-container">
                 @if ($operadores->isEmpty())
-                    <p>No hay operadores activos.</p>
+                    <p>No hay Recepcionistas activos.</p>
                 @else
                     @foreach ($operadores as $operador)
                         <div class="operator-card">
@@ -305,7 +305,8 @@
         function confirmDeactivation(operatorId, operatorName) {
             const actionUrl = '{{ route('deactivate_Operator', ':id') }}'.replace(':id', operatorId);
             document.getElementById('confirmForm').action = actionUrl;
-            document.getElementById('confirmMessage').innerText = `¿Seguro desea desactivar al operador ${operatorName}?`;
+            document.getElementById('confirmMessage').innerText =
+                `¿Seguro desea desactivar al recepcionista ${operatorName}?`;
             document.getElementById('confirmModal').style.display = 'block';
         }
 

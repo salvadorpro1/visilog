@@ -137,7 +137,7 @@
 
                 @if ($user && $user->role === 'administrador')
                     <li class="user-menu__item">
-                        <a class="user-menu__item-link" href="{{ route('showRegisterCreate') }}">Operadores</a>
+                        <a class="user-menu__item-link" href="{{ route('showRegisterCreate') }}">Recepcionistas</a>
                     </li>
                 @endif
                 @if ($user && $user->role === 'administrador')

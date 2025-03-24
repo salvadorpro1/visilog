@@ -104,7 +104,7 @@
         <h1>Historial de {{ $operador->name }}</h1>
         <div class="historial-table">
             @if ($historial->isEmpty())
-                <p>No hay registros de visitantes para este operador.</p>
+                <p>No hay registros de visitantes para este recepcionista.</p>
             @else
                 <table>
                     <thead>

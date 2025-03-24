@@ -112,7 +112,7 @@
             </span>
         </div>
         <div class="details-item">
-            <span class="details-label">Operador:</span>
+            <span class="details-label">recepcionista:</span>
             <span class="details-value">
                 @if ($persona->user->estatus == 'desactivado')
                     {{ $persona->user->name }} (<span class="desactivate">Desactivado</span>)

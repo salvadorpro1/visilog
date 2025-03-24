@@ -44,7 +44,7 @@ class VisitorsExport implements FromCollection, WithHeadings, WithStyles
                 'created_at' => Carbon::parse($visitor->created_at)->format('d/m/Y h:i A'), // Fecha detallada
                 'filial_id' => $visitor->filial->siglas, // Filial
                 'direccion' => $visitor->gerencia->nombre, // Cambiar "Gerencia" a "Dirección"
-                'operador' => $visitor->user ? $visitor->user->name : 'Desconocido', // Operador
+                'Recepcionista' => $visitor->user ? $visitor->user->name : 'Desconocido', // Operador
                 'telefono' => $visitor->telefono, // Teléfono
                 'razon_visita' => $visitor->razon_visita, // Motivo de la visita (razón_visita)
             ];
@@ -55,11 +55,11 @@ class VisitorsExport implements FromCollection, WithHeadings, WithStyles
     {
         return [
             'Cédula',
-            'Nombre Completo',
+            'Nombres y Apellidos',
             'Fecha de Visita', // Modificado para reflejar la fecha detallada
             'Filial',
             'Dirección', // Cambio de "Gerencia" a "Dirección"
-            'Operador',
+            'Recepcionista',
             'Teléfono', // Nuevo encabezado
             'Motivo de la Visita', // Nuevo encabezado
         ];
