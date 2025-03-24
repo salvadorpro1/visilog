@@ -2,12 +2,16 @@
 
 namespace App\Exports;
 
+
 use App\Models\Visitor;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\WithStyles;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Carbon\Carbon;
 
-class VisitorsExport implements FromCollection, WithHeadings
+class VisitorsExport implements FromCollection, WithHeadings, WithStyles
+
 {
     protected $filial_id;
     protected $gerencia_id;
@@ -37,7 +41,7 @@ class VisitorsExport implements FromCollection, WithHeadings
             return [
                 'cedula' => $visitor->cedula,
                 'nombre' => $visitor->nombre . ' ' . $visitor->apellido, // Se une nombre y apellido
-                'created_at' => Carbon::parse($visitor->created_at)->format('d/m/Y H:i:s'), // Fecha detallada
+                'created_at' => Carbon::parse($visitor->created_at)->format('d/m/Y h:i A'), // Fecha detallada
                 'filial_id' => $visitor->filial->siglas, // Filial
                 'direccion' => $visitor->gerencia->nombre, // Cambiar "Gerencia" a "Dirección"
                 'operador' => $visitor->user ? $visitor->user->name : 'Desconocido', // Operador
@@ -59,5 +63,24 @@ class VisitorsExport implements FromCollection, WithHeadings
             'Teléfono', // Nuevo encabezado
             'Motivo de la Visita', // Nuevo encabezado
         ];
+    }
+
+    public function styles(Worksheet $sheet)
+    {
+        // Aplica negritas y color de fondo a los encabezados
+        $sheet->getStyle('A1:H1')->applyFromArray([
+            'font' => ['bold' => true],
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'startColor' => ['rgb' => 'F1F1F1'],
+            ],
+        ]);
+
+        // Desactivar autoajuste de texto para todas las columnas
+        foreach (range('A', 'H') as $col) {
+            $sheet->getStyle($col)->getAlignment()->setWrapText(false); // Evita desbordamiento
+            $sheet->getColumnDimension($col)->setAutoSize(false); // Desactiva autoajuste
+            $sheet->getColumnDimension($col)->setWidth(20); // Ancho fijo (ajústalo según necesidad)
+        }
     }
 }
