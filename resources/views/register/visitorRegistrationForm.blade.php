@@ -240,13 +240,12 @@
         </div>
     @endif
     <div class="container">
-
         <form method="POST" action="{{ route('guardar_RegistroVisitor') }}" enctype="multipart/form-data">
             @csrf
             <input type="hidden" name="showAll" value="{{ $showAll ? 'true' : 'false' }}">
 
             @if ($showAll)
-                {{-- true : datos de vis no registrado --}}
+                {{-- Registro de visitante nuevo --}}
                 <div class="divisor">
                     <div class="divisor__inputs">
                         <label for="">Nacionalidad</label>
@@ -280,24 +279,24 @@
                             <input style="text-transform: capitalize;" type="text" id="nombre_empresa"
                                 name="nombre_empresa" value="{{ old('nombre_empresa') }}">
                         </div>
-
                         <label for="">Teléfono</label>
                         <input name="telefono" value="{{ old('telefono') }}" type="text" placeholder="Ej: 04121234567">
                         <label for="numero_carnet">Número de Carnet</label>
                         <input name="numero_carnet" id="numero_carnet" type="text" value="{{ old('numero_carnet') }}">
-
                     </div>
+                    {{-- Bloque de captura de foto --}}
                     <input type="hidden" id="fotoInput" name="foto">
                     <div class="form_register__container form_register__container--containerimagen">
                         <div class="form_register__container form_register__container--containerimagen">
                             <div class="form_register__imagecontainer" onclick="initCamera(); hideIcon()">
-                                <div id="loadingIndicator" class="loading-indicator">Cargando...</div>
-                                <video id="video" autoplay></video>
-                                <img id="photo">
+                                <div id="loadingIndicator" class="loading-indicator" style="display:none;">Cargando...</div>
+                                <video id="video" autoplay style="display:none;"></video>
+                                <img id="photo" style="display:none;" alt="Foto capturada">
                                 <img class="icono" src="{{ asset('img/camara.png') }}" alt="">
                             </div>
                             <button type="button" id="capture" onclick="takePhoto()">Tomar Foto</button>
-                            <button type="button" id="reset" onclick="resetPhoto()">Reiniciar Foto</button>
+                            <button type="button" id="reset" onclick="resetPhoto()" style="display:none;">Reiniciar
+                                Foto</button>
                         </div>
                         <label id="no_foto_label">
                             <input type="checkbox" name="no_foto" id="no_foto" onchange="toggleFotoRequired()"> No tomar
@@ -319,16 +318,13 @@
                 <select name="gerencia_id" id="gerencia_id">
                     <option value="" selected disabled>Elegir dirección</option>
                 </select>
-
-                <label for="">motivo de la visita</label>
+                <label for="">Motivo de la visita</label>
                 <textarea name="razon_visita" cols="30" rows="10" maxlength="255">{{ old('razon_visita') }}</textarea>
                 <a class="button"
-                    href="{{ Auth::user()->role == 'operador' ? route('show_consult') : route('show_Dashboard') }}">
-                    Volver
-                </a>
-
+                    href="{{ Auth::user()->role == 'operador' ? route('show_consult') : route('show_Dashboard') }}">Volver</a>
                 <input type="submit" value="Enviar">
             @else
+                {{-- Modo de visitante existente --}}
                 <div class="divisor">
                     <div class="divisor__inputs">
                         <div class="divisor__element">
@@ -344,7 +340,7 @@
                                     @break
 
                                     @default
-                                        Dato no valido
+                                        Dato no válido
                                 @endswitch
                             </p>
                             <input type="hidden" id="nacionalidad" name="nacionalidad"
@@ -355,7 +351,6 @@
                             <p>{{ $visitor->cedula }}</p>
                             <input type="hidden" id="cedula" name="cedula" value="{{ $visitor->cedula }}">
                         </div>
-
                         <div class="divisor__element">
                             <label for="nombre">Nombre</label>
                             <p>{{ $visitor->nombre }}</p>
@@ -368,17 +363,31 @@
                         </div>
                     </div>
                     <div class="form_register__container form_register__container--containerimagen">
-                        <div class="form_register__container form_register__container--containerimagen">
+                        @if (!empty($visitor->foto))
                             <div class="form_register__imagecontainer">
-                                @if (!empty($visitor->foto))
-                                    <img class="foto"
-                                        src="{{ route('visitor.photo', ['filename' => $visitor->foto]) }}"
-                                        alt="Foto del visitante" width="200">
-                                @else
-                                    <p>No hay foto disponible.</p>
-                                @endif
+                                <img class="foto" src="{{ route('visitor.photo', ['filename' => $visitor->foto]) }}"
+                                    alt="Foto del visitante" width="200">
                             </div>
-                        </div>
+                        @else
+                            {{-- Si no existe foto, mostrar bloque de captura --}}
+                            <input type="hidden" id="fotoInput" name="foto">
+                            <div class="form_register__container form_register__container--containerimagen">
+                                <div class="form_register__imagecontainer" onclick="initCamera(); hideIcon()">
+                                    <div id="loadingIndicator" class="loading-indicator" style="display:none;">
+                                        Cargando...</div>
+                                    <video id="video" autoplay style="display:none;"></video>
+                                    <img id="photo" style="display:none;" alt="Foto capturada">
+                                    <img class="icono" src="{{ asset('img/camara.png') }}" alt="">
+                                </div>
+                                <button type="button" id="capture" onclick="takePhoto()">Tomar Foto</button>
+                                <button type="button" id="reset" onclick="resetPhoto()"
+                                    style="display:none;">Reiniciar Foto</button>
+                            </div>
+                            <label id="no_foto_label">
+                                <input type="checkbox" name="no_foto" id="no_foto" onchange="toggleFotoRequired()"> No
+                                tomar foto
+                            </label>
+                        @endif
                     </div>
                 </div>
                 <label for="">Clasificación</label>
@@ -401,10 +410,8 @@
                 </div>
                 <label for="">Teléfono</label>
                 <input name="telefono" value="{{ old('telefono') }}" type="text" placeholder="Ej: 04121234567">
-
                 <label for="numero_carnet">Número de Carnet</label>
                 <input name="numero_carnet" id="numero_carnet" type="text" value="{{ old('numero_carnet') }}">
-
                 <label for="filial_id">Filial</label>
                 <select name="filial_id" id="filial_id" onchange="updateGerencias()">
                     <option value="">Elegir filial</option>
@@ -418,22 +425,19 @@
                 <select name="gerencia_id" id="gerencia_id">
                     <option value="" selected disabled>Elegir dirección</option>
                 </select>
-
-                <label for="">motivo de la visita</label>
+                <label for="">Motivo de la visita</label>
                 <textarea name="razon_visita" cols="30" rows="10" maxlength="255">{{ old('razon_visita') }}</textarea>
-                <input type="hidden" name="foto" value="{{ $visitor->foto }}">
-
+                {{-- En modo existente, si hubiera foto se envía mediante hidden --}}
+                @if (!empty($visitor->foto))
+                    <input type="hidden" name="foto" value="{{ $visitor->foto }}">
+                @endif
                 <a class="button"
-                    href="{{ Auth::user()->role == 'operador' ? route('show_consult') : route('show_Dashboard') }}">
-                    Volver
-                </a>
+                    href="{{ Auth::user()->role == 'operador' ? route('show_consult') : route('show_Dashboard') }}">Volver</a>
                 <input type="submit" value="Enviar">
             @endif
         </form>
-
-
-
     </div>
+
 
     <script>
         function updateGerencias() {
@@ -493,15 +497,16 @@
     </script>
 
     <script>
+        // Variables globales para los elementos
         let video = document.getElementById('video');
         let photo = document.getElementById('photo');
         let captureButton = document.getElementById('capture');
         let resetButton = document.getElementById('reset');
-        let photoInput = document.getElementById('fotoInput');
         let loadingIndicator = document.getElementById('loadingIndicator');
 
+        // Función para iniciar la cámara
         function initCamera() {
-            loadingIndicator.style.display = 'block'; // Mostrar el indicador de carga
+            if (loadingIndicator) loadingIndicator.style.display = 'block';
             navigator.mediaDevices.getUserMedia({
                     video: true
                 })
@@ -511,67 +516,134 @@
                     photo.style.display = 'none';
                     captureButton.style.display = 'block';
                     resetButton.style.display = 'none';
-                    loadingIndicator.style.display =
-                        'none'; // Ocultar el indicador de carga cuando la cámara esté lista
+                    if (loadingIndicator) loadingIndicator.style.display = 'none';
                 })
                 .catch(err => {
-                    console.log("Error: " + err);
-                    loadingIndicator.style.display = 'none'; // Ocultar el indicador de carga en caso de error
+                    console.error("Error al iniciar la cámara:", err);
+                    if (loadingIndicator) loadingIndicator.style.display = 'none';
                 });
         }
 
+        // Función para capturar la foto
         function takePhoto() {
             let canvas = document.createElement('canvas');
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
-            canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+            let context = canvas.getContext('2d');
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
             let dataURL = canvas.toDataURL('image/png');
+
+            // Mostrar la imagen capturada
             photo.src = dataURL;
             photo.style.display = 'block';
             video.style.display = 'none';
             captureButton.style.display = 'none';
             resetButton.style.display = 'block';
-            photoInput.value = dataURL;
 
-            // Detener la corriente de video y cerrar la cámara
+            // Asignar el dataURL al input oculto
+            document.getElementById('fotoInput').value = dataURL;
+
+            // Detener la cámara
             let stream = video.srcObject;
-            let tracks = stream.getTracks();
-            tracks.forEach(track => track.stop());
-
-            var checkbox = document.getElementById("no_foto");
-            if (checkbox.checked) {
-                checkbox.checked = false;
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
             }
 
-            var label = document.getElementById("no_foto_label");
-            label.style.display = "none"; // Esto hace que el label con el checkbox desaparezca
-
-
-            checkbox.style.display = "none"
+            // Ocultar checkbox de "No tomar foto"
+            let checkbox = document.getElementById("no_foto");
+            let label = document.getElementById("no_foto_label");
+            if (checkbox) {
+                checkbox.checked = false;
+                checkbox.style.display = "none";
+            }
+            if (label) {
+                label.style.display = "none";
+            }
         }
 
+        // Función para reiniciar la captura
         function resetPhoto() {
             photo.style.display = 'none';
             video.style.display = 'block';
             captureButton.style.display = 'block';
             resetButton.style.display = 'none';
-            photoInput.value = '';
+            document.getElementById('fotoInput').value = '';
 
             // Reiniciar la cámara
             initCamera();
 
-            var checkbox = document.getElementById("no_foto");
-            checkbox.style.display = "inline"; // Esto hace que el checkbox vuelva a aparecer
-            var label = document.getElementById("no_foto_label");
-            label.style.display = "inline"; // E
+            // Mostrar nuevamente el checkbox de "No tomar foto"
+            let checkbox = document.getElementById("no_foto");
+            let label = document.getElementById("no_foto_label");
+            if (checkbox) checkbox.style.display = "inline";
+            if (label) label.style.display = "inline";
         }
 
+        // Función para ocultar el ícono (si es necesario)
         function hideIcon() {
-            var icono = document.querySelector('.icono');
-            if (icono) {
-                icono.style.display = 'none';
+            let icono = document.querySelector('.icono');
+            if (icono) icono.style.display = 'none';
+        }
+
+        // Alternar el requerimiento del input foto según el checkbox
+        function toggleFotoRequired() {
+            const noFotoChecked = document.getElementById('no_foto').checked;
+            document.getElementById('fotoInput').required = !noFotoChecked;
+        }
+
+        // Mostrar/Ocultar input de empresa según selección
+        function toggleEmpresaInput() {
+            const empresaInput = document.getElementById('empresaInput');
+            const empresaRadio = document.getElementById('empresa');
+            if (empresaInput) {
+                empresaInput.style.display = (empresaRadio && empresaRadio.checked) ? 'block' : 'none';
             }
         }
+
+        // Actualizar gerencias (función existente, se deja igual o con mejoras si es necesario)
+        async function updateGerencias() {
+            const filialId = document.getElementById('filial_id').value;
+            const gerenciaSelect = document.getElementById('gerencia_id');
+            const csrfToken = "{{ csrf_token() }}";
+
+            // Limpiar las opciones existentes
+            gerenciaSelect.innerHTML = '<option value="" selected disabled>Elegir dirección</option>';
+
+            if (filialId) {
+                try {
+                    const response = await fetch(`/get-gerencias/${filialId}`, {
+                        method: "POST",
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({})
+                    });
+                    if (!response.ok) throw new Error('Error en la respuesta del servidor');
+                    const data = await response.json();
+                    data.forEach(gerencia => {
+                        let option = new Option(gerencia.nombre, gerencia.id);
+                        // Seleccionar si coincide con el valor previo
+                        if (gerencia.id == "{{ old('gerencia_id', request('gerencia_id')) }}") {
+                            option.selected = true;
+                        }
+                        gerenciaSelect.add(option);
+                    });
+                } catch (error) {
+                    console.error('Error al cargar las gerencias:', error);
+                }
+            }
+        }
+
+        // Al cargar el DOM, inicializar funciones necesarias
+        document.addEventListener("DOMContentLoaded", function() {
+            // Si hay filial seleccionada, cargar gerencias
+            if (document.getElementById('filial_id').value) {
+                updateGerencias();
+            }
+            // Inicializar el estado del input empresa
+            toggleEmpresaInput();
+        });
     </script>
 
     <script>

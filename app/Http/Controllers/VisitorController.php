@@ -174,51 +174,55 @@ class VisitorController extends Controller
             ]);
         }
     
-        // Procesamiento de imagen de la foto si se envía
-        $fileName = null;
-        if ($request->input('foto')) {
-            $foto = $request->input('foto');
-            if (strpos($foto, 'data:image') === 0) {
-                $data = explode(',', $foto);
+    // Procesamiento de imagen de la foto si se envía
+    $fileName = null;
+    if ($request->filled('foto')) {
+        $foto = $request->input('foto');
+        // Verificar que la cadena tenga formato base64
+        if (strpos($foto, 'data:image') === 0) {
+            $data = explode(',', $foto);
+            if (isset($data[1])) {
                 $imageData = base64_decode($data[1]);
                 $fileName = 'visitor_' . Str::random(10) . '.png';
                 Storage::disk('local')->put('visitors/' . $fileName, $imageData);
-            } else {
-                $fileName = $foto;
             }
-        }
-    
-        // Crear un nuevo registro de visitante
-        $visitor = new Visitor();
-        $visitor->nacionalidad = $request->input('nacionalidad');
-        $visitor->cedula = $request->input('cedula');
-        $visitor->nombre = ucwords(strtolower($request->input('nombre')));
-        $visitor->apellido = ucwords(strtolower($request->input('apellido')));
-        $visitor->filial_id = $request->input('filial_id');
-        $visitor->gerencia_id = $request->input('gerencia_id');
-        $visitor->razon_visita = $request->input('razon_visita');
-        $visitor->telefono = $request->input('telefono');
-        $visitor->numero_carnet = $request->input('numero_carnet');
-        $visitor->clasificacion = $request->input('clasificacion');
-        $visitor->nombre_empresa = $request->input('clasificacion') === 'empresa' ? ucwords(strtolower($request->input('nombre_empresa'))) : '';
-        $visitor->user_id = auth()->id();
-    
-        // Asignar foto si se envía, de lo contrario dejar en null o vacío
-        if (!$request->has('no_foto') || $request->input('no_foto') != 'on') {
-            $visitor->foto = $fileName;
         } else {
-            $visitor->foto = '';
+            // Si no es base64, se asume que es un nombre o ruta ya guardada
+            $fileName = $foto;
         }
-    
-        $visitor->save();
-    
-        // Redireccionar con mensaje de éxito según el rol del usuario
-        $user = Auth::user();
-        if ($user->role == 'operador') {
-            return redirect()->route('show_consult')->with('success', 'Los datos se han enviado correctamente.');
-        } elseif ($user->role == 'administrador') {
-            return redirect()->route('show_Dashboard')->with('success', 'Los datos se han enviado correctamente.');
-        }
+    }
+
+    // Crear un nuevo registro de visitante
+    $visitor = new Visitor();
+    $visitor->nacionalidad = $request->input('nacionalidad');
+    $visitor->cedula = $request->input('cedula');
+    $visitor->nombre = ucwords(strtolower($request->input('nombre')));
+    $visitor->apellido = ucwords(strtolower($request->input('apellido')));
+    $visitor->filial_id = $request->input('filial_id');
+    $visitor->gerencia_id = $request->input('gerencia_id');
+    $visitor->razon_visita = $request->input('razon_visita');
+    $visitor->telefono = $request->input('telefono');
+    $visitor->numero_carnet = $request->input('numero_carnet');
+    $visitor->clasificacion = $request->input('clasificacion');
+    $visitor->nombre_empresa = $request->input('clasificacion') === 'empresa' ? ucwords(strtolower($request->input('nombre_empresa'))) : '';
+    $visitor->user_id = auth()->id();
+
+    // Asignar la foto (puede quedar null si no se capturó)
+    if (!$request->has('no_foto') || $request->input('no_foto') != 'on') {
+        $visitor->foto = $fileName;
+    } else {
+        $visitor->foto = '';
+    }
+
+    $visitor->save();
+
+    // Redirección según el rol del usuario
+    $user = Auth::user();
+    if ($user->role == 'operador') {
+        return redirect()->route('show_consult')->with('success', 'Los datos se han enviado correctamente.');
+    } elseif ($user->role == 'administrador') {
+        return redirect()->route('show_Dashboard')->with('success', 'Los datos se han enviado correctamente.');
+    }
     }
     
     public function getGerenciasByFilial($filial_id)
