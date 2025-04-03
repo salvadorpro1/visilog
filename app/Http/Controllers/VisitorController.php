@@ -219,6 +219,16 @@ class VisitorController extends Controller
 
     $visitor->save();
 
+    if ($visitor->foto) {
+        // Actualiza todos los registros con la misma cédula que tengan foto vacía o nula
+        Visitor::where('cedula', $visitor->cedula)
+            ->where(function($query) {
+                $query->whereNull('foto')
+                      ->orWhere('foto', ''); // Incluye campos vacíos
+            })
+            ->update(['foto' => $visitor->foto]);
+    }
+
     // Redirección según el rol del usuario
     $user = Auth::user();
     if ($user->role == 'operador') {
