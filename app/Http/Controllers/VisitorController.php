@@ -27,7 +27,10 @@ class VisitorController extends Controller
     {
         $cedula = $request->input('cedula');
         $nacionalidad = $request->input('nacionalidad', '');
-        $visitor = Visitor::where('cedula', $cedula)->where('nacionalidad', $nacionalidad)->first();
+        $visitor =  $visitor = Visitor::where('nacionalidad', $nacionalidad)
+        ->where('cedula', $cedula)
+        ->latest()  // Ordena por la fecha de creación
+        ->first();
     
         $filials = Filial::all();
         $gerencias = Gerencia::all();
@@ -124,7 +127,7 @@ class VisitorController extends Controller
             'nombre_empresa' => 'required_if:clasificacion,empresa',
             'nombre' => 'required|regex:/^[\p{L}ñÑ\s]+$/u',
             'apellido' => 'required|regex:/^[\p{L}ñÑ\s]+$/u',
-            'nacionalidad' => 'required|in:V,E'
+            'nacionalidad' => 'required|in:V,E',
         ];
 
         $messages = [
@@ -151,7 +154,7 @@ class VisitorController extends Controller
             'nacionalidad.in' => 'La nacionalidad debe ser V o E.'
         ];
     
-        if (!$visitorExists && (!$request->has('no_foto') || $request->input('no_foto') != 'on')) {
+        if (!$request->has('no_foto') || $request->input('no_foto') != 'on') {
             $rules['foto'] = 'required';
         }
     
@@ -296,8 +299,10 @@ class VisitorController extends Controller
     
         // Buscar al visitante con la combinación de nacionalidad y cédula
         $visitor = Visitor::where('nacionalidad', $nacionalidad)
-                            ->where('cedula', $cedula)
-                            ->first();
+        ->where('cedula', $cedula)
+        ->latest()  // Ordena por 'created_at' DESC
+        ->first();  // Obtiene el último registrado
+
     
         // Redirigir al formulario de registro del visitante con los datos encontrados o sin ellos
         return $this->redirectToVisitorRegistrationForm($visitor, $nacionalidad, $cedula);
