@@ -358,7 +358,7 @@
                                         href="{{ route('show_Register_Visitor_Detail', $visitor->id) }}">{{ $visitor->cedula }}</a>
                                 </td>
                                 <td>{{ $visitor->nombre }}</td>
-                                <td>{{ \Carbon\Carbon::parse($diahasta)->format('d/m/Y') }}</td>
+                                <td>{{ $visitor->created_at->format('d/m/Y') }}</td>
                                 <td>{{ $visitor->filial->siglas }}</td>
                                 <td>{{ $visitor->gerencia->nombre }}</td>
                             </tr>
