@@ -4,7 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VISILOG Inicio de session</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -16,6 +15,14 @@
             align-items: center;
             height: 100vh;
             flex-direction: column;
+            background-image: url('{{ asset('img/fondoInicio.jpg') }}');
+            /* Coloca aquí la URL de tu imagen */
+            background-size: cover;
+            /* Hace que la imagen cubra todo el fondo */
+            background-repeat: no-repeat;
+            /* Evita que la imagen se repita */
+            background-position: center center;
+            /* Centra la imagen */
         }
 
         form {
