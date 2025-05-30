@@ -117,6 +117,7 @@ class VisitorController extends Controller
 
         // Reglas de validación
         $rules = [
+            'tipo_carnet' => 'required|in:visitante,trabajador',
             'filial_id' => 'required|exists:filiales,id',
             'gerencia_id' => 'required|exists:gerencias,id',
             'razon_visita' => 'required|max:255',
@@ -140,6 +141,8 @@ class VisitorController extends Controller
             'foto.required' => 'La foto es requerida.',
             'cedula.required' => 'La cédula es requerida.',
             'cedula.digits_between' => 'La cédula debe tener entre 7 y 8 dígitos.',
+            'tipo_carnet.required' => 'El tipo de carnet es requerido.',
+            'tipo_carnet.in' => 'El tipo de carnet debe ser visitante o trabajador.',
             'numero_carnet.required' => 'El número de carnet es requerido.',
             'clasificacion.required' => 'La clasificación es requerida.',
             'clasificacion.in' => 'La clasificación debe ser empresa o persona.',
@@ -177,9 +180,9 @@ class VisitorController extends Controller
             ]);
         }
     
-    // Procesamiento de imagen de la foto si se envía
-    $fileName = null;
-    if ($request->filled('foto')) {
+        // Procesamiento de imagen de la foto si se envía
+        $fileName = null;
+        if ($request->filled('foto')) {
         $foto = $request->input('foto');
         // Verificar que la cadena tenga formato base64
         if (strpos($foto, 'data:image') === 0) {
@@ -193,33 +196,34 @@ class VisitorController extends Controller
             // Si no es base64, se asume que es un nombre o ruta ya guardada
             $fileName = $foto;
         }
-    }
+        }
 
-    // Crear un nuevo registro de visitante
-    $visitor = new Visitor();
-    $visitor->nacionalidad = $request->input('nacionalidad');
-    $visitor->cedula = $request->input('cedula');
-    $visitor->nombre = ucwords(strtolower($request->input('nombre')));
-    $visitor->apellido = ucwords(strtolower($request->input('apellido')));
-    $visitor->filial_id = $request->input('filial_id');
-    $visitor->gerencia_id = $request->input('gerencia_id');
-    $visitor->razon_visita = $request->input('razon_visita');
-    $visitor->telefono = $request->input('telefono');
-    $visitor->numero_carnet = $request->input('numero_carnet');
-    $visitor->clasificacion = $request->input('clasificacion');
-    $visitor->nombre_empresa = $request->input('clasificacion') === 'empresa' ? ucwords(strtolower($request->input('nombre_empresa'))) : '';
-    $visitor->user_id = auth()->id();
+        // Crear un nuevo registro de visitante
+        $visitor = new Visitor();
+        $visitor->nacionalidad = $request->input('nacionalidad');
+        $visitor->cedula = $request->input('cedula');
+        $visitor->nombre = ucwords(strtolower($request->input('nombre')));
+        $visitor->apellido = ucwords(strtolower($request->input('apellido')));
+        $visitor->filial_id = $request->input('filial_id');
+        $visitor->gerencia_id = $request->input('gerencia_id');
+        $visitor->razon_visita = $request->input('razon_visita');
+        $visitor->telefono = $request->input('telefono');
+        $visitor->tipo_carnet = $request->input('tipo_carnet');
+        $visitor->numero_carnet = $request->input('numero_carnet');
+        $visitor->clasificacion = $request->input('clasificacion');
+        $visitor->nombre_empresa = $request->input('clasificacion') === 'empresa' ? ucwords(strtolower($request->input('nombre_empresa'))) : '';
+        $visitor->user_id = auth()->id();
 
-    // Asignar la foto (puede quedar null si no se capturó)
-    if (!$request->has('no_foto') || $request->input('no_foto') != 'on') {
+        // Asignar la foto (puede quedar null si no se capturó)
+        if (!$request->has('no_foto') || $request->input('no_foto') != 'on') {
         $visitor->foto = $fileName;
-    } else {
+        } else {
         $visitor->foto = '';
-    }
+        }
 
-    $visitor->save();
+        $visitor->save();
 
-    if ($visitor->foto) {
+        if ($visitor->foto) {
         // Actualiza todos los registros con la misma cédula que tengan foto vacía o nula
         Visitor::where('cedula', $visitor->cedula)
             ->where(function($query) {
@@ -227,15 +231,15 @@ class VisitorController extends Controller
                       ->orWhere('foto', ''); // Incluye campos vacíos
             })
             ->update(['foto' => $visitor->foto]);
-    }
+        }
 
-    // Redirección según el rol del usuario
-    $user = Auth::user();
-    if ($user->role == 'operador') {
+        // Redirección según el rol del usuario
+        $user = Auth::user();
+        if ($user->role == 'operador') {
         return redirect()->route('show_consult')->with('success', 'Los datos se han enviado correctamente.');
-    } elseif ($user->role == 'administrador') {
+        } elseif ($user->role == 'administrador') {
         return redirect()->route('show_Dashboard')->with('success', 'Los datos se han enviado correctamente.');
-    }
+        }
     }
     
     public function getGerenciasByFilial($filial_id)

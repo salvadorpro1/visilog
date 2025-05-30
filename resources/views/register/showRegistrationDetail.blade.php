@@ -186,6 +186,11 @@
         </div>
 
         <div class="details-item">
+            <span class="details-label">tipo de Carnet:</span>
+            <span class="details-value">{{ $persona->tipo_carnet }}</span>
+        </div>
+
+        <div class="details-item">
             <span class="details-label">Número de Carnet:</span>
             <span class="details-value">{{ $persona->numero_carnet }}</span>
         </div>

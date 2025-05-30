@@ -19,6 +19,7 @@ class CreateVisitorsTable extends Migration
             $table->text('razon_visita');
             $table->string('foto')->nullable(); // Permitir valores null en la columna 'foto'
             $table->unsignedBigInteger('user_id');
+            $table->enum('tipo_carnet', ['visitante', 'trabajador']);
             $table->char('numero_carnet');
             $table->enum('clasificacion', ['empresa', 'persona']);
             $table->string('nombre_empresa');

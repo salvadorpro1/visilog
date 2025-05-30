@@ -281,6 +281,19 @@
                         </div>
                         <label for="">Teléfono</label>
                         <input name="telefono" value="{{ old('telefono') }}" type="text" placeholder="Ej: 04121234567">
+                        <label>Tipo de Carnet</label>
+                        <div class="separar">
+                            <div class="separar__uni">
+                                <label for="carnet_visitante">Carnet de visitante</label>
+                                <label for="carnet_trabajador">Carnet de trabajador</label>
+                            </div>
+                            <div class="separar__uni">
+                                <input type="radio" id="carnet_visitante" name="tipo_carnet" value="visitante"
+                                    {{ old('tipo_carnet') == 'visitante' ? 'checked' : '' }}>
+                                <input type="radio" id="carnet_trabajador" name="tipo_carnet" value="trabajador"
+                                    {{ old('tipo_carnet') == 'trabajador' ? 'checked' : '' }}>
+                            </div>
+                        </div>
                         <label for="numero_carnet">Número de Carnet</label>
                         <input name="numero_carnet" id="numero_carnet" type="text" value="{{ old('numero_carnet') }}">
                     </div>
@@ -299,7 +312,8 @@
                                 Foto</button>
                         </div>
                         <label id="no_foto_label">
-                            <input type="checkbox" name="no_foto" id="no_foto" onchange="toggleFotoRequired()"> No tomar
+                            <input type="checkbox" name="no_foto" id="no_foto" onchange="toggleFotoRequired()"> No
+                            tomar
                             foto
                         </label>
                     </div>
@@ -410,6 +424,19 @@
                 </div>
                 <label for="">Teléfono</label>
                 <input name="telefono" value="{{ old('telefono') }}" type="text" placeholder="Ej: 04121234567">
+                <label>Tipo de Carnet</label>
+                <div class="separar">
+                    <div class="separar__uni">
+                        <label for="carnet_visitante">Carnet de visitante</label>
+                        <label for="carnet_trabajador">Carnet de trabajador</label>
+                    </div>
+                    <div class="separar__uni">
+                        <input type="radio" id="carnet_visitante" name="tipo_carnet" value="visitante"
+                            {{ old('tipo_carnet') == 'visitante' ? 'checked' : '' }}>
+                        <input type="radio" id="carnet_trabajador" name="tipo_carnet" value="trabajador"
+                            {{ old('tipo_carnet') == 'trabajador' ? 'checked' : '' }}>
+                    </div>
+                </div>
                 <label for="numero_carnet">Número de Carnet</label>
                 <input name="numero_carnet" id="numero_carnet" type="text" value="{{ old('numero_carnet') }}">
                 <label for="filial_id">Filial</label>

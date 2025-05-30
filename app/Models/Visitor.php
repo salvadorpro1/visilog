@@ -9,7 +9,7 @@ class Visitor extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['nombre', 'apellido', 'cedula', 'filial_id', 'gerencia_id', 'razon_visita','nacionalidad','foto','numero_carnet','clasificacion','nombre_empresa','telefono'];
+    protected $fillable = ['nombre', 'apellido', 'cedula', 'filial_id', 'gerencia_id', 'razon_visita','nacionalidad','foto','numero_carnet','clasificacion','nombre_empresa','telefono','tipo_carnet'];
 
     public function user()
     {
