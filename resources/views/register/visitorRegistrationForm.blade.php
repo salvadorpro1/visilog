@@ -423,7 +423,7 @@
                         value="{{ old('nombre_empresa') }}">
                 </div>
                 <label for="">Teléfono</label>
-                <input name="telefono" value="{{ old('telefono') }}" type="text" placeholder="Ej: 04121234567">
+                <input name="telefono" value="{{ $visitor->telefono }}" type="text" placeholder="Ej: 04121234567">
                 <label>Tipo de Carnet</label>
                 <div class="separar">
                     <div class="separar__uni">
