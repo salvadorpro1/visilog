@@ -121,7 +121,7 @@ class VisitorController extends Controller
             'filial_id' => 'required|exists:filiales,id',
             'gerencia_id' => 'required|exists:gerencias,id',
             'razon_visita' => 'required|max:255',
-            'cedula' => 'required|digits_between:7,8',
+            'cedula' => 'required',
             'numero_carnet' => 'required',
             'clasificacion' => 'required|in:empresa,persona',
             'telefono' => 'required|digits:11',
@@ -131,6 +131,12 @@ class VisitorController extends Controller
             'nacionalidad' => 'required|in:V,E',
         ];
 
+        $nacionalidad = $request->input('nacionalidad');
+        if ($nacionalidad === 'V') {
+        $rules['cedula'] .= '|digits_between:7,8';
+        } elseif ($nacionalidad === 'E') {
+        $rules['cedula'] .= '|digits_between:7,20';
+}
         $messages = [
             'filial_id.required' => 'La filial es requerida.',
             'filial_id.exists' => 'La filial seleccionada no es válida.',
@@ -140,7 +146,7 @@ class VisitorController extends Controller
             'razon_visita.max' => 'el motivo de visita no puede tener más de 255 caracteres.',
             'foto.required' => 'La foto es requerida.',
             'cedula.required' => 'La cédula es requerida.',
-            'cedula.digits_between' => 'La cédula debe tener entre 7 y 8 dígitos.',
+            'cedula.digits_between' => 'La cédula debe tener entre :min y :max dígitos según la nacionalidad.',
             'tipo_carnet.required' => 'El tipo de carnet es requerido.',
             'tipo_carnet.in' => 'El tipo de carnet debe ser visitante o trabajador.',
             'numero_carnet.required' => 'El número de carnet es requerido.',
@@ -292,14 +298,19 @@ class VisitorController extends Controller
     {
         $rules = [
             'nacionalidad' => 'required|in:V,E',
-            'cedula' => 'required|digits_between:7,8',
+            'cedula' => 'required',
         ];
-    
+    $nacionalidad = $request->input('nacionalidad');
+if ($nacionalidad === 'V') {
+    $rules['cedula'] .= '|digits_between:7,8';
+} elseif ($nacionalidad === 'E') {
+    $rules['cedula'] .= '|digits_between:7,20';
+}
         $messages = [
             'nacionalidad.required' => 'La nacionalidad es obligatoria.',
             'nacionalidad.in' => 'La nacionalidad debe ser "V" o "E".',
             'cedula.required' => 'La cédula es obligatoria.',
-            'cedula.digits_between' => 'La cédula debe tener entre :min y :max dígitos.',
+    'cedula.digits_between' => 'La cédula debe tener entre :min y :max dígitos según la nacionalidad.',
         ];
     
         $validator = Validator::make($request->all(), $rules, $messages);
@@ -333,9 +344,6 @@ class VisitorController extends Controller
             'visitor' => $visitor,
         ]);
     }
-    
-
-    
     
     public function getVisitorPhoto($filename)
     {
