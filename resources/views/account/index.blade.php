@@ -324,7 +324,7 @@
             </div>
 
             <div class="form-buttons">
-                <a class="button btn-primary--back" href="{{ route('show_Dashboard') }}">Volver al tablero</a>
+                <a class="button btn-primary--back" href="{{ route('show_Dashboard') }}">Volver </a>
                 <button type="submit" class="btn btn-primary">Filtrar</button>
             </div>
         </form>

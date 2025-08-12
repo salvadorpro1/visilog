@@ -117,14 +117,14 @@
         </section>
         <section class="menu-usuario__section">
             <ul class="user-menu__list">
-                @if ($user && $user->role === 'administrador')
+                @if (($user && $user->role === 'administrador') || $user->role === 'operador')
                     <li class="user-menu__item">
                         <a href="{{ route('show_Register_Visitor') }}" class="user-menu__item-link">Tabla de
                             visitantes</a>
                     </li>
                 @endif
 
-                @if ($user && $user->role === 'administrador')
+                @if (($user && $user->role === 'administrador') || $user->role === 'operador')
                     <li class="user-menu__item">
                         <a href="{{ route('show_Account') }}" class="user-menu__item-link">Reporte</a>
                     </li>

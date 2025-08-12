@@ -36,15 +36,15 @@ Route::post('/cambiar-contraseña', [AuthenticateUserController::class, 'changeP
 Route::get('/consulta', [VisitorController::class, 'showConsulForm'])->middleware(['auth', 'role:operador'])->name('show_consult');
 Route::post('/consulta', [VisitorController::class, 'consulDate']);
 
-Route::get('/registro-de-visitantes', [VisitorController::class, 'showRegister'])->middleware(['auth', 'role:administrador'])->name('show_Register_Visitor');
+Route::get('/registro-de-visitantes', [VisitorController::class, 'showRegister'])->middleware(['auth', 'role:administrador,operador'])->name('show_Register_Visitor');
 
-Route::get('/registro-de-visitantes/{cedula}', [VisitorController::class, 'showRegisterDetail'])->middleware(['auth', 'role:administrador'])->name('show_Register_Visitor_Detail');
+Route::get('/registro-de-visitantes/{cedula}', [VisitorController::class, 'showRegisterDetail'])->middleware(['auth', 'role:administrador,operador'])->name('show_Register_Visitor_Detail');
 
 Route::get('/registro', [VisitorController::class, 'showRegisterVisitor'])->middleware(['auth', 'role:operador'])->name('show_register');
 
 Route::post('/guardar-registro', [VisitorController::class, 'saveVisitor'])->middleware(['auth', 'role:operador'])->name('guardar_RegistroVisitor');
 
-Route::get('/reporte', [VisitorController::class, 'showAccount'])->middleware(['auth', 'role:administrador'])->name('show_Account');
+Route::get('/reporte', [VisitorController::class, 'showAccount'])->middleware(['auth', 'role:administrador,operador'])->name('show_Account');
 Route::post('/reporte', [VisitorController::class, 'accountConsul']);
 
 Route::get('/dashboard', [Dashboard::class, 'showDashboard'])->middleware(['auth', 'role:administrador'])->name('show_Dashboard');

@@ -15,21 +15,30 @@ class CheckRole
      * @param  string  $role
      * @return mixed
      */
-    public function handle($request, Closure $next, $role)
+public function handle($request, Closure $next, ...$roles)
     {
         $user = Auth::user();
 
-        if ($user->role !== $role) {
-            if ($role == 'operador') {
-                // Redirige a los operadores a la ruta 'show_consult'
-                return redirect()->route('show_Dashboard');
+        if (! $user) {
+            // Si no está autenticado, lo mandas a login o donde quieras
+            return redirect()->route('login');
+        }
 
-            } else {
-                // Redirige a los administradores a la ruta 'show_Dashboard'
+        // Si el rol del usuario NO está en la lista de roles permitidos
+        if (! in_array($user->role, $roles)) {
+            // Puedes hacer lógica de redirección basada en rol del usuario
+            // Por ejemplo:
+            if ($user->role === 'administrador') {
+                return redirect()->route('show_Dashboard');
+            } elseif ($user->role === 'operador') {
                 return redirect()->route('show_consult');
+            } else {
+                // Para otros roles que no están permitidos
+                abort(403, 'No autorizado');
             }
         }
 
         return $next($request);
     }
+
 }

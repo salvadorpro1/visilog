@@ -155,6 +155,7 @@
     </style>
 @endsection
 
+
 @section('content')
     <div class="container">
         <h1>Tabla de Visitantes</h1>
@@ -202,7 +203,16 @@
                 @endforeach
             </tbody>
         </table>
-        <a class="button" href="{{ route('show_Dashboard') }}">Volver al tablero</a>
+        @php
+            $user = auth()->user();
+        @endphp
+        <a class="button"
+            href="
+    @if ($user->role === 'administrador') {{ route('show_Dashboard') }}
+    @elseif($user->role === 'operador')
+        {{ route('show_consult') }} @endif
+">Volver
+        </a>
         <div class="pagination">
             {{ $registros->links() }}
         </div>

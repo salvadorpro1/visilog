@@ -120,8 +120,19 @@
             <label for="new_password_confirmation">Confirmar Nueva Contraseña:</label>
             <input type="password" name="new_password_confirmation" id="new_password_confirmation">
             <div class="juntos">
-                <a class="button" href="{{ route('show_Dashboard') }}">Volver al tablero</a>
-                <button type="submit">Cambiar Contraseña</button>
+
+                @php
+                    $user = auth()->user();
+                @endphp
+
+                <a class="button"
+                    href="
+    @if ($user->role === 'administrador') {{ route('show_Dashboard') }}
+    @elseif($user->role === 'operador')
+        {{ route('show_consult') }} @endif
+">Volver
+                </a> <button type="submit">Cambiar Contraseña</button>
+
             </div>
 
         </form>
