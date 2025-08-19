@@ -285,13 +285,13 @@
                         <div class="separar">
                             <div class="separar__uni">
                                 <label for="carnet_visitante">Carnet de visitante</label>
-                                <label for="carnet_trabajador">Carnet de trabajador</label>
+                                <label for="carnet_trabajador">Ficha</label>
                             </div>
                             <div class="separar__uni">
                                 <input type="radio" id="carnet_visitante" name="tipo_carnet" value="visitante"
                                     {{ old('tipo_carnet') == 'visitante' ? 'checked' : '' }}>
-                                <input type="radio" id="carnet_trabajador" name="tipo_carnet" value="trabajador"
-                                    {{ old('tipo_carnet') == 'trabajador' ? 'checked' : '' }}>
+                                <input type="radio" id="carnet_trabajador" name="tipo_carnet" value="ficha"
+                                    {{ old('tipo_carnet') == 'ficha' ? 'checked' : '' }}>
                             </div>
                         </div>
                         <label for="numero_carnet">Número de Carnet</label>
@@ -412,15 +412,17 @@
                     </div>
                     <div class="separar__uni">
                         <input type="radio" id="persona" name="clasificacion" value="persona"
-                            {{ old('clasificacion') == 'persona' ? 'checked' : '' }} onclick="toggleEmpresaInput()">
+                            {{ old('clasificacion', $visitor->clasificacion ?? '') == 'persona' ? 'checked' : '' }}
+                            onclick="toggleEmpresaInput()">
                         <input type="radio" id="empresa" name="clasificacion" value="empresa"
-                            {{ old('clasificacion') == 'empresa' ? 'checked' : '' }} onclick="toggleEmpresaInput()">
+                            {{ old('clasificacion', $visitor->clasificacion ?? '') == 'empresa' ? 'checked' : '' }}
+                            onclick="toggleEmpresaInput()">
                     </div>
                 </div>
                 <div id="empresaInput" style="display: none;">
                     <label for="nombre_empresa">Nombre de la empresa</label>
                     <input type="text" id="nombre_empresa" name="nombre_empresa"
-                        value="{{ old('nombre_empresa') }}">
+                        value="{{ old('nombre_empresa', $visitor->nombre_empresa ?? '') }}">
                 </div>
                 <label for="">Teléfono</label>
                 <input name="telefono" value="{{ $visitor->telefono }}" type="text" placeholder="Ej: 04121234567">
@@ -428,13 +430,13 @@
                 <div class="separar">
                     <div class="separar__uni">
                         <label for="carnet_visitante">Carnet de visitante</label>
-                        <label for="carnet_trabajador">Carnet de trabajador</label>
+                        <label for="carnet_trabajador">Ficha</label>
                     </div>
                     <div class="separar__uni">
                         <input type="radio" id="carnet_visitante" name="tipo_carnet" value="visitante"
                             {{ old('tipo_carnet') == 'visitante' ? 'checked' : '' }}>
-                        <input type="radio" id="carnet_trabajador" name="tipo_carnet" value="trabajador"
-                            {{ old('tipo_carnet') == 'trabajador' ? 'checked' : '' }}>
+                        <input type="radio" id="carnet_trabajador" name="tipo_carnet" value="ficha"
+                            {{ old('tipo_carnet') == 'ficha' ? 'checked' : '' }}>
                     </div>
                 </div>
                 <label for="numero_carnet">Número de Carnet</label>
@@ -622,9 +624,10 @@
         function toggleEmpresaInput() {
             const empresaInput = document.getElementById('empresaInput');
             const empresaRadio = document.getElementById('empresa');
-            if (empresaInput) {
-                empresaInput.style.display = (empresaRadio && empresaRadio.checked) ? 'block' : 'none';
-            }
+            empresaInput.style.display = (empresaRadio && empresaRadio.checked) ? 'block' : 'none';
+        }
+        document.addEventListener("DOMContentLoaded", toggleEmpresaInput);
+
         }
 
         // Actualizar gerencias (función existente, se deja igual o con mejoras si es necesario)

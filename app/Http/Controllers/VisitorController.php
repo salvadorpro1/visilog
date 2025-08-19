@@ -117,7 +117,7 @@ class VisitorController extends Controller
 
         // Reglas de validación
         $rules = [
-            'tipo_carnet' => 'required|in:visitante,trabajador',
+            'tipo_carnet' => 'required|in:visitante,ficha',
             'filial_id' => 'required|exists:filiales,id',
             'gerencia_id' => 'required|exists:gerencias,id',
             'razon_visita' => 'required|max:255',
@@ -148,7 +148,7 @@ class VisitorController extends Controller
             'cedula.required' => 'La cédula es requerida.',
             'cedula.digits_between' => 'La cédula debe tener entre :min y :max dígitos según la nacionalidad.',
             'tipo_carnet.required' => 'El tipo de carnet es requerido.',
-            'tipo_carnet.in' => 'El tipo de carnet debe ser visitante o trabajador.',
+            'tipo_carnet.in' => 'El tipo de carnet debe ser visitante o Ficha.',
             'numero_carnet.required' => 'El número de carnet es requerido.',
             'clasificacion.required' => 'La clasificación es requerida.',
             'clasificacion.in' => 'La clasificación debe ser empresa o persona.',
