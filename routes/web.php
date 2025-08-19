@@ -19,8 +19,18 @@ use App\Http\Controllers\GerenciaController;
 |
 */
 
-Route::get('/', [AuthenticateUserController::class, "showLoginForm"])->middleware('auth.redirect')->name('login');
-Route::post('/login', [AuthenticateUserController::class, "login"]);
+Route::redirect('/', '/login');
+
+
+Route::get('/login', [AuthenticateUserController::class, "showLoginForm"])
+    ->middleware('auth.redirect')
+    ->name('login');
+
+
+Route::post('/login', [AuthenticateUserController::class, "login"])
+    ->name('sesion'); 
+
+
 Route::get('/logout', [AuthenticateUserController::class, 'logout'])->name('logout');
 Route::get('/operador', [AuthenticateUserController::class, 'showRegister'])->middleware(['auth', 'role:administrador'])->name('showRegisterCreate');
 Route::post('/operador', [AuthenticateUserController::class, 'saveRegistrar'])->middleware(['auth', 'role:administrador'])->name('create_operator');
