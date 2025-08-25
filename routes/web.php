@@ -39,6 +39,12 @@ Route::post('/operador/desactivar/{id}', [AuthenticateUserController::class, 'de
     ->middleware(['auth', 'role:administrador'])
     ->name('deactivate_Operator');
 
+Route::post('/operator/{id}/update-password', [AuthenticateUserController::class, 'updateOperatorPassword'])
+    ->name('update_operator_password')
+    ->middleware('auth'); // y puedes validar que sea administrador
+
+
+
 Route::get('/mostrar-cambiar-contraseña', [AuthenticateUserController::class, "showChangePassword"])->middleware('auth')->name('changePassword');
 
 Route::post('/cambiar-contraseña', [AuthenticateUserController::class, 'changePassword']);

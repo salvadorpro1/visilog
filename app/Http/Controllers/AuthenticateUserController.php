@@ -104,6 +104,27 @@ class AuthenticateUserController extends Controller
         return redirect()->route('showRegisterCreate')->with('success', 'Usuario registrado satisfactoriamente.');
     }
 
+public function updateOperatorPassword(Request $request, $id)
+{
+    $operator = User::findOrFail($id);
+
+    // Validación
+    $request->validate([
+        'new_password' => 'required|min:6|confirmed',
+    ], [
+        'new_password.required' => 'La nueva contraseña es obligatoria.',
+        'new_password.min' => 'La contraseña debe tener al menos :min caracteres.',
+        'new_password.confirmed' => 'La confirmación no coincide.',
+    ]);
+
+    // Actualizar contraseña
+    $operator->password = $request->new_password;
+    $operator->save();
+
+    return redirect()->back()->with('success', 'Contraseña actualizada correctamente para ' . $operator->name);
+}
+
+
     public function showChangePassword()
     {
         return view('changePassword.index');
