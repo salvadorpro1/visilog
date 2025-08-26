@@ -6,6 +6,139 @@
 
 @section('style')
     <style>
+        .modal-confirmation {
+            display: none;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            animation: fadeIn 0.3s;
+            overflow: hidden;
+        }
+
+        .modal-confirmation-content {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            gap: 15px;
+            transform: scale(0.9);
+            animation: popIn 0.3s forwards;
+        }
+
+        .modal-confirmation-title {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #333333;
+            text-align: center;
+        }
+
+        .modal-confirmation-body {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-radius: 8px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .modal-confirmation-body ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .modal-confirmation-body li {
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .modal-confirmation-body li strong {
+            width: 150px;
+            flex-shrink: 0;
+        }
+
+        .modal-confirmation-body li.razon-visita {
+            flex-direction: column;
+        }
+
+        .modal-confirmation-body li:last-child {
+            border-bottom: none;
+        }
+
+        .modal-confirmation-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            padding-top: 10px;
+            border-top: 1px solid #ddd;
+            background: #fff;
+            position: sticky;
+            bottom: 0;
+        }
+
+        .modal-btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .cancel-btn {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .cancel-btn:hover {
+            background: #d6d6d6;
+        }
+
+        .confirm-btn {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .confirm-btn:hover {
+            background: #45a049;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes popIn {
+            0% {
+                transform: scale(0.9);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -240,7 +373,7 @@
         </div>
     @endif
     <div class="container">
-        <form method="POST" action="{{ route('guardar_RegistroVisitor') }}" enctype="multipart/form-data">
+        <form id="visitorForm" method="POST" action="{{ route('guardar_RegistroVisitor') }}" enctype="multipart/form-data">
             @csrf
             <input type="hidden" name="showAll" value="{{ $showAll ? 'true' : 'false' }}">
 
@@ -465,6 +598,21 @@
                 <input type="submit" value="Enviar">
             @endif
         </form>
+        <div id="confirmationModal" class="modal-confirmation">
+            <div class="modal-confirmation-content">
+                <h3 class="modal-confirmation-title">¿Quiere enviar estos datos?</h3>
+                <div id="confirmationModalContent" class="modal-confirmation-body"></div>
+                <div class="modal-confirmation-buttons">
+                    <button id="cancelConfirmationBtn" class="modal-btn cancel-btn">Cancelar</button>
+                    <button id="confirmConfirmationBtn" class="modal-btn confirm-btn">¡Si, quiero enviarlos!</button>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
     </div>
 
 
@@ -699,4 +847,88 @@
         // Inicializar el estado del input cuando se carga la página
         document.addEventListener('DOMContentLoaded', toggleEmpresaInput);
     </script>
+
+    <script>
+        const form = document.getElementById('visitorForm');
+        const modal = document.getElementById('confirmationModal');
+        const modalContent = document.getElementById('confirmationModalContent');
+        const cancelBtn = document.getElementById('cancelConfirmationBtn');
+        const confirmBtn = document.getElementById('confirmConfirmationBtn');
+
+        const labels = {
+            nacionalidad: "Nacionalidad",
+            cedula: "Cédula",
+            nombre: "Nombre",
+            apellido: "Apellido",
+            clasificacion: "Clasificación",
+            nombre_empresa: "Empresa",
+            telefono: "Teléfono",
+            tipo_carnet: "Tipo de Carnet",
+            numero_carnet: "Número de Carnet",
+            filial_id: "Filial",
+            gerencia_id: "Dirección",
+            razon_visita: "Razón de visita"
+        };
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(form);
+            const clasificacion = formData.get('clasificacion');
+            let html = '<ul>';
+
+            formData.forEach((value, key) => {
+                if (['foto', '_token', 'showAll', 'no_foto'].includes(key)) return;
+
+                let displayValue = value ? value.toString().toUpperCase() : '';
+                let liClass = key === 'razon_visita' ? 'razon-visita' : '';
+
+                // Reemplazar nacionalidad
+                if (key === 'nacionalidad') {
+                    if (value === 'V') displayValue = 'VENEZOLANA';
+                    else if (value === 'E') displayValue = 'EXTRANJERO';
+                }
+
+                if (key === 'nombre_empresa') {
+                    if (clasificacion === 'empresa' && displayValue) {
+                        html +=
+                            `<li class="${liClass}"><strong>${labels[key]}:</strong> ${displayValue}</li>`;
+                    }
+                    return;
+                }
+
+                if (key === 'filial_id') {
+                    const filialSelect = document.getElementById('filial_id');
+                    const filialName = filialSelect.options[filialSelect.selectedIndex]?.text
+                        .toUpperCase() || '';
+                    html += `<li class="${liClass}"><strong>${labels[key]}:</strong> ${filialName}</li>`;
+                    return;
+                }
+
+                if (key === 'gerencia_id') {
+                    const gerenciaSelect = document.getElementById('gerencia_id');
+                    const gerenciaName = gerenciaSelect.options[gerenciaSelect.selectedIndex]?.text
+                        .toUpperCase() || '';
+                    html += `<li class="${liClass}"><strong>${labels[key]}:</strong> ${gerenciaName}</li>`;
+                    return;
+                }
+
+                const label = labels[key] || key.replace(/_/g, ' ');
+                html += `<li class="${liClass}"><strong>${label}:</strong> ${displayValue}</li>`;
+            });
+
+            html += '</ul>';
+            modalContent.innerHTML = html;
+            modal.style.display = 'flex';
+        });
+
+        cancelBtn.addEventListener('click', function() {
+            modal.style.display = 'none';
+        });
+
+        confirmBtn.addEventListener('click', function() {
+            form.submit();
+        });
+    </script>
+
 @endsection
