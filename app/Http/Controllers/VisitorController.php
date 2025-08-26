@@ -133,7 +133,7 @@ class VisitorController extends Controller
 
         $nacionalidad = $request->input('nacionalidad');
         if ($nacionalidad === 'V') {
-        $rules['cedula'] .= '|digits_between:7,8';
+        $rules['cedula'] .= '|digits_between:4,8';
         } elseif ($nacionalidad === 'E') {
         $rules['cedula'] .= '|digits_between:7,20';
 }
@@ -302,7 +302,7 @@ class VisitorController extends Controller
         ];
     $nacionalidad = $request->input('nacionalidad');
 if ($nacionalidad === 'V') {
-    $rules['cedula'] .= '|digits_between:7,8';
+    $rules['cedula'] .= '|digits_between:4,8';
 } elseif ($nacionalidad === 'E') {
     $rules['cedula'] .= '|digits_between:7,20';
 }
