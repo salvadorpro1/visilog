@@ -86,15 +86,21 @@ class VisitorController extends Controller
             }
         }
     
-        // Verificar si la cédula ya existe en la base de datos cuando $visitorExists es false
-        if (!$visitorExists) {
-            $existingVisitor = Visitor::where('cedula', $request->input('cedula'))->first();
-            if ($existingVisitor) {
-                return redirect()->back()->withErrors([
-                    'cedula' => 'Este visitante ya existe en el sistema, vuelva a consultar.'
-                ])->withInput();
-            }
-        }
+// Verificar si la combinación nacionalidad + cédula ya existe en la base de datos cuando $visitorExists es false
+if (!$visitorExists) {
+    $nacionalidad = $request->input('nacionalidad');
+    $cedula = $request->input('cedula');
+
+    $existingVisitor = Visitor::where('nacionalidad', $nacionalidad)
+        ->where('cedula', $cedula)
+        ->first();
+
+    if ($existingVisitor) {
+        return redirect()->back()->withErrors([
+            'cedula' => 'Este visitante ya existe en el sistema, vuelva a consultar.'
+        ])->withInput();
+    }
+}
     
 
         if ($visitorExists) {
