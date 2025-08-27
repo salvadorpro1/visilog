@@ -381,13 +381,31 @@
                 {{-- Registro de visitante nuevo --}}
                 <div class="divisor">
                     <div class="divisor__inputs">
-                        <label for="">Nacionalidad</label>
-                        <select name="nacionalidad" readonly>
-                            <option value="V" {{ $nacionalidad == 'V' ? 'selected' : '' }}>V</option>
-                            <option value="E" {{ $nacionalidad == 'E' ? 'selected' : '' }}>E</option>
-                        </select>
-                        <label for="">Cédula</label>
-                        <input name="cedula" value="{{ old('cedula', $cedula) }}" type="number">
+                        <div class="divisor__element">
+                            <label for="nacionalidad">Nacionalidad</label>
+                            <p>
+                                @switch($nacionalidad)
+                                    @case('V')
+                                        Venezolana
+                                    @break
+
+                                    @case('E')
+                                        Extranjero
+                                    @break
+
+                                    @default
+                                        Dato no válido
+                                @endswitch
+                            </p>
+                            <input type="hidden" id="nacionalidad" name="nacionalidad" value="{{ $nacionalidad }}">
+                        </div>
+
+                        <div class="divisor__element">
+                            <label for="cedula">Cédula</label>
+                            <p>{{ $cedula }}</p>
+                            <input type="hidden" id="cedula" name="cedula" value="{{ $cedula }}">
+                        </div>
+
                         <label for="">Nombre</label>
                         <input name="nombre" value="{{ old('nombre') }}" type="text"
                             style="text-transform: capitalize;">
@@ -413,7 +431,8 @@
                                 name="nombre_empresa" value="{{ old('nombre_empresa') }}">
                         </div>
                         <label for="">Teléfono</label>
-                        <input name="telefono" value="{{ old('telefono') }}" type="text" placeholder="Ej: 04121234567">
+                        <input name="telefono" value="{{ old('telefono') }}" type="text" placeholder="Ej: 04121234567"
+                            maxlength="11">
                         <label>Tipo de Carnet</label>
                         <div class="separar">
                             <div class="separar__uni">
@@ -558,7 +577,9 @@
                         value="{{ old('nombre_empresa', $visitor->nombre_empresa ?? '') }}">
                 </div>
                 <label for="">Teléfono</label>
-                <input name="telefono" value="{{ $visitor->telefono }}" type="text" placeholder="Ej: 04121234567">
+                <input name="telefono" value="{{ $visitor->telefono }}" type="text" placeholder="Ej: 04121234567"
+                    maxlength="11">
+
                 <label>Tipo de Carnet</label>
                 <div class="separar">
                     <div class="separar__uni">
@@ -776,7 +797,7 @@
         }
         document.addEventListener("DOMContentLoaded", toggleEmpresaInput);
 
-        }
+
 
         // Actualizar gerencias (función existente, se deja igual o con mejoras si es necesario)
         async function updateGerencias() {
