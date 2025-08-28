@@ -70,21 +70,24 @@ class VisitorController extends Controller
         $visitorExists = $request->input('showAll') === 'false';
     
         // Si el visitante existe, obtenerlo de la base de datos
-        $existingVisitor = $visitorExists ? Visitor::where('cedula', $request->input('cedula'))->first() : null;
-    
+$existingVisitor = $visitorExists 
+    ? Visitor::where('cedula', $request->input('cedula'))
+             ->where('nacionalidad', $request->input('nacionalidad'))
+             ->first()
+    : null;    
         // Verificar que los campos inmutables coincidan con el registro existente en la base de datos
-        if ($visitorExists && $existingVisitor) {
-            // Validar que los datos inmutables no hayan cambiado, incluyendo la cédula
-            if (
-                $request->input('nacionalidad') !== $existingVisitor->nacionalidad ||
-                $request->input('nombre') !== $existingVisitor->nombre ||
-                $request->input('apellido') !== $existingVisitor->apellido
-            ) {
-                return redirect()->back()->withErrors([
-                    'cedula' => 'No es posible modificar la cédula, nacionalidad, nombre o apellido del visitante existente.'
-                ])->withInput();
-            }
-        }
+if ($visitorExists && $existingVisitor) {
+    if (
+        $request->input('nacionalidad') !== $existingVisitor->nacionalidad ||
+        $request->input('nombre') !== $existingVisitor->nombre ||
+        $request->input('apellido') !== $existingVisitor->apellido
+    ) {
+        return redirect()->back()->withErrors([
+            'cedula' => 'No es posible modificar la cédula, nacionalidad, nombre o apellido del visitante existente.'
+        ])->withInput();
+    }
+}
+
     
 // Verificar si la combinación nacionalidad + cédula ya existe en la base de datos cuando $visitorExists es false
 if (!$visitorExists) {
@@ -236,14 +239,16 @@ if (!$visitorExists) {
         $visitor->save();
 
         if ($visitor->foto) {
-        // Actualiza todos los registros con la misma cédula que tengan foto vacía o nula
-        Visitor::where('cedula', $visitor->cedula)
-            ->where(function($query) {
-                $query->whereNull('foto')
-                      ->orWhere('foto', ''); // Incluye campos vacíos
-            })
-            ->update(['foto' => $visitor->foto]);
-        }
+    // Actualiza todos los registros con la misma cédula y nacionalidad
+    // que tengan la foto vacía o nula
+    Visitor::where('cedula', $visitor->cedula)
+        ->where('nacionalidad', $visitor->nacionalidad) // <-- aquí añadimos la condición
+        ->where(function($query) {
+            $query->whereNull('foto')
+                  ->orWhere('foto', ''); // Incluye campos vacíos
+        })
+        ->update(['foto' => $visitor->foto]);
+}
 
         // Redirección según el rol del usuario
         $user = Auth::user();
