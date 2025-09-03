@@ -214,7 +214,8 @@
 ">Volver
         </a>
         <div class="pagination">
-            {{ $registros->links() }}
+            {{ $registros->appends(request()->all())->links() }}
         </div>
+
     </div>
 @endsection

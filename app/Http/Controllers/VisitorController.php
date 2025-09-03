@@ -284,20 +284,23 @@ if (!$visitorExists) {
         return response()->json($gerencias);
     }
 
-    public function showRegister(Request $request)
-    {
-        $query = Visitor::query();
-    
-        if ($request->has('search')) {
-            $search = $request->input('search');
-            $query->where('nombre', 'like', '%' . $search . '%')
-                  ->orWhere('cedula', 'like', '%' . $search . '%');
-        }
-    
-        $registros = $query->orderBy('created_at', 'desc')->paginate(10);
-    
-        return view('register.showRegistration', compact('registros'));
+public function showRegister(Request $request)
+{
+    $query = Visitor::query();
+
+    if ($request->has('search') && $request->input('search') != '') {
+        $search = $request->input('search');
+        $query->where(function($q) use ($search) {
+            $q->where('nombre', 'like', '%' . $search . '%')
+              ->orWhere('cedula', 'like', '%' . $search . '%');
+        });
     }
+
+    $registros = $query->orderBy('created_at', 'desc')->paginate(10);
+
+    return view('register.showRegistration', compact('registros'));
+}
+
     
     public function showRegisterDetail($id)
     {
