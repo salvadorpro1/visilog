@@ -231,8 +231,8 @@ class VisitorController extends Controller
         $visitor = new Visitor();
         $visitor->nacionalidad = $request->input('nacionalidad');
         $visitor->cedula = $request->input('cedula');
-        $visitor->nombre = ucwords(strtolower($request->input('nombre')));
-        $visitor->apellido = ucwords(strtolower($request->input('apellido')));
+        $visitor->nombre = strtolower($request->input('nombre'));
+        $visitor->apellido = strtolower($request->input('apellido'));
         $visitor->filial_id = $request->input('filial_id');
         $visitor->gerencia_id = $request->input('gerencia_id');
         $visitor->razon_visita = $request->input('razon_visita');
@@ -240,7 +240,7 @@ class VisitorController extends Controller
         $visitor->tipo_carnet = $request->input('tipo_carnet');
         $visitor->numero_carnet = $request->input('numero_carnet');
         $visitor->clasificacion = $request->input('clasificacion');
-        $visitor->nombre_empresa = $request->input('clasificacion') === 'empresa' ? ucwords(strtolower($request->input('nombre_empresa'))) : '';
+        $visitor->nombre_empresa = $request->input('clasificacion') === 'empresa' ? strtolower($request->input('nombre_empresa')) : '';
         $visitor->user_id = auth()->id();
 
         // Asignar la foto (puede quedar null si no se capturó)
@@ -303,10 +303,11 @@ class VisitorController extends Controller
         $query = Visitor::query();
 
         if ($request->has('search') && $request->input('search') != '') {
-            $search = $request->input('search');
+            $search = strtolower($request->input('search'));
+
             $query->where(function ($q) use ($search) {
-                $q->where('nombre', 'like', '%' . $search . '%')
-                    ->orWhere('cedula', 'like', '%' . $search . '%');
+                $q->whereRaw('LOWER(nombre) LIKE ?', ['%' . $search . '%'])
+                    ->orWhereRaw('LOWER(cedula) LIKE ?', ['%' . $search . '%']);
             });
         }
 
