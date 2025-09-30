@@ -564,18 +564,20 @@
                     </div>
                     <div class="separar__uni">
                         <input type="radio" id="persona" name="clasificacion" value="persona"
-                            {{ old('clasificacion', $visitor->clasificacion ?? '') == 'persona' ? 'checked' : '' }}
-                            onclick="toggleEmpresaInput()">
+                            {{ old('clasificacion', '') == 'persona' ? 'checked' : '' }} onclick="toggleEmpresaInput()">
                         <input type="radio" id="empresa" name="clasificacion" value="empresa"
-                            {{ old('clasificacion', $visitor->clasificacion ?? '') == 'empresa' ? 'checked' : '' }}
-                            onclick="toggleEmpresaInput()">
+                            {{ old('clasificacion', '') == 'empresa' ? 'checked' : '' }} onclick="toggleEmpresaInput()">
                     </div>
                 </div>
+
                 <div id="empresaInput" style="display: none;">
                     <label for="nombre_empresa">Nombre de la empresa</label>
                     <input type="text" id="nombre_empresa" name="nombre_empresa"
-                        value="{{ old('nombre_empresa', $visitor->nombre_empresa ?? '') }}">
+                        value="{{ old('nombre_empresa', $lastCompanyName ?? '') }}">
                 </div>
+
+
+
                 <label for="">Teléfono</label>
                 <input name="telefono" value="{{ $visitor->telefono }}" type="text" placeholder="Ej: 04121234567"
                     maxlength="11">
@@ -791,10 +793,17 @@
 
         // Mostrar/Ocultar input de empresa según selección
         function toggleEmpresaInput() {
-            const empresaInput = document.getElementById('empresaInput');
             const empresaRadio = document.getElementById('empresa');
-            empresaInput.style.display = (empresaRadio && empresaRadio.checked) ? 'block' : 'none';
+            const empresaInput = document.getElementById('empresaInput');
+
+            if (empresaRadio.checked) {
+                empresaInput.style.display = 'block';
+            } else {
+                empresaInput.style.display = 'none';
+                document.getElementById('nombre_empresa').value = '';
+            }
         }
+
         document.addEventListener("DOMContentLoaded", toggleEmpresaInput);
 
 
@@ -854,16 +863,22 @@
 
     <script>
         function toggleEmpresaInput() {
-            const empresaInput = document.getElementById('empresaInput');
             const empresaRadio = document.getElementById('empresa');
+            const empresaInput = document.getElementById('empresaInput');
+            const nombreEmpresaInput = document.getElementById('nombre_empresa');
 
-            // Mostrar u ocultar el input dependiendo del radio seleccionado
             if (empresaRadio.checked) {
                 empresaInput.style.display = 'block';
+                // Solo llenar con la última empresa si el campo está vacío
+                if (!nombreEmpresaInput.value) {
+                    nombreEmpresaInput.value = "{{ $lastCompanyName ?? '' }}";
+                }
             } else {
                 empresaInput.style.display = 'none';
+                nombreEmpresaInput.value = '';
             }
         }
+
 
         // Inicializar el estado del input cuando se carga la página
         document.addEventListener('DOMContentLoaded', toggleEmpresaInput);
