@@ -158,7 +158,7 @@ class VisitorController extends Controller
         if ($nacionalidad === 'V') {
             $rules['cedula'] .= '|digits_between:4,8';
         } elseif ($nacionalidad === 'E') {
-            $rules['cedula'] .= '|digits_between:7,20';
+            $rules['cedula'] .= '|digits_between:6,20';
         }
         $messages = [
             'filial_id.required' => 'La filial es requerida.',
@@ -333,7 +333,7 @@ class VisitorController extends Controller
         if ($nacionalidad === 'V') {
             $rules['cedula'] .= '|digits_between:4,8';
         } elseif ($nacionalidad === 'E') {
-            $rules['cedula'] .= '|digits_between:7,20';
+            $rules['cedula'] .= '|digits_between:6,20';
         }
         $messages = [
             'nacionalidad.required' => 'La nacionalidad es obligatoria.',
