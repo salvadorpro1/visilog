@@ -671,8 +671,10 @@
                             {{ old('tipo_carnet') == 'ficha' ? 'checked' : '' }}>
                     </div>
                 </div>
+
                 <label for="numero_carnet">Número de Carnet</label>
                 <input name="numero_carnet" id="numero_carnet" type="text" value="{{ old('numero_carnet') }}">
+
                 <label for="filial_id">Filial</label>
                 <select name="filial_id" id="filial_id" onchange="updateGerencias()">
                     <option value="">Elegir filial</option>
@@ -1042,5 +1044,33 @@
             form.submit();
         });
     </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const radioVisitante = document.getElementById("carnet_visitante");
+            const radioFicha = document.getElementById("carnet_trabajador");
+            const inputNumero = document.getElementById("numero_carnet");
+            const ultimaFicha = @json($ultimaFicha);
+
+            function actualizarInput() {
+                if (radioFicha.checked) {
+                    // Si selecciona Ficha y hay una guardada, la muestra
+                    if (ultimaFicha) {
+                        inputNumero.value = ultimaFicha;
+                    }
+                } else if (radioVisitante.checked) {
+                    // Si selecciona Carnet de visitante, limpia el campo
+                    inputNumero.value = "";
+                }
+            }
+
+            // Detectar cambios en ambos radios
+            radioVisitante.addEventListener("change", actualizarInput);
+            radioFicha.addEventListener("change", actualizarInput);
+
+            // 👇 Esto asegura que el campo arranque vacío siempre
+            inputNumero.value = "";
+        });
+    </script>
+
 
 @endsection

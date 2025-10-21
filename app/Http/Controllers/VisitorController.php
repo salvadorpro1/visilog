@@ -55,6 +55,14 @@ class VisitorController extends Controller
             ->distinct()
             ->pluck('nombre_empresa');
 
+        $ultimaFicha = Visitor::where('cedula', $cedula)
+            ->where('nacionalidad', $nacionalidad)
+            ->where('tipo_carnet', 'ficha')
+            ->whereNotNull('numero_carnet')
+            ->orderByDesc('created_at')
+            ->value('numero_carnet');
+
+
         $filials = Filial::all();
 
         // Aquí intentamos mantener gerencias para old input si aplica
@@ -72,6 +80,8 @@ class VisitorController extends Controller
             'oldGerenciaId' => $oldGerenciaId,
             'lastCompanyName' => $lastCompanyName,
             'companies' => $companies, // <-- lista para el datalist
+            'ultimaFicha' => $ultimaFicha, // 👈 se envía a la vista
+
         ]);
     }
 
@@ -88,10 +98,14 @@ class VisitorController extends Controller
             : null;
         // Verificar que los campos inmutables coincidan con el registro existente en la base de datos
         if ($visitorExists && $existingVisitor) {
+            $inputNombre = strtolower(trim($request->input('nombre')));
+            $inputApellido = strtolower(trim($request->input('apellido')));
+            $inputNacionalidad = trim($request->input('nacionalidad'));
+
             if (
-                $request->input('nacionalidad') !== $existingVisitor->nacionalidad ||
-                $request->input('nombre') !== $existingVisitor->nombre ||
-                $request->input('apellido') !== $existingVisitor->apellido
+                $inputNacionalidad !== $existingVisitor->nacionalidad ||
+                $inputNombre !== $existingVisitor->nombre ||
+                $inputApellido !== $existingVisitor->apellido
             ) {
                 return redirect()->back()->withErrors([
                     'cedula' => 'No es posible modificar la cédula, nacionalidad, nombre o apellido del visitante existente.'
