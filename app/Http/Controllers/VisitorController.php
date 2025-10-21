@@ -51,7 +51,6 @@ class VisitorController extends Controller
             ->where('clasificacion', 'empresa')
             ->whereNotNull('nombre_empresa')
             ->where('nombre_empresa', '!=', '')
-            ->orderByDesc('created_at')
             ->distinct()
             ->pluck('nombre_empresa');
 
