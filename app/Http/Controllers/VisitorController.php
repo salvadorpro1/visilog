@@ -28,12 +28,13 @@ class VisitorController extends Controller
         $cedula = $request->input('cedula');
         $nacionalidad = $request->input('nacionalidad', '');
 
+        // Obtener el último registro del visitante (si existe)
         $visitor = Visitor::where('nacionalidad', $nacionalidad)
             ->where('cedula', $cedula)
-            ->latest()  // Ordena por la fecha de creación
+            ->latest()
             ->first();
 
-        // NUEVO: traer el último nombre de empresa si existe
+        // Último nombre de empresa (si aplica)
         $lastCompanyName = null;
         if ($visitor) {
             $lastCompany = Visitor::where('nacionalidad', $nacionalidad)
@@ -44,39 +45,35 @@ class VisitorController extends Controller
             $lastCompanyName = $lastCompany->nombre_empresa ?? null;
         }
 
-        $filials = Filial::all();
-        $gerencias = Gerencia::all();
+        // Obtener lista de empresas anteriores (distinct), normalizadas y en orden descendente por fecha
+        $companies = Visitor::where('nacionalidad', $nacionalidad)
+            ->where('cedula', $cedula)
+            ->where('clasificacion', 'empresa')
+            ->whereNotNull('nombre_empresa')
+            ->where('nombre_empresa', '!=', '')
+            ->orderByDesc('created_at')
+            ->distinct()
+            ->pluck('nombre_empresa');
 
+        $filials = Filial::all();
+
+        // Aquí intentamos mantener gerencias para old input si aplica
         $oldFilialId = old('filial_id', $visitor ? $visitor->filial_id : null);
         $oldGerenciaId = old('gerencia_id', $visitor ? $visitor->gerencia_id : null);
-
         $gerencias = $oldFilialId ? Gerencia::where('filial_id', $oldFilialId)->get() : collect([]);
 
-        if ($visitor) {
-            return view('register.visitorRegistrationForm', [
-                'showAll' => false,
-                'visitor' => $visitor,
-                'nacionalidad' => $visitor->nacionalidad,
-                'cedula' => $visitor->cedula,
-                'filials' => $filials,
-                'gerencias' => $gerencias,
-                'oldGerenciaId' => $oldGerenciaId,
-                'lastCompanyName' => $lastCompanyName, // PASAMOS EL VALOR NUEVO
-            ]);
-        } else {
-            return view('register.visitorRegistrationForm', [
-                'showAll' => true,
-                'nacionalidad' => $nacionalidad,
-                'cedula' => $cedula,
-                'filials' => $filials,
-                'gerencias' => $gerencias,
-                'oldGerenciaId' => $oldGerenciaId,
-                'lastCompanyName' => $lastCompanyName, // PASAMOS EL VALOR NUEVO
-            ]);
-        }
+        return view('register.visitorRegistrationForm', [
+            'showAll' => $visitor ? false : true,
+            'visitor' => $visitor,
+            'nacionalidad' => $nacionalidad,
+            'cedula' => $cedula,
+            'filials' => $filials,
+            'gerencias' => $gerencias,
+            'oldGerenciaId' => $oldGerenciaId,
+            'lastCompanyName' => $lastCompanyName,
+            'companies' => $companies, // <-- lista para el datalist
+        ]);
     }
-
-
 
     public function saveVisitor(Request $request)
     {
@@ -240,7 +237,13 @@ class VisitorController extends Controller
         $visitor->tipo_carnet = $request->input('tipo_carnet');
         $visitor->numero_carnet = $request->input('numero_carnet');
         $visitor->clasificacion = $request->input('clasificacion');
-        $visitor->nombre_empresa = $request->input('clasificacion') === 'empresa' ? strtolower($request->input('nombre_empresa')) : '';
+        $nombreEmpresaInput = $request->input('nombre_empresa');
+        $nombreEmpresaNormalized = $nombreEmpresaInput ? trim(mb_strtolower($nombreEmpresaInput)) : '';
+
+        $visitor->nombre_empresa = $visitor->clasificacion === 'empresa'
+            ? $nombreEmpresaNormalized
+            : '';
+
         $visitor->user_id = auth()->id();
 
         // Asignar la foto (puede quedar null si no se capturó)

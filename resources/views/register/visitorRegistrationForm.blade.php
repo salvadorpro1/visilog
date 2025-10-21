@@ -357,6 +357,74 @@
         .separar__uni input {
             margin-bottom: 5px;
         }
+
+        /* ==== Campo "Nombre de la empresa" ==== */
+        .empresa-input {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .empresa-label {
+            font-weight: 600;
+            color: #333;
+            font-size: 1rem;
+            margin-left: 2px;
+        }
+
+        .empresa-field {
+            width: 100%;
+            padding: 10px 12px;
+            font-size: 0.95rem;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            outline: none;
+            transition: all 0.2s ease-in-out;
+            box-sizing: border-box;
+            background-color: #fff;
+        }
+
+        /* Hover y foco */
+        .empresa-field:hover {
+            border-color: #000000;
+        }
+
+        .empresa-field:focus {
+            border-color: #000000;
+            box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Placeholder más visible */
+        .empresa-field::placeholder {
+            color: #aaa;
+            font-style: italic;
+        }
+
+        /* Ícono opcional (si quisieras añadir uno después) */
+        .empresa-input::before {
+            position: absolute;
+            top: 39px;
+            left: 10px;
+            opacity: 0.6;
+            pointer-events: none;
+            font-size: 1rem;
+            transition: opacity 0.2s;
+        }
+
+        .empresa-field:focus+datalist,
+        .empresa-input:hover::before {
+            opacity: 0.9;
+        }
+
+        /* Para pantallas pequeñas */
+        @media (max-width: 600px) {
+            .empresa-field {
+                font-size: 0.9rem;
+                padding: 8px 10px;
+            }
+        }
     </style>
 @endsection
 
@@ -570,10 +638,18 @@
                     </div>
                 </div>
 
-                <div id="empresaInput" style="display: none;">
-                    <label for="nombre_empresa">Nombre de la empresa</label>
-                    <input type="text" id="nombre_empresa" name="nombre_empresa"
-                        value="{{ old('nombre_empresa', $lastCompanyName ?? '') }}">
+                <div id="empresaInput" class="empresa-input" style="display: none;">
+                    <label for="nombre_empresa" class="empresa-label">Nombre de la empresa</label>
+                    <input list="lista_empresas" id="nombre_empresa" name="nombre_empresa" class="empresa-field"
+                        value="{{ old('nombre_empresa', $lastCompanyName ?? '') }}" autocomplete="off"
+                        placeholder="Ejemplo: Polar, Movistar, Coca-Cola..." />
+                    <datalist id="lista_empresas">
+                        @if (isset($companies) && $companies->isNotEmpty())
+                            @foreach ($companies as $company)
+                                <option value="{{ $company }}"></option>
+                            @endforeach
+                        @endif
+                    </datalist>
                 </div>
 
 
