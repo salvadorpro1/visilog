@@ -1053,24 +1053,19 @@
 
             function actualizarInput() {
                 if (radioFicha.checked) {
-                    // Si selecciona Ficha y hay una guardada, la muestra
-                    if (ultimaFicha) {
+                    if (!inputNumero.value && ultimaFicha) {
                         inputNumero.value = ultimaFicha;
                     }
                 } else if (radioVisitante.checked) {
-                    // Si selecciona Carnet de visitante, limpia el campo
                     inputNumero.value = "";
                 }
             }
 
-            // Detectar cambios en ambos radios
             radioVisitante.addEventListener("change", actualizarInput);
             radioFicha.addEventListener("change", actualizarInput);
-
-            // 👇 Esto asegura que el campo arranque vacío siempre
-            inputNumero.value = "";
         });
     </script>
+
 
 
 @endsection
